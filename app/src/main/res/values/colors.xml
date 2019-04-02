@@ -4,4 +4,12 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="colorBackground">#62727b</color>
+
+
+    <color name="fonto">#000000</color>
+    <color name="pressedColor">#33b5e5</color>
+    <color name="grammata">#FFFFFF</color>
+    <color name="grammataPhone">#808080</color>
+    <color name="themeColor">#33b5e5</color>
+    <color name="semiTransparent">#66000000</color>
 </resources>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent" >
+
+    <QuickContactBadge
+        android:id="@+id/contact_photo"
+        android:layout_width="50dp"
+        android:layout_height="50dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/contact_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|left"
+                android:text="ContactLalalsalklewkradasda"
+                android:ellipsize="end"
+                android:maxEms="14"
+                android:maxLines="2"
+                android:scrollHorizontally = "true"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/grammata" />
+
+            <TextView
+                android:id="@+id/datecontacted"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center"
+                android:gravity="right|center"
+                android:text="HH:MM"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/grammataPhone" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/contact_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|left"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/grammataPhone"
+                android:text="+xxxxxxxxxxxxx" />
+
+            <TextView
+                android:id="@+id/network"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:gravity="right|center"
+                android:text="Network"
+                android:ellipsize="end"
+                android:maxEms="12"
+                android:maxLines="1"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/grammataPhone" />
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
+

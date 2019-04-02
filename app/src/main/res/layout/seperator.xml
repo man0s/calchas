@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:id="@+id/separator1"
+        android:visibility="visible"
+        android:background="@color/themeColor"/>
+
+    <TextView
+        android:id="@+id/seperator"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#00000000"
+        android:gravity="center_horizontal|center"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/grammata"
+        android:textColorHint="@color/grammataPhone"
+        android:textStyle="normal" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:id="@+id/separator2"
+        android:visibility="visible"
+        android:background="@color/themeColor"/>
+
+</LinearLayout>
