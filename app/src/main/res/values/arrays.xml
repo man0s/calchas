@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string-array name="numProtaseis">
+        <item name="5">5 suggestions</item>
+        <item name="6">6 suggestions</item>
+        <item name="7">7 suggestions</item>
+        <item name="8">8 suggestions</item>
+        <item name="9">All suggestions</item>
+    </string-array>
+	<string-array name="numProtaseisValues">
+        <item name="5">5</item>
+        <item name="6">6</item>
+        <item name="7">7</item>
+        <item name="8">8</item>
+        <item name="9">9</item>
+    </string-array>
+    
+	<string-array name="allinterfaces">
+        <item name="1">Suggestions (only)</item>
+        <item name="2">Suggestions (A2Z)</item>
+        <item name="3">Sg + Call Log</item>
+        <item name="4">Sg + Contacts</item>
+        <item name="5">Sg + Call Log (A2Z)</item>
+        <item name="6">Sg + Contacts (A2Z)</item>
+    </string-array>
+	<string-array name="allinterfacesValues">
+        <item name="1">1</item>
+        <item name="2">2</item>
+        <item name="3">3</item>
+        <item name="4">4</item>
+        <item name="5">5</item>
+        <item name="6">6</item>
+    </string-array>
+    
+	<string-array name="varos">
+        <item name="0">0</item>
+        <item name="1">0.1</item>
+        <item name="2">0.2</item>
+        <item name="3">0.3</item>
+        <item name="4">0.4</item>
+        <item name="5">0.5</item>
+        <item name="6">0.6</item>
+        <item name="7">0.7</item>
+        <item name="8">0.8</item>
+        <item name="9">0.9</item>
+        <item name="10">1</item>
+    </string-array>
+	<string-array name="varosValues">
+        <item name="0">0.0</item>
+        <item name="1">0.1</item>
+        <item name="2">0.2</item>
+        <item name="3">0.3</item>
+        <item name="4">0.4</item>
+        <item name="5">0.5</item>
+        <item name="6">0.6</item>
+        <item name="7">0.7</item>
+        <item name="8">0.8</item>
+        <item name="9">0.9</item>
+        <item name="10">1.0</item>
+    </string-array>
+</resources>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="User Settings">
+       
+        <ListPreference
+            android:key="protaseis"
+            android:entries="@array/numProtaseis"
+            android:summary="Choose the number of suggestions" 
+            android:entryValues="@array/numProtaseisValues"
+            android:title="Suggestions" 
+       		android:defaultValue="7"
+       	/>
+        
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="showphoto"
+            android:summary="Show users photos on badges"
+            android:title="Show photos" >
+        </CheckBoxPreference>
+        
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="resolve_numbers"
+            android:summary="Check the mobile network that your contacts belong to. This option will send your contacts' numbers anonymously to our server for checking."
+            android:title="Check mobile networks" >
+        </CheckBoxPreference>
+        
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="showsearch"
+            android:summary="Show search contacts"
+            android:title="Show search" >
+        </CheckBoxPreference>
+        
+        <ListPreference
+            android:key="inteface"
+            android:entries="@array/allinterfaces"
+            android:summary="Choose Calchas inteface" 
+            android:entryValues="@array/allinterfacesValues"
+            android:title="Interfaces" 
+       		android:defaultValue="3"
+       	/>
+        
+    </PreferenceCategory>
+    
+    <PreferenceCategory android:title="Developers settings">
+        
+        <EditTextPreference 
+            android:key="freqwindow" 
+            android:summary="Set the frequency window (days)" 
+            android:title="Frequency"
+        	android:defaultValue="15"
+        	android:numeric="integer"
+    		android:maxLength="2"
+        />
+       
+        <EditTextPreference 
+            android:key="recwindow" 
+            android:summary="Set the recency window (hours)" 
+            android:title="Recency"
+        	android:defaultValue="12"
+        	android:numeric="integer"
+    		android:maxLength="2"
+        />
+        
+        <ListPreference
+            android:key="varos"
+            android:entries="@array/varos"
+            android:summary="Choose wf" 
+            android:entryValues="@array/varosValues"
+            android:title="Set wf (wr=1-wf)" 
+       		android:defaultValue="0.5"
+       	/>
+       
+        
+    </PreferenceCategory>
+    
+
+</PreferenceScreen>
