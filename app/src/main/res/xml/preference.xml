@@ -2,10 +2,10 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="User Settings">
 
-        <!--<SwitchPreference-->
-            <!--android:defaultValue="false"-->
-            <!--android:key="DarkMode"-->
-            <!--android:title="Dark Mode" />-->
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="DarkMode"
+            android:title="Dark Mode" />
        
         <ListPreference
             android:key="protaseis"

@@ -22,6 +22,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneNumberUtils;
@@ -205,9 +206,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-//        boolean DarkMode = settings.getBoolean("DarkMode", false);
-//        if(DarkMode) setTheme(R.style.DarkTheme);
-//        else setTheme(R.style.AppTheme);
+        boolean DarkMode = settings.getBoolean("DarkMode", false);
+        if(DarkMode) {
+            setTheme(R.style.DarkTheme);
+            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
+        else setTheme(R.style.AppTheme);
 
         super.onCreate(savedInstanceState);
 
