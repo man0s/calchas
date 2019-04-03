@@ -23,7 +23,6 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.TelephonyManager;
@@ -39,6 +38,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import java.io.InputStream;
@@ -391,13 +391,7 @@ public class MainActivity extends AppCompatActivity {
             String strNumProtaseis = preferences.getString("protaseis", "7");
             String selectedinterface = preferences.getString("inteface", "3");
             boolean showphoto = preferences.getBoolean("showphoto", true);
-//            Boolean darkMode = preferences.getBoolean("DarkMode",false);            Boolean darkMode = preferences.getBoolean("DarkMode",false);
-//            boolean showsearch = preferences.getBoolean("showsearch", true);
-
-//            if(darkMode) {
-//                setTheme(R.style.DarkTheme);
-//            }
-//            else  setTheme(R.style.AppTheme);
+//          boolean showsearch = preferences.getBoolean("showsearch", true);
 
             //DEVELOPER
             wf = Double.parseDouble(preferences.getString("varos", "0.5"));
@@ -677,29 +671,56 @@ public class MainActivity extends AppCompatActivity {
             lista1.requestFocus();
 
             ////Filtro///
-//
-//            // TextFilter
-//            EditText editTxt = (EditText) findViewById(R.id.filterText);
+
+            // TextFilter
+            SearchView searchView = (SearchView) findViewById(R.id.search_view);
+
+//            EditText editTxt = (EditText) searchView.findViewById(filterText);
 //            //Gia na arxikopoiite to koumpi se kathe onresume
 //            editTxt.setText("");
-//
-//            //Arxika vazw to visibility GONE
+
+            //Gia na arxikopoiite to koumpi se kathe onresume
+            searchView.setQuery("", false);
+
+            //Arxika vazw to visibility GONE
 //            editTxt.setVisibility(View.GONE);
-//
-//            //an o xristis exei kanei enable to search kai ena apo ta interfaces einai auta me ti megali lista
+            searchView.setVisibility(View.GONE);
+
+            //an o xristis exei kanei enable to search kai ena apo ta interfaces einai auta me ti megali lista
 //            if (showsearch && (
-//                    selectedinterface.equalsIgnoreCase("3") ||
-//                            selectedinterface.equalsIgnoreCase("4") ||
-//                            selectedinterface.equalsIgnoreCase("5") ||
-//                            selectedinterface.equalsIgnoreCase("6")
-//            )) {
-//                lista1.setTextFilterEnabled(true);
+            if (
+                    selectedinterface.equalsIgnoreCase("3") ||
+                            selectedinterface.equalsIgnoreCase("4") ||
+                            selectedinterface.equalsIgnoreCase("5") ||
+                            selectedinterface.equalsIgnoreCase("6")
+            ) {
+                lista1.setTextFilterEnabled(true);
 //                editTxt.setVisibility(View.VISIBLE);
-//            }
-//            //diaforetika to krivw
-//            else
+                searchView.setVisibility(View.VISIBLE);
+            }
+            //diaforetika to krivw
+            else
+                searchView.setVisibility(View.GONE);
 //                editTxt.setVisibility(View.GONE);
-//
+
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    //Do your search
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String s) {
+                    if(s.isEmpty()){
+                        // We're deleting char so we need to reset the adapter data
+                        arrayAdapter.resetData();
+                    }
+                    arrayAdapter.getFilter().filter(s);
+                    return true;
+                }
+            });
+
 //            editTxt.addTextChangedListener(new TextWatcher() {
 //
 //                                               @Override
@@ -724,7 +745,7 @@ public class MainActivity extends AppCompatActivity {
 //                                               }
 //                                           }
 //            );
-//            ////Filtro telos//
+            ////Filtro telos//
 
             //apo edw kai katw einai o listener otan patisw ena list item
             lista1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
