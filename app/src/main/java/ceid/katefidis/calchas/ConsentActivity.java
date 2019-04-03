@@ -42,13 +42,13 @@ public class ConsentActivity extends Activity {
                 {
                     agree.setEnabled(true);
                     ok_button.setEnabled(true);
-                    agree.setTextColor(getResources().getColor(R.color.grammata));
+                    //agree.setTextColor(getResources().getColor(R.attr.colorText));
                 }
                 else
                 {
                     agree.setEnabled(false);
                     ok_button.setEnabled(false);
-                    agree.setTextColor(getResources().getColor(R.color.grammataPhone));
+                    //agree.setTextColor(getResources().getColor(R.attr.colorTextLight));
                 }
 
             }

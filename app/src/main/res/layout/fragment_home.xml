@@ -9,8 +9,8 @@
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:background="@color/fonto"
-        android:cacheColorHint="@color/fonto" />
+        android:background="?attr/colorBackground"
+        android:cacheColorHint="?attr/colorBackground" />
 
 
 </FrameLayout>

@@ -27,33 +27,33 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="@string/welcomeText"
-                android:textColor="@color/grammata"
+                android:textColor="?attr/colorText"
                 android:textSize="20sp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/consentMsg"
-                android:textColor="@color/grammata" />
+                android:textColor="?attr/colorText" />
 
             <CheckBox
                 android:id="@+id/checkBox1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:buttonTint="@color/grammata"
+                android:buttonTint="?attr/colorText"
                 android:checked="false"
                 android:text="@string/networkText"
-                android:textColor="@color/grammata" />
+                android:textColor="?attr/colorText" />
 
             <CheckBox
                 android:id="@+id/checkBox2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|top"
-                android:buttonTint="@color/grammataPhone"
+                android:buttonTint="?attr/colorTextLight"
                 android:checked="false"
                 android:text="@string/netenableText"
-                android:textColor="@color/grammataPhone" />
+                android:textColor="?attr/colorTextLight" />
 
             <Button
                 android:id="@+id/cons_button_ok"
@@ -62,12 +62,12 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="5dp"
-                android:background="@color/colorPrimary"
+                android:background="?attr/colorPrimary"
                 android:padding="10dp"
                 android:text="@string/start_calchas"
                 android:textAlignment="center"
                 android:textAllCaps="false"
-                android:textColor="@color/grammata"
+                android:textColor="?attr/colorText"
                 android:textSize="18sp" />
 
         </LinearLayout>

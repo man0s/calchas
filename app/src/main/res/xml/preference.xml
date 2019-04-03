@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="User Settings">
+
+        <!--<SwitchPreference-->
+            <!--android:defaultValue="false"-->
+            <!--android:key="DarkMode"-->
+            <!--android:title="Dark Mode" />-->
        
         <ListPreference
             android:key="protaseis"
@@ -8,8 +13,7 @@
             android:summary="Choose the number of suggestions" 
             android:entryValues="@array/numProtaseisValues"
             android:title="Suggestions" 
-       		android:defaultValue="7"
-       	/>
+       		android:defaultValue="7" />
         
         <CheckBoxPreference
             android:defaultValue="false"
@@ -25,12 +29,12 @@
             android:title="Check mobile networks" >
         </CheckBoxPreference>
         
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="showsearch"
-            android:summary="Show search contacts"
-            android:title="Show search" >
-        </CheckBoxPreference>
+        <!--<CheckBoxPreference-->
+            <!--android:defaultValue="true"-->
+            <!--android:key="showsearch"-->
+            <!--android:summary="Show search contacts"-->
+            <!--android:title="Show search" >-->
+        <!--</CheckBoxPreference>-->
         
         <ListPreference
             android:key="inteface"

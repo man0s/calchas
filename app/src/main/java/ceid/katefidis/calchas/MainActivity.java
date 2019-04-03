@@ -14,6 +14,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.preference.SwitchPreference;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
@@ -37,6 +38,8 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -188,16 +191,24 @@ public class MainActivity extends AppCompatActivity {
         if (mBottomNavigationView.getSelectedItemId() == R.id.navigation_home) {
             super.onBackPressed();
         } else {
+            Toast.makeText(MainActivity.this, "Press back again to leave",
+                    Toast.LENGTH_LONG).show();
             mBottomNavigationView.getMenu().findItem(R.id.navigation_settings).setChecked(false);
             mBottomNavigationView.getMenu().findItem(R.id.navigation_home).setChecked(true);
 //            fm.popBackStack();
             Intent intent = new Intent(this, MainActivity.class);
+            finish();
             startActivity(intent);
         }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+//        boolean DarkMode = settings.getBoolean("DarkMode", false);
+//        if(DarkMode) setTheme(R.style.DarkTheme);
+//        else setTheme(R.style.AppTheme);
+
         super.onCreate(savedInstanceState);
 
         if(!Permissions.Check_PERMISSIONS(MainActivity.this))
@@ -205,7 +216,6 @@ public class MainActivity extends AppCompatActivity {
             //if not permisson granted so request permisson with request code
             Permissions.Request_PERMISSIONS(MainActivity.this,1);
         }
-
         setContentView(R.layout.activity_main);
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
@@ -240,7 +250,6 @@ public class MainActivity extends AppCompatActivity {
             countryCodes.put(g[1], Integer.parseInt(g[0]));
         }
 
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         boolean firstRun = settings.getBoolean("firstRun", true);
         if ( firstRun )
         {
@@ -377,8 +386,14 @@ public class MainActivity extends AppCompatActivity {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
             String strNumProtaseis = preferences.getString("protaseis", "7");
             String selectedinterface = preferences.getString("inteface", "3");
-            boolean showphoto = preferences.getBoolean("showphoto", false);
-            boolean showsearch = preferences.getBoolean("showsearch", true);
+            boolean showphoto = preferences.getBoolean("showphoto", true);
+//            Boolean darkMode = preferences.getBoolean("DarkMode",false);            Boolean darkMode = preferences.getBoolean("DarkMode",false);
+//            boolean showsearch = preferences.getBoolean("showsearch", true);
+
+//            if(darkMode) {
+//                setTheme(R.style.DarkTheme);
+//            }
+//            else  setTheme(R.style.AppTheme);
 
             //DEVELOPER
             wf = Double.parseDouble(preferences.getString("varos", "0.5"));
