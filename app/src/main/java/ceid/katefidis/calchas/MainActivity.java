@@ -14,7 +14,6 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.preference.SwitchPreference;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
@@ -23,22 +22,19 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.SearchView;
 import android.widget.Toast;
 
 import java.io.InputStream;
@@ -662,64 +658,64 @@ public class MainActivity extends AppCompatActivity {
 //
 //        }
 
-            //ftiaxnw enan neo arrayAdapter
-            arrayAdapter = new MobileArrayAdapter(this, finalprotaseis);
-
-            lista1.setAdapter(arrayAdapter);
-            //To vazw gia to onresume
-            //wste to edit text na min exei to focus kai emfanizetai to pliktrologio!
-            lista1.requestFocus();
+//            //ftiaxnw enan neo arrayAdapter
+//            arrayAdapter = new MobileArrayAdapter(this, finalprotaseis);
+//
+//            lista1.setAdapter(arrayAdapter);
+//            //To vazw gia to onresume
+//            //wste to edit text na min exei to focus kai emfanizetai to pliktrologio!
+//            lista1.requestFocus();
 
             ////Filtro///
-
-            // TextFilter
-            SearchView searchView = (SearchView) findViewById(R.id.search_view);
-
-//            EditText editTxt = (EditText) searchView.findViewById(filterText);
+//
+//            // TextFilter
+//            SearchView searchView = (SearchView) findViewById(R.id.search_view);
+//
+////            EditText editTxt = (EditText) searchView.findViewById(filterText);
+////            //Gia na arxikopoiite to koumpi se kathe onresume
+////            editTxt.setText("");
+//
 //            //Gia na arxikopoiite to koumpi se kathe onresume
-//            editTxt.setText("");
-
-            //Gia na arxikopoiite to koumpi se kathe onresume
-            searchView.setQuery("", false);
-
-            //Arxika vazw to visibility GONE
-//            editTxt.setVisibility(View.GONE);
-            searchView.setVisibility(View.GONE);
-
-            //an o xristis exei kanei enable to search kai ena apo ta interfaces einai auta me ti megali lista
-//            if (showsearch && (
-            if (
-                    selectedinterface.equalsIgnoreCase("3") ||
-                            selectedinterface.equalsIgnoreCase("4") ||
-                            selectedinterface.equalsIgnoreCase("5") ||
-                            selectedinterface.equalsIgnoreCase("6")
-            ) {
-                lista1.setTextFilterEnabled(true);
-//                editTxt.setVisibility(View.VISIBLE);
-                searchView.setVisibility(View.VISIBLE);
-            }
-            //diaforetika to krivw
-            else
-                searchView.setVisibility(View.GONE);
-//                editTxt.setVisibility(View.GONE);
-
-            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    //Do your search
-                    return false;
-                }
-
-                @Override
-                public boolean onQueryTextChange(String s) {
-                    if(s.isEmpty()){
-                        // We're deleting char so we need to reset the adapter data
-                        arrayAdapter.resetData();
-                    }
-                    arrayAdapter.getFilter().filter(s);
-                    return true;
-                }
-            });
+//            searchView.setQuery("", false);
+//
+//            //Arxika vazw to visibility GONE
+////            editTxt.setVisibility(View.GONE);
+//            searchView.setVisibility(View.GONE);
+//
+//            //an o xristis exei kanei enable to search kai ena apo ta interfaces einai auta me ti megali lista
+////            if (showsearch && (
+//            if (
+//                    selectedinterface.equalsIgnoreCase("3") ||
+//                            selectedinterface.equalsIgnoreCase("4") ||
+//                            selectedinterface.equalsIgnoreCase("5") ||
+//                            selectedinterface.equalsIgnoreCase("6")
+//            ) {
+//                lista1.setTextFilterEnabled(true);
+////                editTxt.setVisibility(View.VISIBLE);
+//                searchView.setVisibility(View.VISIBLE);
+//            }
+//            //diaforetika to krivw
+//            else
+//                searchView.setVisibility(View.GONE);
+////                editTxt.setVisibility(View.GONE);
+//
+//            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//                @Override
+//                public boolean onQueryTextSubmit(String query) {
+//                    //Do your search
+//                    return false;
+//                }
+//
+//                @Override
+//                public boolean onQueryTextChange(String s) {
+//                    if(s.isEmpty()){
+//                        // We're deleting char so we need to reset the adapter data
+//                        arrayAdapter.resetData();
+//                    }
+//                    arrayAdapter.getFilter().filter(s);
+//                    return true;
+//                }
+//            });
 
 //            editTxt.addTextChangedListener(new TextWatcher() {
 //
