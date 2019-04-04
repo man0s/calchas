@@ -1,5 +1,7 @@
 package ceid.katefidis.calchas;
 
+import android.app.SearchManager;
+import android.app.SearchableInfo;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
@@ -658,64 +660,63 @@ public class MainActivity extends AppCompatActivity {
 //
 //        }
 
-//            //ftiaxnw enan neo arrayAdapter
-//            arrayAdapter = new MobileArrayAdapter(this, finalprotaseis);
-//
-//            lista1.setAdapter(arrayAdapter);
-//            //To vazw gia to onresume
-//            //wste to edit text na min exei to focus kai emfanizetai to pliktrologio!
-//            lista1.requestFocus();
+            //ftiaxnw enan neo arrayAdapter
+            arrayAdapter = new MobileArrayAdapter(this, finalprotaseis);
 
-            ////Filtro///
-//
-//            // TextFilter
-//            SearchView searchView = (SearchView) findViewById(R.id.search_view);
-//
-////            EditText editTxt = (EditText) searchView.findViewById(filterText);
-////            //Gia na arxikopoiite to koumpi se kathe onresume
-////            editTxt.setText("");
-//
+            lista1.setAdapter(arrayAdapter);
+            //To vazw gia to onresume
+            //wste to edit text na min exei to focus kai emfanizetai to pliktrologio!
+            lista1.requestFocus();
+
+            //Filtro///
+
+            // TextFilter
+
+//            EditText editTxt = (EditText) searchView.findViewById(filterText);
 //            //Gia na arxikopoiite to koumpi se kathe onresume
-//            searchView.setQuery("", false);
-//
-//            //Arxika vazw to visibility GONE
-////            editTxt.setVisibility(View.GONE);
-//            searchView.setVisibility(View.GONE);
-//
-//            //an o xristis exei kanei enable to search kai ena apo ta interfaces einai auta me ti megali lista
-////            if (showsearch && (
-//            if (
-//                    selectedinterface.equalsIgnoreCase("3") ||
-//                            selectedinterface.equalsIgnoreCase("4") ||
-//                            selectedinterface.equalsIgnoreCase("5") ||
-//                            selectedinterface.equalsIgnoreCase("6")
-//            ) {
-//                lista1.setTextFilterEnabled(true);
-////                editTxt.setVisibility(View.VISIBLE);
-//                searchView.setVisibility(View.VISIBLE);
-//            }
-//            //diaforetika to krivw
-//            else
-//                searchView.setVisibility(View.GONE);
-////                editTxt.setVisibility(View.GONE);
-//
-//            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//                @Override
-//                public boolean onQueryTextSubmit(String query) {
-//                    //Do your search
-//                    return false;
-//                }
-//
-//                @Override
-//                public boolean onQueryTextChange(String s) {
-//                    if(s.isEmpty()){
-//                        // We're deleting char so we need to reset the adapter data
-//                        arrayAdapter.resetData();
-//                    }
-//                    arrayAdapter.getFilter().filter(s);
-//                    return true;
-//                }
-//            });
+//            editTxt.setText("");
+
+            //Gia na arxikopoiite to koumpi se kathe onresume
+            searchView.setQuery("", false);
+
+            //Arxika vazw to visibility GONE
+//            editTxt.setVisibility(View.GONE);
+            searchView.setVisibility(View.GONE);
+
+            //an o xristis exei kanei enable to search kai ena apo ta interfaces einai auta me ti megali lista
+//            if (showsearch && (
+            if (
+                    selectedinterface.equalsIgnoreCase("3") ||
+                            selectedinterface.equalsIgnoreCase("4") ||
+                            selectedinterface.equalsIgnoreCase("5") ||
+                            selectedinterface.equalsIgnoreCase("6")
+            ) {
+                lista1.setTextFilterEnabled(true);
+//                editTxt.setVisibility(View.VISIBLE);
+                searchView.setVisibility(View.VISIBLE);
+            }
+            //diaforetika to krivw
+            else
+                searchView.setVisibility(View.GONE);
+//                editTxt.setVisibility(View.GONE);
+
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    //Do your search
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String s) {
+                    if(s.isEmpty()){
+                        // We're deleting char so we need to reset the adapter data
+                        arrayAdapter.resetData();
+                    }
+                    arrayAdapter.getFilter().filter(s);
+                    return true;
+                }
+            });
 
 //            editTxt.addTextChangedListener(new TextWatcher() {
 //
