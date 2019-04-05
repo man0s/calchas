@@ -290,7 +290,7 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.search, menu);
-        final MenuItem searchItem = menu.findItem(R.id.menu_settings);
+        MenuItem searchItem = menu.findItem(R.id.menu_settings);
         SearchView searchView = (SearchView) searchItem.getActionView();
         //these flags together with the search view layout expand the search view in the landscape mode
         searchView.setQueryHint(getString(R.string.title_search_contacts));

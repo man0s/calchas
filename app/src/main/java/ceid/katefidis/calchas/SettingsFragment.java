@@ -3,6 +3,8 @@ package ceid.katefidis.calchas;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
+import android.view.Menu;
+import android.view.MenuItem;
 
 public class SettingsFragment extends PreferenceFragment {
 
@@ -12,9 +14,17 @@ public class SettingsFragment extends PreferenceFragment {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+            setHasOptionsMenu(true);
 
 
             // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.preference);
         }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+            //hide the search menu item on this fragment
+            MenuItem searchItem = menu.findItem(R.id.menu_settings);
+            searchItem.setVisible(false);
+    }
 }
