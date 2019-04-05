@@ -170,14 +170,14 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_callLog:
                     fm.beginTransaction()
                             .replace(R.id.main_container, new HomeFragment(), "home")
-                            .addToBackStack(null)
+                            .disallowAddToBackStack()
                             .commit();
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("content://call_log/calls")));
                     return false;
                 case R.id.navigation_settings:
                     fm.beginTransaction()
                             .replace(R.id.main_container, new SettingsFragment(), "settings")
-                            .addToBackStack(null)
+                            .disallowAddToBackStack()
                             .commit();
                     return true;
             }

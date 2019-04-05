@@ -6,5 +6,6 @@
         <attr name="colorTextLight" format="color" />
         <attr name="btmnavButtonChecked" format="color" />
         <attr name="btmnavButton" format="color" />
+        <attr name="btmnavBackground" format="color" />
     </declare-styleable>
 </resources>
