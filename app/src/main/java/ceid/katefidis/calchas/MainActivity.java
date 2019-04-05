@@ -161,17 +161,9 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_contacts:
-                    fm.beginTransaction()
-                            .replace(R.id.main_container, new HomeFragment(), "home")
-                            .addToBackStack(null)
-                            .commit();
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("content://contacts/people")));
                     return false;
                 case R.id.navigation_callLog:
-                    fm.beginTransaction()
-                            .replace(R.id.main_container, new HomeFragment(), "home")
-                            .disallowAddToBackStack()
-                            .commit();
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("content://call_log/calls")));
                     return false;
                 case R.id.navigation_settings:
@@ -719,8 +711,8 @@ public class MainActivity extends AppCompatActivity {
                 lista1.setTextFilterEnabled(true);
 //                editTxt.setVisibility(View.VISIBLE);
             }
-            //diaforetika to krivw
-            else
+//            //diaforetika to krivw
+//            else
 //                editTxt.setVisibility(View.GONE);
 
 //            editTxt.addTextChangedListener(new TextWatcher() {

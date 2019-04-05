@@ -9,8 +9,8 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorBackground">#F5F5F5</item>
-        <item name="colorText">#494949</item>
-        <item name="colorTextLight">#939393</item>
+        <item name="colorText">#212121</item>
+        <item name="colorTextLight">#848484</item>
         <item name="btmnavButtonChecked">@color/colorPrimary</item>
         <item name="btmnavButton">#767676</item>
         <item name="btmnavBackground">#ffffff</item>
