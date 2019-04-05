@@ -16,7 +16,7 @@
        		android:defaultValue="7" />
         
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="showphoto"
             android:summary="Show users photos on badges"
             android:title="Show photos" >

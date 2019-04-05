@@ -23,7 +23,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="?attr/colorText"
         android:gravity="center_vertical"
-        android:background="#000"
+        android:background="?attr/colorBackground"
         android:padding="5dp"/>
 
 </RelativeLayout>
