@@ -30,6 +30,8 @@ import android.telephony.PhoneNumberUtils;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
+import android.transition.Fade;
+import android.transition.Slide;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -211,6 +213,7 @@ public class MainActivity extends AppCompatActivity {
             Permissions.Request_PERMISSIONS(MainActivity.this,1);
         }
         setContentView(R.layout.activity_main);
+        setupWindowAnimations();
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         //set home tab as default navigation item
@@ -1129,6 +1132,16 @@ public class MainActivity extends AppCompatActivity {
 //            Toast.makeText(this, "Unable to retrieve network data, please try later!", Toast.LENGTH_SHORT);
 //
 //    }
+
+    public void setupWindowAnimations() {
+        Fade fade = new Fade();
+        fade.setDuration(1000);
+        getWindow().setEnterTransition(fade);
+
+        Slide slide = new Slide();
+        slide.setDuration(1000);
+        getWindow().setReturnTransition(slide);
+    }
 
 }
 

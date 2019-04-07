@@ -1,5 +1,6 @@
 package ceid.katefidis.calchas;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -27,7 +28,9 @@ public class SettingsFragment extends PreferenceFragment {
                 darkmodeSwitch.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                     @Override
                     public boolean onPreferenceChange(Preference arg0, Object isDarkModeOnObject) {
-                        getActivity().recreate();
+                        getActivity().finish();
+                        Intent intent = new Intent(getActivity(), MainActivity.class);
+                        startActivity(intent);
                         return true;
                     }
                 });
