@@ -1,6 +1,7 @@
 package ceid.katefidis.calchas;
 
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
 import android.view.Menu;
@@ -19,6 +20,18 @@ public class SettingsFragment extends PreferenceFragment {
 
             // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.preference);
+
+            SwitchPreference darkmodeSwitch = (SwitchPreference) findPreference("DarkMode");
+
+            if (darkmodeSwitch != null) {
+                darkmodeSwitch.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                    @Override
+                    public boolean onPreferenceChange(Preference arg0, Object isDarkModeOnObject) {
+                        getActivity().recreate();
+                        return true;
+                    }
+                });
+            }
         }
 
     @Override
@@ -27,4 +40,5 @@ public class SettingsFragment extends PreferenceFragment {
             MenuItem searchItem = menu.findItem(R.id.menu_settings);
             searchItem.setVisible(false);
     }
+
 }
