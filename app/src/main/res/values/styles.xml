@@ -15,6 +15,7 @@
         <item name="btmnavButton">#767676</item>
         <item name="btmnavBackground">#ffffff</item>
 
+        <item name="android:windowBackground">@color/colorBackLight</item>
         <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
     </style>
 
@@ -32,6 +33,7 @@
         <item name="btmnavButton">#a8a8a8</item>
         <item name="btmnavBackground">#212121</item>
 
+        <item name="android:windowBackground">@color/colorBackDark</item>
         <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
     </style>
 

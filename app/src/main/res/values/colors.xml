@@ -3,6 +3,8 @@
     <color name="colorPrimary">#212121</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#212121</color>
+    <color name="colorBackLight">#F5F5F5</color>
+    <color name="colorBackDark">#404040</color>
     <!--<color name="colorBackground">#F5F5F5</color>-->
     <!--<color name="colorText">#494949</color>-->
     <!--<color name="colorTextLight">#939393</color>-->
