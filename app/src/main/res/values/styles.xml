@@ -5,8 +5,8 @@
     <!-- Day / Light  Mode theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">#4a4a4a</item>
+        <item name="colorPrimaryDark">#333333</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorBackground">#F5F5F5</item>
         <item name="colorText">#212121</item>

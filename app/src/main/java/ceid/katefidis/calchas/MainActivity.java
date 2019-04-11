@@ -1133,7 +1133,7 @@ public class MainActivity extends AppCompatActivity {
 //
 //    }
 
-    public void setupWindowAnimations() {
+    private void setupWindowAnimations() {
         Fade fade = new Fade();
         fade.setDuration(1000);
         getWindow().setEnterTransition(fade);
