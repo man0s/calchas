@@ -939,6 +939,16 @@ public class MainActivity extends AppCompatActivity {
             {
                 cachedname = phNumber;
                 epafiboolean = false;
+
+                //Country Code Bug Temp Fix
+                if (phNumber.charAt(0) != '+')
+                {
+                    phNumber = "+" + GetCountryZipCode() + phNumber;
+                    if(getContactName(phNumber) != ""){
+                        cachedname = getContactName(phNumber);
+                        epafiboolean = true;
+                    }
+                }
             }
 
             //allos ena elegxos gia ta noumera me apokripsi
@@ -975,8 +985,13 @@ public class MainActivity extends AppCompatActivity {
         //dimourgo ena HashSet wste na vrw tis monadikes eggrafes sto to call log pou dinw ws orisma
         HashSet<String> subcallunique = new HashSet<String>();
 
-        for (calllogrecord callrecord: calllog)
+        for (calllogrecord callrecord: calllog) {
             subcallunique.add(callrecord.CachedName);
+        }
+
+        for (String s : subcallunique) {
+            Log.i("UNIQUE", "-->" + s);
+        }
 
         return subcallunique;
 
@@ -1132,6 +1147,24 @@ public class MainActivity extends AppCompatActivity {
 //            Toast.makeText(this, "Unable to retrieve network data, please try later!", Toast.LENGTH_SHORT);
 //
 //    }
+
+    public String GetCountryZipCode(){
+        String CountryID="";
+        String CountryZipCode="";
+
+        TelephonyManager manager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+        //getNetworkCountryIso
+        CountryID= manager.getSimCountryIso().toUpperCase();
+        String[] rl=this.getResources().getStringArray(R.array.CountryCodes);
+        for(int i=0;i<rl.length;i++){
+            String[] g=rl[i].split(",");
+            if(g[1].trim().equals(CountryID.trim())){
+                CountryZipCode=g[0];
+                break;
+            }
+        }
+        return CountryZipCode;
+    }
 
     private void setupWindowAnimations() {
         Fade fade = new Fade();
