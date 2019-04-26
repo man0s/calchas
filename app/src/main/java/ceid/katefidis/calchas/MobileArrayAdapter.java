@@ -41,6 +41,10 @@ public class MobileArrayAdapter extends ArrayAdapter<Protasi> implements Filtera
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.list_protaseis, parent, false);
 
+        //set seperator view not clickable
+        rowView.setClickable(false);
+        rowView.setEnabled(false);
+
         //Pairnw to antikeimeno pou fainetai sto position
         Protasi prot = protaseis.get(position);
 

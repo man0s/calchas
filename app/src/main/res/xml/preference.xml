@@ -6,6 +6,16 @@
             android:defaultValue="false"
             android:key="DarkMode"
             android:title="Dark Mode" />
+
+
+        <ListPreference
+            android:key="inteface"
+            android:entries="@array/allinterfaces"
+            android:summary="Choose Calchas inteface"
+            android:entryValues="@array/allinterfacesValues"
+            android:title="Interfaces"
+            android:defaultValue="3"
+            />
        
         <ListPreference
             android:key="protaseis"
@@ -35,15 +45,6 @@
             <!--android:summary="Show search contacts"-->
             <!--android:title="Show search" >-->
         <!--</CheckBoxPreference>-->
-        
-        <ListPreference
-            android:key="inteface"
-            android:entries="@array/allinterfaces"
-            android:summary="Choose Calchas inteface" 
-            android:entryValues="@array/allinterfacesValues"
-            android:title="Interfaces" 
-       		android:defaultValue="3"
-       	/>
         
     </PreferenceCategory>
     
