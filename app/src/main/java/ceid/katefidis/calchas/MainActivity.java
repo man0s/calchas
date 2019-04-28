@@ -597,51 +597,51 @@ public class MainActivity extends AppCompatActivity {
                 finalprotaseis.addAll(mycontactlist);
             }
 
-            //add network names to each protasi and if a protasi has no network, add it to the "resolve" list
-            StoreStatsSQLlite sqlHelper = new StoreStatsSQLlite(this);
-            ArrayList<String> numbersToResolve = new ArrayList<String>();
-            ArrayList<Protasi> protaseisToResolve = new ArrayList<Protasi>();
-            //check for network names
-
-            TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
-            String country = tm.getNetworkCountryIso();
-            if (country.length() < 2)
-                country = tm.getSimCountryIso(); //in case you can't get it from the 3G current network, revert to sim info
-
-            if (country == null || country == "") {
-                country = "GB";
-            }
-
-            Locale l = new Locale("en", country);
-            int countrycode = countryCodes.get(country.toUpperCase());
-            for (int x = 0; x < finalprotaseis.size(); x++) {
-                Protasi protasiTemp = finalprotaseis.get(x);
-                String nn = sqlHelper.getNetworkName(protasiTemp.number);
-
-                if (nn == null) {
-                    if (protasiTemp.number.length() < 12) //number is not in correct intl format
-                    {
-                        //check android version
-                        //if(android.os.Build.VERSION.SDK_INT<21)
-                        //{
-                        protasiTemp.number = "+" + countrycode + protasiTemp.number;
-                        Editable e = new SpannableStringBuilder(protasiTemp.number);
-                        PhoneNumberUtils.formatNumber(e, PhoneNumberUtils.getFormatTypeForLocale(l));
-                        protasiTemp.number = e.toString();
-                        Log.i("Number formatting", "converted to " + protasiTemp.number);
-                        //}
-                        //else
-                        //{
-                        //	PhoneNumberUtils.formatNumber(protasi.number, country);
-                        //}
-                    }
-                    //else
-                    numbersToResolve.add(protasiTemp.number);
-                    protaseisToResolve.add(protasiTemp);
-
-                } else
-                    finalprotaseis.get(x).network = nn;
-            }
+//            //add network names to each protasi and if a protasi has no network, add it to the "resolve" list
+//            StoreStatsSQLlite sqlHelper = new StoreStatsSQLlite(this);
+//            ArrayList<String> numbersToResolve = new ArrayList<String>();
+//            ArrayList<Protasi> protaseisToResolve = new ArrayList<Protasi>();
+//            //check for network names
+//
+//            TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+//            String country = tm.getNetworkCountryIso();
+//            if (country.length() < 2)
+//                country = tm.getSimCountryIso(); //in case you can't get it from the 3G current network, revert to sim info
+//
+//            if (country == null || country == "") {
+//                country = "GB";
+//            }
+//
+//            Locale l = new Locale("en", country);
+//            int countrycode = countryCodes.get(country.toUpperCase());
+//            for (int x = 0; x < finalprotaseis.size(); x++) {
+//                Protasi protasiTemp = finalprotaseis.get(x);
+//                String nn = sqlHelper.getNetworkName(protasiTemp.number);
+//
+//                if (nn == null) {
+//                    if (protasiTemp.number.length() < 12) //number is not in correct intl format
+//                    {
+//                        //check android version
+//                        //if(android.os.Build.VERSION.SDK_INT<21)
+//                        //{
+//                        protasiTemp.number = "+" + countrycode + protasiTemp.number;
+//                        Editable e = new SpannableStringBuilder(protasiTemp.number);
+//                        PhoneNumberUtils.formatNumber(e, PhoneNumberUtils.getFormatTypeForLocale(l));
+//                        protasiTemp.number = e.toString();
+//                        Log.i("Number formatting", "converted to " + protasiTemp.number);
+//                        //}
+//                        //else
+//                        //{
+//                        //	PhoneNumberUtils.formatNumber(protasi.number, country);
+//                        //}
+//                    }
+//                    //else
+//                    numbersToResolve.add(protasiTemp.number);
+//                    protaseisToResolve.add(protasiTemp);
+//
+//                } else
+//                    finalprotaseis.get(x).network = nn;
+//            }
 
             //Update carrier data
             /*
@@ -937,18 +937,18 @@ public class MainActivity extends AppCompatActivity {
             boolean epafiboolean = true;
             if (cachedname == null)
             {
-                cachedname = phNumber;
                 epafiboolean = false;
 
                 //Country Code Bug Temp Fix
                 if (phNumber.charAt(0) != '+')
                 {
                     phNumber = "+" + GetCountryZipCode() + phNumber;
+                    cachedname = phNumber;
                     if(getContactName(phNumber) != ""){
                         cachedname = getContactName(phNumber);
                         epafiboolean = true;
                     }
-                }
+                } else  cachedname = phNumber;
             }
 
             //allos ena elegxos gia ta noumera me apokripsi
