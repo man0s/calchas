@@ -506,6 +506,19 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
 
+            Uri uriSms = Uri.parse("content://sms/inbox");
+            Cursor cursor = getContentResolver().query(uriSms, new String[]{"_id", "address", "date", "body", "person"},null,null,null);
+
+            cursor.moveToFirst();
+            while  (cursor.moveToNext())
+            {
+                //String address = cursor.getString(1);
+                String address = cursor.getString(1);
+                //String body = cursor.getString(3);
+
+                System.out.println("Mobile number: "+address);
+                //System.out.println("Text: "+body);
+            }
 
             ///////////////// ----------- INTERFACES ----------- /////////////////
             //Kanw sort tis final protaseis alphavitika
@@ -938,17 +951,17 @@ public class MainActivity extends AppCompatActivity {
             if (cachedname == null)
             {
                 epafiboolean = false;
+                cachedname = phNumber;
 
                 //Country Code Bug Temp Fix
                 if (phNumber.charAt(0) != '+')
                 {
                     phNumber = "+" + GetCountryZipCode() + phNumber;
-                    cachedname = phNumber;
                     if(getContactName(phNumber) != ""){
                         cachedname = getContactName(phNumber);
                         epafiboolean = true;
-                    }
-                } else  cachedname = phNumber;
+                    } else cachedname = phNumber;
+                }
             }
 
             //allos ena elegxos gia ta noumera me apokripsi
