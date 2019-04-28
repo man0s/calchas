@@ -990,7 +990,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         for (String s : subcallunique) {
-            Log.i("UNIQUE", "-->" + s);
+            Log.i("UNIQUE SUGGESTIONS", "-->" + s);
         }
 
         return subcallunique;
