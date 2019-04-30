@@ -507,7 +507,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             Uri uriSms = Uri.parse("content://sms/inbox");
-            Cursor cursor = getContentResolver().query(uriSms, new String[]{"_id", "address", "date", "body", "person"},null,null,null);
+            Cursor cursor = getContentResolver().query(uriSms, new String[]{"_id", "address", "date", "body", "person", "creator"},null,null,null);
 
             cursor.moveToFirst();
             while  (cursor.moveToNext())
@@ -516,7 +516,13 @@ public class MainActivity extends AppCompatActivity {
                 String address = cursor.getString(1);
                 //String body = cursor.getString(3);
 
-                System.out.println("Mobile number: "+address);
+//                if(address.length() == 10 || address.length() == 13) {
+//                    Log.d("Mobile", "--> "+address);
+//                }
+
+                if(address.length() > 9 && address.matches("[+]?[0-9]+") ){
+                    Log.d("Mobile", "--> "+address);
+                }
                 //System.out.println("Text: "+body);
             }
 
