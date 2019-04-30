@@ -5,20 +5,11 @@
     <!-- Day / Light  Mode theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <!--<item name="primaryColor">#f5f5f5</item>-->
-        <!--<item name="primaryLightColor">#ffffff</item>-->
-        <!--<item name="primaryDarkColor">#c2c2c2</item>-->
-        <!--<item name="primaryTextColor">#000000</item>-->
 
         <item name="colorPrimary">#767676</item>
         <item name="colorPrimaryDark">#c2c2c2</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorBackground">#F5F5F5</item>
-
-        <!--<item name="colorPrimary">#4a4a4a</item>-->
-        <!--<item name="colorPrimaryDark">#333333</item>-->
-        <!--<item name="colorAccent">@color/colorAccent</item>-->
-        <!--<item name="colorBackground">#F5F5F5</item>-->
         <item name="colorText">#212121</item>
         <item name="colorTextLight">#848484</item>
         <item name="btmnavButtonChecked">@color/colorPrimary</item>
