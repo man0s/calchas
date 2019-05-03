@@ -506,26 +506,6 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
 
-            Uri uriSms = Uri.parse("content://sms/inbox");
-            Cursor cursor = getContentResolver().query(uriSms, new String[]{"_id", "address", "date", "body", "person", "creator"},null,null,null);
-
-            cursor.moveToFirst();
-            while  (cursor.moveToNext())
-            {
-                //String address = cursor.getString(1);
-                String address = cursor.getString(1);
-                //String body = cursor.getString(3);
-
-//                if(address.length() == 10 || address.length() == 13) {
-//                    Log.d("Mobile", "--> "+address);
-//                }
-
-                if(address.length() > 9 && address.matches("[+]?[0-9]+") ){
-                    Log.d("Mobile", "--> "+address);
-                }
-                //System.out.println("Text: "+body);
-            }
-
             ///////////////// ----------- INTERFACES ----------- /////////////////
             //Kanw sort tis final protaseis alphavitika
 
@@ -774,7 +754,7 @@ public class MainActivity extends AppCompatActivity {
                     //se periptwsi pou ginei click panw se seperator
                     if (resultToCall.score == -3.0) {
                         //min Kaneis tipota
-                        return;
+
                     } else {
 
                         int value = 0; //an to epilegmeno einai stis protaseis
@@ -959,14 +939,20 @@ public class MainActivity extends AppCompatActivity {
                 epafiboolean = false;
                 cachedname = phNumber;
 
-                //Country Code Bug Temp Fix
-                if (phNumber.charAt(0) != '+')
+                if(!getContactName(phNumber).equals(""))
                 {
+                    cachedname = getContactName(phNumber);
+                    epafiboolean = true;
+                } else if (phNumber.charAt(0) != '+')
+                {
+                    //Country Code Bug Temp Fix
                     phNumber = "+" + GetCountryZipCode() + phNumber;
-                    if(getContactName(phNumber) != ""){
+                    if(getContactName(phNumber).equals("")){
+                        cachedname = phNumber;
+                    } else {
                         cachedname = getContactName(phNumber);
                         epafiboolean = true;
-                    } else cachedname = phNumber;
+                    }
                 }
             }
 
@@ -994,6 +980,32 @@ public class MainActivity extends AppCompatActivity {
         }
 
         cur.close();
+
+        //todo sms selection
+
+
+//            Uri uriSms = Uri.parse("content://sms/inbox");
+//            Cursor cursor = getContentResolver().query(uriSms, new String[]{"_id", "address", "date", "body", "person", "creator"},null,null,null);
+//
+//            cursor.moveToFirst();
+//            while  (cursor.moveToNext())
+//            {
+//                //String address = cursor.getString(1);
+//                String address = cursor.getString(1);
+//                //String body = cursor.getString(3);
+//
+////                if(address.length() == 10 || address.length() == 13) {
+////                    Log.d("Mobile", "--> "+address);
+////                }
+//
+//                if(address.length() > 9 && address.matches("[+]?[0-9]+") ){
+//                    Log.d("Mobile", "--> "+address);
+//                }
+//                //System.out.println("Text: "+body);
+//            }
+//            }
+
+
 
         return subcalllog;
 
