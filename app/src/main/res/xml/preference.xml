@@ -13,7 +13,7 @@
             android:entries="@array/allinterfaces"
             android:summary="Choose the app inteface"
             android:entryValues="@array/allinterfacesValues"
-            android:title="Interfaces"
+            android:title="Interface"
             android:defaultValue="3"
             />
        
