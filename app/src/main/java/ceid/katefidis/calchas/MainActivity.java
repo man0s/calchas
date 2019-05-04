@@ -385,8 +385,7 @@ public class MainActivity extends AppCompatActivity {
 //	*/
 
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
 
 //        //start new tracker session
@@ -394,7 +393,7 @@ public class MainActivity extends AppCompatActivity {
 //                .setNewSession()
 //                .build());
 
-        if(Permissions.Check_PERMISSIONS(MainActivity.this)) {
+        if (Permissions.Check_PERMISSIONS(MainActivity.this)) {
             //init database
             StoreStatsSQLlite db = new StoreStatsSQLlite(this);
 
@@ -407,6 +406,7 @@ public class MainActivity extends AppCompatActivity {
             String strNumProtaseis = preferences.getString("protaseis", "7");
             String selectedinterface = preferences.getString("inteface", "3");
             boolean showphoto = preferences.getBoolean("showphoto", true);
+            boolean smsSeek = preferences.getBoolean("smsseek", true);
 //          boolean showsearch = preferences.getBoolean("showsearch", true);
 
             //DEVELOPER
@@ -438,7 +438,7 @@ public class MainActivity extends AppCompatActivity {
             final ArrayList<Protasi> protaseis = new ArrayList<Protasi>();
 
             //Pairnw to call log gia oses meres thelw kai to vaze se ena array list me calllog records
-            subcalllog = getCallLog(freqWindow);
+            subcalllog = getCallLog(freqWindow, smsSeek);
 
             //Pairnw kai tis monadikes eggrafes mesa sto calllog
             subcallunique = getUniqueCallRecords(subcalllog);
@@ -505,6 +505,7 @@ public class MainActivity extends AppCompatActivity {
                 if (i > numProtaseis - 1 && numProtaseis != 9)
                     break;
             }
+
 
             ///////////////// ----------- INTERFACES ----------- /////////////////
             //Kanw sort tis final protaseis alphavitika
@@ -886,7 +887,7 @@ public class MainActivity extends AppCompatActivity {
         return score;
     }
 
-    private ArrayList<calllogrecord> getCallLog (long days)
+    private ArrayList<calllogrecord> getCallLog (long days, boolean smsSeek)
     {
 
         //Ena ArrayList gia na valw ta tilefwna tou call log pou anikoun sto freq window
@@ -913,7 +914,6 @@ public class MainActivity extends AppCompatActivity {
             if (cur == null)
                 cur = cr.query(CallLog.Calls.CONTENT_URI, selectCols, "DATE >" + freq_window, null, "DATE DESC");
         } catch (SQLiteException e) {
-            if (cur == null)
                 cur = cr.query(CallLog.Calls.CONTENT_URI, selectCols, "DATE >" + freq_window, null, "DATE DESC");
         }
 
@@ -981,29 +981,56 @@ public class MainActivity extends AppCompatActivity {
 
         cur.close();
 
-        //todo sms selection
+        //SMS Log Seeker
+        if(smsSeek) {
+            Uri uriSms = Uri.parse("content://sms/inbox");
+            String[] selectSMSCols = new String[]{"_id", "address", "date"};
+            Cursor SMScursor = null;
 
 
-//            Uri uriSms = Uri.parse("content://sms/inbox");
-//            Cursor cursor = getContentResolver().query(uriSms, new String[]{"_id", "address", "date", "body", "person", "creator"},null,null,null);
-//
-//            cursor.moveToFirst();
-//            while  (cursor.moveToNext())
-//            {
-//                //String address = cursor.getString(1);
-//                String address = cursor.getString(1);
-//                //String body = cursor.getString(3);
-//
-////                if(address.length() == 10 || address.length() == 13) {
-////                    Log.d("Mobile", "--> "+address);
-////                }
-//
-//                if(address.length() > 9 && address.matches("[+]?[0-9]+") ){
-//                    Log.d("Mobile", "--> "+address);
-//                }
-//                //System.out.println("Text: "+body);
-//            }
-//            }
+            try {
+                SMScursor = cr.query(uriSms, selectSMSCols, "logtype = 100 AND DATE >" + freq_window, null, "DATE DESC");
+                if (SMScursor == null)
+                    SMScursor = cr.query(uriSms, selectSMSCols, "DATE >" + freq_window, null, "DATE DESC");
+            } catch (SQLiteException e) {
+                SMScursor = cr.query(uriSms, selectSMSCols, "DATE >" + freq_window, null, "DATE DESC");
+            }
+
+            while (SMScursor.moveToNext()) {
+                String SMSphNumber = SMScursor.getString(1);
+                long SMScallDate = SMScursor.getLong(2);
+
+                String cachedname = null;
+                boolean epafiboolean = true;
+
+//                if((SMSphNumber.equals("12572")) || (SMSphNumber.length() > 9 && SMSphNumber.matches("[+]?[0-9]+")) ){
+                if (SMSphNumber.length() > 9 && SMSphNumber.matches("[+]?[0-9]+")) {
+                    Log.d("Mobile", "--> " + SMSphNumber);
+
+                    epafiboolean = false;
+                    cachedname = SMSphNumber;
+
+                    if (!getContactName(SMSphNumber).equals("")) {
+                        cachedname = getContactName(SMSphNumber);
+                        epafiboolean = true;
+                    } else if (SMSphNumber.charAt(0) != '+') {
+                        //Country Code Bug Temp Fix
+                        SMSphNumber = "+" + GetCountryZipCode() + SMSphNumber;
+                        if (getContactName(SMSphNumber).equals("")) {
+                            cachedname = SMSphNumber;
+                        } else {
+                            cachedname = getContactName(SMSphNumber);
+                            epafiboolean = true;
+                        }
+                    }
+
+                    subcalllog.add(new calllogrecord(SMSphNumber, SMScallDate, cachedname, epafiboolean));
+
+                }
+            }
+
+            SMScursor.close();
+        }
 
 
 
