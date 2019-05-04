@@ -11,7 +11,7 @@
         <ListPreference
             android:key="inteface"
             android:entries="@array/allinterfaces"
-            android:summary="Choose Calchas inteface"
+            android:summary="Choose the app inteface"
             android:entryValues="@array/allinterfacesValues"
             android:title="Interfaces"
             android:defaultValue="3"
@@ -24,19 +24,19 @@
             android:entryValues="@array/numProtaseisValues"
             android:title="Suggestions" 
        		android:defaultValue="7" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="smsseek"
+            android:summary="Enable SMS prediction"
+            android:title="SMS" >
+        </SwitchPreference>
         
         <SwitchPreference
             android:defaultValue="true"
             android:key="showphoto"
             android:summary="Show users photos on badges"
             android:title="Show photos" >
-        </SwitchPreference>
-
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="smsseek"
-            android:summary="Enable SMS log"
-            android:title="SMS Log" >
         </SwitchPreference>
         
         <!--<SwitchPreference-->
