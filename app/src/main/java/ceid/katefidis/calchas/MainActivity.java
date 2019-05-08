@@ -90,7 +90,7 @@ class Protasi
         this.contactID = contactID;
         this.scoref = scoref;
         this.scorer = scorer;
-        this.suggested=false;
+        this.suggested = false;
     }
 
 
@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
     //	Tracker tracker;
     Long start_time;
     Long end_time;
-    HashMap<String, Integer> countryCodes;
+    //HashMap<String, Integer> countryCodes;
 
     final Fragment homeFragment = new HomeFragment();
     final FragmentManager fm = getFragmentManager();
@@ -239,13 +239,13 @@ public class MainActivity extends AppCompatActivity {
 //		analytics.getLogger().setLogLevel(0);
 //		tracker.set("&uid", Secure.getString(this.getContentResolver(),
 //                Secure.ANDROID_ID));
-        String[] rl=this.getResources().getStringArray(R.array.CountryCodes);
-        countryCodes = new HashMap<String, Integer>();
-        for(int i=0;i<rl.length;i++)
-        {
-            String[] g=rl[i].split(",");
-            countryCodes.put(g[1], Integer.parseInt(g[0]));
-        }
+//        String[] rl=this.getResources().getStringArray(R.array.CountryCodes);
+//        countryCodes = new HashMap<String, Integer>();
+//        for(int i=0;i<rl.length;i++)
+//        {
+//            String[] g=rl[i].split(",");
+//            countryCodes.put(g[1], Integer.parseInt(g[0]));
+//        }
 
         boolean firstRun = settings.getBoolean("firstRun", true);
         if ( firstRun )
