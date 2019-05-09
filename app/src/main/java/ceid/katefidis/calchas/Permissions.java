@@ -12,7 +12,7 @@ public class Permissions {
     public static void Request_PERMISSIONS(Activity act, int code)
     {
         ActivityCompat.requestPermissions(act, new
-                String[]{Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE, Manifest.permission.INTERNET, Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.PROCESS_OUTGOING_CALLS, Manifest.permission.READ_SMS},code);
+                String[]{Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE, Manifest.permission.INTERNET, Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.PROCESS_OUTGOING_CALLS, Manifest.permission.READ_SMS, Manifest.permission.BIND_NOTIFICATION_LISTENER_SERVICE},code);
     }
 
     //Check Permissions
@@ -24,7 +24,8 @@ public class Permissions {
                 && ContextCompat.checkSelfPermission(act, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED
                 && ContextCompat.checkSelfPermission(act, Manifest.permission.ACCESS_NETWORK_STATE) == PackageManager.PERMISSION_GRANTED
                 && ContextCompat.checkSelfPermission(act, Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(act, Manifest.permission.PROCESS_OUTGOING_CALLS) == PackageManager.PERMISSION_GRANTED) {
+                && ContextCompat.checkSelfPermission(act, Manifest.permission.PROCESS_OUTGOING_CALLS) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(act, Manifest.permission.BIND_NOTIFICATION_LISTENER_SERVICE) == PackageManager.PERMISSION_GRANTED){
             granted = true;
         }
         return granted;
