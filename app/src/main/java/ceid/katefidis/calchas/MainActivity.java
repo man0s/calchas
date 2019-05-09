@@ -1,11 +1,16 @@
 package ceid.katefidis.calchas;
 
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
@@ -18,6 +23,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.app.Fragment;
@@ -30,6 +36,7 @@ import android.telephony.PhoneNumberUtils;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.transition.Fade;
 import android.transition.Slide;
 import android.util.Log;
@@ -195,6 +202,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private SuggestionsChangeBroadcastReceiver suggestionsChangeBroadcastReceiver;
+    private AlertDialog enableNotificationListenerAlertDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
@@ -214,6 +224,20 @@ public class MainActivity extends AppCompatActivity {
         }
         setContentView(R.layout.activity_main);
         setupWindowAnimations();
+
+
+        // If the user did not turn the notification listener service on we prompt him to do so
+        if(!isNotificationServiceEnabled()){
+            enableNotificationListenerAlertDialog = buildNotificationServiceAlertDialog();
+            enableNotificationListenerAlertDialog.show();
+        }
+
+        // Finally we register a receiver to tell the MainActivity when a notification has been received
+        suggestionsChangeBroadcastReceiver = new SuggestionsChangeBroadcastReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("ceid.katefidis.calchas");
+        registerReceiver(suggestionsChangeBroadcastReceiver,intentFilter);
+
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         //set home tab as default navigation item
@@ -258,6 +282,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(suggestionsChangeBroadcastReceiver);
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode,
@@ -1232,6 +1263,95 @@ public class MainActivity extends AppCompatActivity {
         Slide slide = new Slide();
         slide.setDuration(1000);
         getWindow().setReturnTransition(slide);
+    }
+
+    /**
+     * Change Intercepted Notification Image
+     * Changes the MainActivity image based on which notification was intercepted
+     * @param notificationCode The intercepted notification code
+     */
+    private void changeInterceptedNotificationImage(int notificationCode){
+        switch(notificationCode){
+//            case NotificationListenerExampleService.InterceptedNotificationCode.FACEBOOK_CODE:
+//                interceptedNotificationImageView.setImageResource(R.drawable.facebook_logo);
+//                break;
+//            case NotificationListenerExampleService.InterceptedNotificationCode.INSTAGRAM_CODE:
+//                interceptedNotificationImageView.setImageResource(R.drawable.instagram_logo);
+//                break;
+            case NotificationListener.InterceptedNotificationCode.WHATSAPP_CODE:
+                //interceptedNotificationImageView.setImageResource(R.drawable.whatsapp_logo);
+
+                //do something, its Viber
+                break;
+            case NotificationListener.InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE:
+                //do something, its WhatsApp
+                break;
+        }
+    }
+
+    /**
+     * Is Notification Service Enabled.
+     * Verifies if the notification listener service is enabled.
+     * Got it from: https://github.com/kpbird/NotificationListenerService-Example/blob/master/NLSExample/src/main/java/com/kpbird/nlsexample/NLService.java
+     * @return True if enabled, false otherwise.
+     */
+    private boolean isNotificationServiceEnabled(){
+        String pkgName = getPackageName();
+        final String flat = Settings.Secure.getString(getContentResolver(),
+                "enabled_notification_listeners");
+        if (!TextUtils.isEmpty(flat)) {
+            final String[] names = flat.split(":");
+            for (int i = 0; i < names.length; i++) {
+                final ComponentName cn = ComponentName.unflattenFromString(names[i]);
+                if (cn != null) {
+                    if (TextUtils.equals(pkgName, cn.getPackageName())) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Image Change Broadcast Receiver.
+     * We use this Broadcast Receiver to notify the Main Activity when
+     * a new notification has arrived, so it can properly change the
+     * notification image
+     * */
+    public class SuggestionsChangeBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int receivedNotificationCode = intent.getIntExtra("Notification Code",-1);
+            changeInterceptedNotificationImage(receivedNotificationCode);
+        }
+    }
+
+
+    /**
+     * Build Notification Listener Alert Dialog.
+     * Builds the alert dialog that pops up if the user has not turned
+     * the Notification Listener Service on yet.
+     * @return An alert dialog which leads to the notification enabling screen
+     */
+    private AlertDialog buildNotificationServiceAlertDialog(){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle("Calchas Notification Listener Service");
+        alertDialogBuilder.setMessage("For the the app. to work you need to enable the Notification Listener Service. Enable it now?");
+        alertDialogBuilder.setPositiveButton("Yes",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
+                    }
+                });
+        alertDialogBuilder.setNegativeButton("No",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // If you choose to not enable the notification listener
+                        // the app. will not work as expected
+                    }
+                });
+        return(alertDialogBuilder.create());
     }
 
 }
