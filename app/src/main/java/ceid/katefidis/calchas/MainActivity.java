@@ -1003,7 +1003,6 @@ public class MainActivity extends AppCompatActivity {
             //allos ena elegxos gia ta noumera me apokripsi
             if (!phNumber.isEmpty())
             {
-
                 calllogrecord temprecord = new calllogrecord(phNumber,callDate,cachedname,epafiboolean);
 
                 //Se periptwsi pou i klisi einai me apokripsi to pedio phNumber einai arnitikos arithmos
@@ -1085,12 +1084,10 @@ public class MainActivity extends AppCompatActivity {
             sdb = db.getWritableDatabase();
             String table = "notifications";
             String[] columns = {"id", "timestamp", "contact"};
-            String groupBy = null;
-            String having = null;
             String orderBy = "timestamp DESC";
             String limit = null;
 
-            Cursor SOCIALcursor = sdb.query(table, columns, "timestamp >" + freq_window, null, groupBy, having, orderBy, limit);
+            Cursor SOCIALcursor = sdb.query(table, columns, "timestamp >" + freq_window, null, null, null, orderBy, limit);
 
             while (SOCIALcursor.moveToNext()) {
 
@@ -1098,8 +1095,9 @@ public class MainActivity extends AppCompatActivity {
                 String SOCIALphNumber = getPhoneNumber(cachedname);
                 long SOCIALDate = SOCIALcursor.getLong(1);
                 boolean epafiboolean = true;
-
+                
                 if(!SOCIALphNumber.equals("")) {
+                    Log.i("Social", "MPHKE1--> " + SOCIALphNumber + " | " + SOCIALDate);
                     subcalllog.add(new calllogrecord(SOCIALphNumber, SOCIALDate, cachedname, epafiboolean));
                 } else{
                     SOCIALphNumber = cachedname;
@@ -1123,7 +1121,7 @@ public class MainActivity extends AppCompatActivity {
                                 epafiboolean = true;
                             }
                         }
-
+                        Log.i("Social", "MPHKE2--> " + SOCIALphNumber + " | " + SOCIALDate);
                         subcalllog.add(new calllogrecord(SOCIALphNumber, SOCIALDate, cachedname, epafiboolean));
 
                     }
@@ -1238,7 +1236,8 @@ public class MainActivity extends AppCompatActivity {
         {
             if (c.moveToFirst())
             {
-                ret = c.getString(0);
+                // regex gia na vgazei ta whitespaces apo to phone number
+                ret = c.getString(0).replaceAll("\\s+","");
                 return ret;
             }
         }
@@ -1374,13 +1373,16 @@ public class MainActivity extends AppCompatActivity {
             case NotificationListener.InterceptedNotificationCode.VIBER_CODE:
                 //do something, its Viber
                 Log.i("Viber", postTime + "| " + Contact);
+                //if(Contact.charAt(0) == '+') Contact.replaceAll("\\s+","");
+                if(Contact.charAt(0) == '+') { Contact = Contact.replaceAll("\\s+",""); }
                 db.addNotification(postTime, Contact);
                 finish();
                 startActivity(getIntent());
                 break;
             case NotificationListener.InterceptedNotificationCode.WHATSAPP_CODE:
                 //do something, its WhatsApp
-                Log.i("WhatsApp", postTime + "| " + Contact);
+                //Log.i("WhatsApp", postTime + "| " + Contact);
+                if(Contact.charAt(0) == '+') { Contact = Contact.replaceAll("\\s+",""); }
                 db.addNotification(postTime, Contact);
                 finish();
                 startActivity(getIntent());
