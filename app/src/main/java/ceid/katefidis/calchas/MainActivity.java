@@ -151,6 +151,20 @@ class SortDateProtaseis implements Comparator<Protasi>
     }
 }
 
+//Tritos custom comparator gia to sort me vasi to date
+class SortDateCallLogRecord implements Comparator<calllogrecord>
+{
+
+    @Override
+    public int compare(calllogrecord calllog1, calllogrecord calllog2)
+    {
+        if (calllog1.date >= calllog2.date)
+            return -1;
+        else
+            return 1;
+    }
+}
+
 public class MainActivity extends AppCompatActivity {
     //Dilwsi ton static metavlitwn
     //DEVELOPER
@@ -1091,39 +1105,20 @@ public class MainActivity extends AppCompatActivity {
 
             while (SOCIALcursor.moveToNext()) {
 
-                String cachedname = SOCIALcursor.getString(2);
-                String SOCIALphNumber = getPhoneNumber(cachedname);
+                String SOCIALcachedname = SOCIALcursor.getString(2);
+                String SOCIALphNumber = getPhoneNumber(SOCIALcachedname);
                 long SOCIALDate = SOCIALcursor.getLong(1);
-                boolean epafiboolean = true;
-                
+                boolean SOCIALepafiboolean = true;
+
                 if(!SOCIALphNumber.equals("")) {
                     Log.i("Social", "MPHKE1--> " + SOCIALphNumber + " | " + SOCIALDate);
-                    subcalllog.add(new calllogrecord(SOCIALphNumber, SOCIALDate, cachedname, epafiboolean));
+                    subcalllog.add(new calllogrecord(SOCIALphNumber, SOCIALDate, SOCIALcachedname, SOCIALepafiboolean));
                 } else{
-                    SOCIALphNumber = cachedname;
-                    //                if((SMSphNumber.equals("12572")) || (SMSphNumber.length() > 9 && SMSphNumber.matches("[+]?[0-9]+")) ){
+                    SOCIALphNumber = SOCIALcachedname;
                     if (SOCIALphNumber.length() > 9 && SOCIALphNumber.matches("[+]?[0-9]+")) {
-                        Log.d("Social", "--> " + SOCIALphNumber);
-
-                        epafiboolean = false;
-                        cachedname = SOCIALphNumber;
-
-                        if (!getContactName(SOCIALphNumber).equals("")) {
-                            cachedname = getContactName(SOCIALphNumber);
-                            epafiboolean = true;
-                        } else if (SOCIALphNumber.charAt(0) != '+') {
-                            //Country Code Bug Temp Fix
-                            SOCIALphNumber = "+" + GetCountryZipCode() + SOCIALphNumber;
-                            if (getContactName(SOCIALphNumber).equals("")) {
-                                cachedname = SOCIALphNumber;
-                            } else {
-                                cachedname = getContactName(SOCIALphNumber);
-                                epafiboolean = true;
-                            }
-                        }
+                        //                if((SMSphNumber.equals("12572")) || (SMSphNumber.length() > 9 && SMSphNumber.matches("[+]?[0-9]+")) ){
                         Log.i("Social", "MPHKE2--> " + SOCIALphNumber + " | " + SOCIALDate);
-                        subcalllog.add(new calllogrecord(SOCIALphNumber, SOCIALDate, cachedname, epafiboolean));
-
+                        subcalllog.add(new calllogrecord(SOCIALphNumber, SOCIALDate, SOCIALcachedname, SOCIALepafiboolean));
                     }
                 }
             }
@@ -1131,12 +1126,8 @@ public class MainActivity extends AppCompatActivity {
             SOCIALcursor.close();
         }
 
-
-//        if(notificationsList != null && !notificationsList.isEmpty())
-//        {
-//            // Do something with the empty list here.
-//            Log.i("Social", notificationsList.toString());
-//        } else {   Log.i("Social", "Notification log is empty!");  }
+        //sortarw tom subcallrecord ws pros to date
+        Collections.sort(subcalllog, new SortDateCallLogRecord());
 
         return subcalllog;
 
@@ -1374,18 +1365,24 @@ public class MainActivity extends AppCompatActivity {
                 //do something, its Viber
                 Log.i("Viber", postTime + "| " + Contact);
                 //if(Contact.charAt(0) == '+') Contact.replaceAll("\\s+","");
-                if(Contact.charAt(0) == '+') { Contact = Contact.replaceAll("\\s+",""); }
-                db.addNotification(postTime, Contact);
-                finish();
-                startActivity(getIntent());
+                if(!Contact.equals("Viber"))
+                {
+                    if(Contact.charAt(0) == '+') { Contact = Contact.replaceAll("\\s+",""); }
+                    db.addNotification(postTime, Contact);
+                    finish();
+                    startActivity(getIntent());
+                }
                 break;
             case NotificationListener.InterceptedNotificationCode.WHATSAPP_CODE:
                 //do something, its WhatsApp
-                //Log.i("WhatsApp", postTime + "| " + Contact);
-                if(Contact.charAt(0) == '+') { Contact = Contact.replaceAll("\\s+",""); }
-                db.addNotification(postTime, Contact);
-                finish();
-                startActivity(getIntent());
+                if(!Contact.equals("WhatsApp"))
+                {
+                    if(Contact.charAt(0) == '+') { Contact = Contact.replaceAll("\\s+",""); }
+                    Log.i("WhatsApp", postTime + "| " + Contact);
+                    db.addNotification(postTime, Contact);
+                    finish();
+                    startActivity(getIntent());
+                }
                 break;
             case NotificationListener.InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE:
                 //do something, its other notification
