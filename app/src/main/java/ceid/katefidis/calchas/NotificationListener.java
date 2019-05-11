@@ -1,6 +1,7 @@
 package ceid.katefidis.calchas;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
@@ -15,6 +16,7 @@ public class NotificationListener extends NotificationListenerService {
         public static final String FACEBOOK_MESSENGER_PACK_NAME = "com.facebook.orca";
         public static final String WHATSAPP_PACK_NAME = "com.whatsapp";
         public static final String INSTAGRAM_PACK_NAME = "com.instagram.android";
+        public static final String VIBER_PACK_NAME = "com.viber.voip";
     }
 
     /*
@@ -25,7 +27,8 @@ public class NotificationListener extends NotificationListenerService {
         public static final int FACEBOOK_CODE = 1;
         public static final int WHATSAPP_CODE = 2;
         public static final int INSTAGRAM_CODE = 3;
-        public static final int OTHER_NOTIFICATIONS_CODE = 4; // We ignore all notification with code == 4
+        public static final int VIBER_CODE = 4;
+        public static final int OTHER_NOTIFICATIONS_CODE = 5; // We ignore all notification with code == 4
     }
 
     @Override
@@ -38,8 +41,12 @@ public class NotificationListener extends NotificationListenerService {
         int notificationCode = matchNotificationCode(sbn);
 
         if(notificationCode != InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE){
-            Intent intent = new  Intent("com.github.chagall.notificationlistenerexample");
-            intent.putExtra("Notification Code", notificationCode);
+            Intent intent = new  Intent("ceid.katefidis.calchas");
+            Bundle extras = new Bundle();
+            extras.putInt("Notification Code", notificationCode);
+            extras.putLong("Post Time", sbn.getPostTime());
+            extras.putString("Contact", sbn.getNotification().extras.getString("android.title"));
+            intent.putExtras(extras);
             sendBroadcast(intent);
         }
     }
@@ -55,8 +62,12 @@ public class NotificationListener extends NotificationListenerService {
             if(activeNotifications != null && activeNotifications.length > 0) {
                 for (int i = 0; i < activeNotifications.length; i++) {
                     if (notificationCode == matchNotificationCode(activeNotifications[i])) {
-                        Intent intent = new  Intent("com.github.chagall.notificationlistenerexample");
-                        intent.putExtra("Notification Code", notificationCode);
+                        Intent intent = new  Intent("ceid.katefidis.calchas");
+                        Bundle extras = new Bundle();
+                        extras.putInt("Notification Code", notificationCode);
+                        extras.putLong("Post Time", activeNotifications[i].getPostTime());
+                        extras.putString("Contact", sbn.getNotification().extras.getString("android.title"));
+                        intent.putExtras(extras);
                         sendBroadcast(intent);
                         break;
                     }
@@ -77,6 +88,9 @@ public class NotificationListener extends NotificationListenerService {
         }
         else if(packageName.equals(ApplicationPackageNames.WHATSAPP_PACK_NAME)){
             return(InterceptedNotificationCode.WHATSAPP_CODE);
+        }
+        else if(packageName.equals(ApplicationPackageNames.VIBER_PACK_NAME)){
+            return(InterceptedNotificationCode.VIBER_CODE);
         }
         else{
             return(InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE);

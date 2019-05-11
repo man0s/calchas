@@ -1270,22 +1270,26 @@ public class MainActivity extends AppCompatActivity {
      * Changes the MainActivity image based on which notification was intercepted
      * @param notificationCode The intercepted notification code
      */
-    private void changeInterceptedNotificationImage(int notificationCode){
+    private void changeInterceptedNotification(int notificationCode, long postTime, String Contact){
         switch(notificationCode){
-//            case NotificationListenerExampleService.InterceptedNotificationCode.FACEBOOK_CODE:
-//                interceptedNotificationImageView.setImageResource(R.drawable.facebook_logo);
-//                break;
-//            case NotificationListenerExampleService.InterceptedNotificationCode.INSTAGRAM_CODE:
-//                interceptedNotificationImageView.setImageResource(R.drawable.instagram_logo);
-//                break;
+            case NotificationListener.InterceptedNotificationCode.VIBER_CODE:
+                Log.i("Viber", postTime + "| " + Contact);
+
+                //do something, its Viber
+                break;
             case NotificationListener.InterceptedNotificationCode.WHATSAPP_CODE:
-                //interceptedNotificationImageView.setImageResource(R.drawable.whatsapp_logo);
 
                 //do something, its Viber
                 break;
             case NotificationListener.InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE:
                 //do something, its WhatsApp
                 break;
+//            case NotificationListenerExampleService.InterceptedNotificationCode.FACEBOOK_CODE:
+//                //do something, its Facebook
+//                break;
+//            case NotificationListenerExampleService.InterceptedNotificationCode.INSTAGRAM_CODE:
+//                //do something, its Instagram
+//                break;
         }
     }
 
@@ -1323,7 +1327,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             int receivedNotificationCode = intent.getIntExtra("Notification Code",-1);
-            changeInterceptedNotificationImage(receivedNotificationCode);
+            long receivedPostTime = intent.getLongExtra("Post Time",-1);
+            String receivedContact = intent.getStringExtra("Contact");
+            changeInterceptedNotification(receivedNotificationCode, receivedPostTime, receivedContact);
         }
     }
 
