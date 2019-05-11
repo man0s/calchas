@@ -7,9 +7,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class NotificationDBHelper extends SQLiteOpenHelper {
 
     // Database Version
@@ -59,36 +56,6 @@ public class NotificationDBHelper extends SQLiteOpenHelper {
 
         // return newly inserted row id
         return id;
-    }
-
-    public List<Notification> getAllNotifications(long freq_window) {
-        List<Notification> notifications = new ArrayList<>();
-
-        // Select All Query
-        String selectQuery = "SELECT  * FROM " + Notification.TABLE_NAME
-                + " WHERE " + Notification.COLUMN_TIMESTAMP + " > " + freq_window
-                + " ORDER BY " + Notification.COLUMN_TIMESTAMP + " DESC";
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-                Notification note = new Notification();
-                note.setId(cursor.getInt(cursor.getColumnIndex(Notification.COLUMN_ID)));
-                note.setTimestamp(cursor.getLong(cursor.getColumnIndex(Notification.COLUMN_TIMESTAMP)));
-                note.setContact(cursor.getString(cursor.getColumnIndex(Notification.COLUMN_CONTACT)));
-
-                notifications.add(note);
-            } while (cursor.moveToNext());
-        }
-
-        // close db connection
-        db.close();
-
-        // return notes list
-        return notifications;
     }
 
     public int getNotificationsCount() {

@@ -1115,8 +1115,8 @@ public class MainActivity extends AppCompatActivity {
                     subcalllog.add(new calllogrecord(SOCIALphNumber, SOCIALDate, SOCIALcachedname, SOCIALepafiboolean));
                 } else{
                     SOCIALphNumber = SOCIALcachedname;
+                    SOCIALepafiboolean = false;
                     if (SOCIALphNumber.length() > 9 && SOCIALphNumber.matches("[+]?[0-9]+")) {
-                        //                if((SMSphNumber.equals("12572")) || (SMSphNumber.length() > 9 && SMSphNumber.matches("[+]?[0-9]+")) ){
                         Log.i("Social", "MPHKE2--> " + SOCIALphNumber + " | " + SOCIALDate);
                         subcalllog.add(new calllogrecord(SOCIALphNumber, SOCIALDate, SOCIALcachedname, SOCIALepafiboolean));
                     }

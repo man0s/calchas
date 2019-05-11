@@ -12,10 +12,10 @@ public class NotificationListener extends NotificationListenerService {
         listen the notifications
      */
     private static final class ApplicationPackageNames {
-        public static final String FACEBOOK_PACK_NAME = "com.facebook.katana";
-        public static final String FACEBOOK_MESSENGER_PACK_NAME = "com.facebook.orca";
+//        public static final String FACEBOOK_PACK_NAME = "com.facebook.katana";
+//        public static final String FACEBOOK_MESSENGER_PACK_NAME = "com.facebook.orca";
+//        public static final String INSTAGRAM_PACK_NAME = "com.instagram.android";
         public static final String WHATSAPP_PACK_NAME = "com.whatsapp";
-        public static final String INSTAGRAM_PACK_NAME = "com.instagram.android";
         public static final String VIBER_PACK_NAME = "com.viber.voip";
     }
 
@@ -24,11 +24,12 @@ public class NotificationListener extends NotificationListenerService {
         the notifications, to decide whether we should do something or not
      */
     public static final class InterceptedNotificationCode {
-        public static final int FACEBOOK_CODE = 1;
-        public static final int WHATSAPP_CODE = 2;
-        public static final int INSTAGRAM_CODE = 3;
-        public static final int VIBER_CODE = 4;
-        public static final int OTHER_NOTIFICATIONS_CODE = 5; // We ignore all notification with code == 4
+//        public static final int FACEBOOK_CODE = 1;
+//        public static final int INSTAGRAM_CODE = 2;
+//        public static final int MESSENGER_CODE = 3;
+        public static final int WHATSAPP_CODE = 1;
+        public static final int VIBER_CODE = 2;
+        public static final int OTHER_NOTIFICATIONS_CODE = 3; // We ignore all notification with code == 4
     }
 
     @Override
@@ -79,14 +80,14 @@ public class NotificationListener extends NotificationListenerService {
     private int matchNotificationCode(StatusBarNotification sbn) {
         String packageName = sbn.getPackageName();
 
-        if(packageName.equals(ApplicationPackageNames.FACEBOOK_PACK_NAME)
-                || packageName.equals(ApplicationPackageNames.FACEBOOK_MESSENGER_PACK_NAME)){
-            return(InterceptedNotificationCode.FACEBOOK_CODE);
-        }
-        else if(packageName.equals(ApplicationPackageNames.INSTAGRAM_PACK_NAME)){
-            return(InterceptedNotificationCode.INSTAGRAM_CODE);
-        }
-        else if(packageName.equals(ApplicationPackageNames.WHATSAPP_PACK_NAME)){
+//        if(packageName.equals(ApplicationPackageNames.FACEBOOK_PACK_NAME)
+//                || packageName.equals(ApplicationPackageNames.FACEBOOK_MESSENGER_PACK_NAME)){
+//            return(InterceptedNotificationCode.FACEBOOK_CODE);
+//        }
+//        else if(packageName.equals(ApplicationPackageNames.INSTAGRAM_PACK_NAME)){
+//            return(InterceptedNotificationCode.INSTAGRAM_CODE);
+//        }
+        if(packageName.equals(ApplicationPackageNames.WHATSAPP_PACK_NAME)){
             return(InterceptedNotificationCode.WHATSAPP_CODE);
         }
         else if(packageName.equals(ApplicationPackageNames.VIBER_PACK_NAME)){
