@@ -31,6 +31,13 @@
             android:summary="Enable SMS prediction"
             android:title="SMS" >
         </SwitchPreference>
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="socialseek"
+            android:summary="Enable Social prediction"
+            android:title="Social" >
+        </SwitchPreference>
         
         <SwitchPreference
             android:defaultValue="true"

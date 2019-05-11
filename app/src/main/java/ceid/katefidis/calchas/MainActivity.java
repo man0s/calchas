@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -48,13 +49,21 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 
 class calllogrecord
@@ -142,7 +151,6 @@ class SortDateProtaseis implements Comparator<Protasi>
     }
 }
 
-
 public class MainActivity extends AppCompatActivity {
     //Dilwsi ton static metavlitwn
     //DEVELOPER
@@ -158,6 +166,9 @@ public class MainActivity extends AppCompatActivity {
     Long start_time;
     Long end_time;
     //HashMap<String, Integer> countryCodes;
+    private NotificationDBHelper db;
+    private SQLiteDatabase sdb;
+
 
     final Fragment homeFragment = new HomeFragment();
     final FragmentManager fm = getFragmentManager();
@@ -426,7 +437,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (Permissions.Check_PERMISSIONS(MainActivity.this)) {
             //init database
-            StoreStatsSQLlite db = new StoreStatsSQLlite(this);
+            //StoreStatsSQLlite db = new StoreStatsSQLlite(this);
 
             //DEVELOPER Epeidi ta evgala exw gia to dump!!!
             subcalllog = new ArrayList<calllogrecord>();
@@ -438,6 +449,7 @@ public class MainActivity extends AppCompatActivity {
             String selectedinterface = preferences.getString("inteface", "3");
             boolean showphoto = preferences.getBoolean("showphoto", true);
             boolean smsSeek = preferences.getBoolean("smsseek", true);
+            boolean socialSeek = preferences.getBoolean("socialseek", false);
 //          boolean showsearch = preferences.getBoolean("showsearch", true);
 
             //DEVELOPER
@@ -469,7 +481,7 @@ public class MainActivity extends AppCompatActivity {
             final ArrayList<Protasi> protaseis = new ArrayList<Protasi>();
 
             //Pairnw to call log gia oses meres thelw kai to vaze se ena array list me calllog records
-            subcalllog = getCallLog(freqWindow, smsSeek);
+            subcalllog = getCallLog(freqWindow, smsSeek, socialSeek);
 
             //Pairnw kai tis monadikes eggrafes mesa sto calllog
             subcallunique = getUniqueCallRecords(subcalllog);
@@ -918,7 +930,8 @@ public class MainActivity extends AppCompatActivity {
         return score;
     }
 
-    private ArrayList<calllogrecord> getCallLog (long days, boolean smsSeek)
+    private ArrayList<calllogrecord> getCallLog (long days, boolean smsSeek, boolean socialSeek
+    )
     {
 
         //Ena ArrayList gia na valw ta tilefwna tou call log pou anikoun sto freq window
@@ -1063,7 +1076,69 @@ public class MainActivity extends AppCompatActivity {
             SMScursor.close();
         }
 
+        db = new NotificationDBHelper(this);
 
+        Log.i("Social", "Notifications Count --> " + db.getNotificationsCount());
+
+        //Social Log Seeker
+        if(socialSeek && db.getNotificationsCount() > 0) {
+            sdb = db.getWritableDatabase();
+            String table = "notifications";
+            String[] columns = {"id", "timestamp", "contact"};
+            String groupBy = null;
+            String having = null;
+            String orderBy = "timestamp DESC";
+            String limit = null;
+
+            Cursor SOCIALcursor = sdb.query(table, columns, "timestamp >" + freq_window, null, groupBy, having, orderBy, limit);
+
+            while (SOCIALcursor.moveToNext()) {
+
+                String cachedname = SOCIALcursor.getString(2);
+                String SOCIALphNumber = getPhoneNumber(cachedname);
+                long SOCIALDate = SOCIALcursor.getLong(1);
+                boolean epafiboolean = true;
+
+                if(!SOCIALphNumber.equals("")) {
+                    subcalllog.add(new calllogrecord(SOCIALphNumber, SOCIALDate, cachedname, epafiboolean));
+                } else{
+                    SOCIALphNumber = cachedname;
+                    //                if((SMSphNumber.equals("12572")) || (SMSphNumber.length() > 9 && SMSphNumber.matches("[+]?[0-9]+")) ){
+                    if (SOCIALphNumber.length() > 9 && SOCIALphNumber.matches("[+]?[0-9]+")) {
+                        Log.d("Social", "--> " + SOCIALphNumber);
+
+                        epafiboolean = false;
+                        cachedname = SOCIALphNumber;
+
+                        if (!getContactName(SOCIALphNumber).equals("")) {
+                            cachedname = getContactName(SOCIALphNumber);
+                            epafiboolean = true;
+                        } else if (SOCIALphNumber.charAt(0) != '+') {
+                            //Country Code Bug Temp Fix
+                            SOCIALphNumber = "+" + GetCountryZipCode() + SOCIALphNumber;
+                            if (getContactName(SOCIALphNumber).equals("")) {
+                                cachedname = SOCIALphNumber;
+                            } else {
+                                cachedname = getContactName(SOCIALphNumber);
+                                epafiboolean = true;
+                            }
+                        }
+
+                        subcalllog.add(new calllogrecord(SOCIALphNumber, SOCIALDate, cachedname, epafiboolean));
+
+                    }
+                }
+            }
+
+            SOCIALcursor.close();
+        }
+
+
+//        if(notificationsList != null && !notificationsList.isEmpty())
+//        {
+//            // Do something with the empty list here.
+//            Log.i("Social", notificationsList.toString());
+//        } else {   Log.i("Social", "Notification log is empty!");  }
 
         return subcalllog;
 
@@ -1149,6 +1224,30 @@ public class MainActivity extends AppCompatActivity {
                 cur.close();
         }
         return contactName;
+    }
+
+    public String getPhoneNumber(String name) {
+        String ret = "";
+        ContentResolver context = getContentResolver();
+        String selection = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME+" like'%" + name +"%'";
+        String[] projection = new String[] { ContactsContract.CommonDataKinds.Phone.NUMBER};
+        Cursor c = context.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                projection, selection, null, null);
+
+        try
+        {
+            if (c.moveToFirst())
+            {
+                ret = c.getString(0);
+                return ret;
+            }
+        }
+        finally
+        {
+            if (c != null)
+                c.close();
+        }
+        return ret;
     }
 
     private ArrayList<Protasi> getAllContactsWithoutProtaseis (boolean withphotos, ArrayList<String> protaseisContactsIds)
@@ -1273,16 +1372,21 @@ public class MainActivity extends AppCompatActivity {
     private void changeInterceptedNotification(int notificationCode, long postTime, String Contact){
         switch(notificationCode){
             case NotificationListener.InterceptedNotificationCode.VIBER_CODE:
-                Log.i("Viber", postTime + "| " + Contact);
-
                 //do something, its Viber
+                Log.i("Viber", postTime + "| " + Contact);
+                db.addNotification(postTime, Contact);
+                finish();
+                startActivity(getIntent());
                 break;
             case NotificationListener.InterceptedNotificationCode.WHATSAPP_CODE:
-
-                //do something, its Viber
+                //do something, its WhatsApp
+                Log.i("WhatsApp", postTime + "| " + Contact);
+                db.addNotification(postTime, Contact);
+                finish();
+                startActivity(getIntent());
                 break;
             case NotificationListener.InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE:
-                //do something, its WhatsApp
+                //do something, its other notification
                 break;
 //            case NotificationListenerExampleService.InterceptedNotificationCode.FACEBOOK_CODE:
 //                //do something, its Facebook
