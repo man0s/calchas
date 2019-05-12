@@ -1116,13 +1116,13 @@ public class MainActivity extends AppCompatActivity {
                 boolean SOCIALepafiboolean = true;
 
                 if(!SOCIALphNumber.equals("")) {
-                    Log.i("Social", "MPHKE1--> " + SOCIALphNumber + " | " + SOCIALDate);
+                    //Log.i("Social", "MPHKE1--> " + SOCIALphNumber + " | " + SOCIALDate);
                     subcalllog.add(new calllogrecord(SOCIALphNumber, SOCIALDate, SOCIALcachedname, SOCIALepafiboolean));
                 } else{
                     SOCIALphNumber = SOCIALcachedname;
                     SOCIALepafiboolean = false;
                     if (SOCIALphNumber.length() > 9 && SOCIALphNumber.matches("[+]?[0-9]+")) {
-                        Log.i("Social", "MPHKE2--> " + SOCIALphNumber + " | " + SOCIALDate);
+                        //Log.i("Social", "MPHKE2--> " + SOCIALphNumber + " | " + SOCIALDate);
                         subcalllog.add(new calllogrecord(SOCIALphNumber, SOCIALDate, SOCIALcachedname, SOCIALepafiboolean));
                     }
                 }
@@ -1422,10 +1422,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Image Change Broadcast Receiver.
      * We use this Broadcast Receiver to notify the Main Activity when
-     * a new notification has arrived, so it can properly change the
-     * notification image
+     * a new notification has arrived
      * */
     public class SuggestionsChangeBroadcastReceiver extends BroadcastReceiver {
         @Override
