@@ -22,6 +22,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.preference.SwitchPreference;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
 import android.provider.Settings;
@@ -176,9 +177,9 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<calllogrecord> subcalllog = new ArrayList<calllogrecord>();
     ArrayList<Protasi> finalprotaseis = new ArrayList<Protasi>();
     MobileArrayAdapter arrayAdapter;
-    //	Tracker tracker;
-    Long start_time;
-    Long end_time;
+//    //	Tracker tracker;
+//    Long start_time;
+//    Long end_time;
     //HashMap<String, Integer> countryCodes;
     private NotificationDBHelper db;
     private SQLiteDatabase sdb;
@@ -234,6 +235,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         boolean DarkMode = settings.getBoolean("DarkMode", false);
+        boolean socialSeek = settings.getBoolean("socialseek", false);
+
         if(DarkMode) {
             setTheme(R.style.DarkTheme);
             getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -251,17 +254,19 @@ public class MainActivity extends AppCompatActivity {
         setupWindowAnimations();
 
 
-        // If the user did not turn the notification listener service on we prompt him to do so
-        if(!isNotificationServiceEnabled()){
-            enableNotificationListenerAlertDialog = buildNotificationServiceAlertDialog();
-            enableNotificationListenerAlertDialog.show();
+        if(socialSeek) {
+            // If the user did not turn the notification listener service on we prompt him to do so
+            if (!isNotificationServiceEnabled()) {
+                enableNotificationListenerAlertDialog = buildNotificationServiceAlertDialog();
+                enableNotificationListenerAlertDialog.show();
+            }
         }
 
         // Finally we register a receiver to tell the MainActivity when a notification has been received
         suggestionsChangeBroadcastReceiver = new SuggestionsChangeBroadcastReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("ceid.katefidis.calchas");
-        registerReceiver(suggestionsChangeBroadcastReceiver,intentFilter);
+        registerReceiver(suggestionsChangeBroadcastReceiver, intentFilter);
 
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
@@ -880,16 +885,16 @@ public class MainActivity extends AppCompatActivity {
 //                    startActivity(intent);
 //                }
 //            });
-
-            start_time = System.currentTimeMillis();
+//
+//            start_time = System.currentTimeMillis();
         }
     }
-
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
+//
+//    private boolean isNetworkAvailable() {
+//        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+//        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+//        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+//    }
 
     private double calcFreq(ArrayList<calllogrecord> calllog, String uniqueCachedName)
     {
@@ -1126,8 +1131,11 @@ public class MainActivity extends AppCompatActivity {
             SOCIALcursor.close();
         }
 
-        //sortarw tom subcallrecord ws pros to date
-        Collections.sort(subcalllog, new SortDateCallLogRecord());
+        if(smsSeek || socialSeek)
+        {
+            //sortarw tom subcallrecord ws pros to date
+            Collections.sort(subcalllog, new SortDateCallLogRecord());
+        }
 
         return subcalllog;
 
@@ -1354,11 +1362,6 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setReturnTransition(slide);
     }
 
-    /**
-     * Change Intercepted Notification Image
-     * Changes the MainActivity image based on which notification was intercepted
-     * @param notificationCode The intercepted notification code
-     */
     private void changeInterceptedNotification(int notificationCode, long postTime, String Contact){
         switch(notificationCode){
             case NotificationListener.InterceptedNotificationCode.VIBER_CODE:
@@ -1399,8 +1402,6 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Is Notification Service Enabled.
      * Verifies if the notification listener service is enabled.
-     * Got it from: https://github.com/kpbird/NotificationListenerService-Example/blob/master/NLSExample/src/main/java/com/kpbird/nlsexample/NLService.java
-     * @return True if enabled, false otherwise.
      */
     private boolean isNotificationServiceEnabled(){
         String pkgName = getPackageName();
@@ -1445,8 +1446,8 @@ public class MainActivity extends AppCompatActivity {
      */
     private AlertDialog buildNotificationServiceAlertDialog(){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setTitle("Calchas Notification Listener Service");
-        alertDialogBuilder.setMessage("For the the app. to work you need to enable the Notification Listener Service. Enable it now?");
+        alertDialogBuilder.setTitle("Calchas Notification Listener");
+        alertDialogBuilder.setMessage("For Calchas to work you need to enable the Notification Listener Service. Enable it now?");
         alertDialogBuilder.setPositiveButton("Yes",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -1458,6 +1459,8 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         // If you choose to not enable the notification listener
                         // the app. will not work as expected
+                        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                        sharedPreferences.edit().putBoolean("socialseek", false).commit();
                     }
                 });
         return(alertDialogBuilder.create());

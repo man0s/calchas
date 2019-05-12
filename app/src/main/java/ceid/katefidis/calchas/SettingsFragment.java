@@ -35,6 +35,20 @@ public class SettingsFragment extends PreferenceFragment {
                     }
                 });
             }
+
+            SwitchPreference socialSwitch = (SwitchPreference) findPreference("socialseek");
+
+            if (socialSwitch != null) {
+                socialSwitch.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                    @Override
+                    public boolean onPreferenceChange(Preference arg0, Object isSocialOnObject) {
+                        getActivity().finish();
+                        Intent intent = new Intent(getActivity(), MainActivity.class);
+                        startActivity(intent);
+                        return true;
+                    }
+                });
+            }
         }
 
     @Override
