@@ -1050,13 +1050,7 @@ public class MainActivity extends AppCompatActivity {
             Cursor SMScursor = null;
 
 
-            try {
-                SMScursor = cr.query(uriSms, selectSMSCols, "logtype = 100 AND DATE >" + freq_window, null, "DATE DESC");
-                if (SMScursor == null)
-                    SMScursor = cr.query(uriSms, selectSMSCols, "DATE >" + freq_window, null, "DATE DESC");
-            } catch (SQLiteException e) {
-                SMScursor = cr.query(uriSms, selectSMSCols, "DATE >" + freq_window, null, "DATE DESC");
-            }
+            SMScursor = cr.query(uriSms, selectSMSCols, "DATE >" + freq_window, null, "DATE DESC");
 
             while (SMScursor.moveToNext()) {
                 String SMSphNumber = SMScursor.getString(1);
