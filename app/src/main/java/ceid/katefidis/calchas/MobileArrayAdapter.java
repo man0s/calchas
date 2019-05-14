@@ -66,9 +66,9 @@ public class MobileArrayAdapter extends ArrayAdapter<Protasi> implements Filtera
         {
             rowView = inflater.inflate(R.layout.contact, parent, false);
             TextView ContactName = (TextView) rowView.findViewById(R.id.contact_name_to_list);
-            if(prot.name.length() > 15)
+            if(prot.name.length() > 16)
             {
-                String name = prot.name.substring(0, Math.min(prot.name.length(), 15)) + ".";
+                String name = prot.name.substring(0, Math.min(prot.name.length(), 16)) + ".";
                 ContactName.setText(name);
             } else ContactName.setText(prot.name);
 
@@ -110,9 +110,9 @@ public class MobileArrayAdapter extends ArrayAdapter<Protasi> implements Filtera
             network.setText(prot.network);
             if (prot.isContact)
             {
-                if(prot.name.length() > 15)
+                if(prot.name.length() > 16)
                 {
-                    String name = prot.name.substring(0, Math.min(prot.name.length(), 15)) + ".";
+                    String name = prot.name.substring(0, Math.min(prot.name.length(), 16)) + ".";
                     textView.setText(name);
                 } else textView.setText(prot.name);
                 //if(prot.type != null)   textView.setText(prot.name + "|" + prot.type);

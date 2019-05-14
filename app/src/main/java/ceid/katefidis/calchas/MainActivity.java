@@ -12,6 +12,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -846,9 +848,51 @@ public class MainActivity extends AppCompatActivity {
 
                         } else {
                             numberToCall = resultToCall.number;
-                            Intent intent = new Intent(Intent.ACTION_CALL);
-                            intent.setData(Uri.parse("tel:" + numberToCall));
-                            startActivity(intent);
+//                            Intent intent = new Intent(Intent.ACTION_CALL);
+//                            intent.setData(Uri.parse("tel:" + numberToCall));
+//                            startActivity(intent);
+                            if(resultToCall.type.equals("whatsapp")) {
+                                final String dialogCallNumber = resultToCall.number;
+                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+                                alertDialogBuilder.setTitle("Open with WhatsApp");
+                                alertDialogBuilder.setMessage("Do you want to open this number with WhatsApp?");
+                                alertDialogBuilder.setPositiveButton("Yes",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                String url = "https://api.whatsapp.com/send?phone="+ dialogCallNumber;
+                                                Intent i = new Intent(Intent.ACTION_VIEW);
+                                                i.setData(Uri.parse(url));
+                                                startActivity(i);
+                                            }
+                                        });
+                                alertDialogBuilder.setNegativeButton("No",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                               Intent intent = new Intent(Intent.ACTION_CALL);
+                                               intent.setData(Uri.parse("tel:" + dialogCallNumber));
+                                               startActivity(intent);
+                                            }
+                                        });
+                                AlertDialog dialog = alertDialogBuilder.create();
+                                dialog.show();
+
+                            } else {
+                                // build intent
+                                Uri number = Uri.parse("tel:" + numberToCall);
+                                Intent callIntent = new Intent(Intent.ACTION_DIAL, number);
+
+                                // Verify it resolves
+                                PackageManager packageManager = getPackageManager();
+                                List<ResolveInfo> activities = packageManager.queryIntentActivities(callIntent, 0);
+                                boolean isIntentSafe = activities.size() > 0;
+
+                                // Start an activity if it's safe
+                                if (isIntentSafe) {
+                                    startActivity(callIntent);
+                                }
+                            }
+
+
                         }
                     }
                 }
