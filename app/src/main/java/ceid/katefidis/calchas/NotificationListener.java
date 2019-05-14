@@ -52,30 +52,30 @@ public class NotificationListener extends NotificationListenerService {
         }
     }
 
-    @Override
-    public void onNotificationRemoved(StatusBarNotification sbn){
-        int notificationCode = matchNotificationCode(sbn);
-
-        if(notificationCode != InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE) {
-
-            StatusBarNotification[] activeNotifications = this.getActiveNotifications();
-
-            if(activeNotifications != null && activeNotifications.length > 0) {
-                for (int i = 0; i < activeNotifications.length; i++) {
-                    if (notificationCode == matchNotificationCode(activeNotifications[i])) {
-                        Intent intent = new  Intent("ceid.katefidis.calchas");
-                        Bundle extras = new Bundle();
-                        extras.putInt("Notification Code", notificationCode);
-                        extras.putLong("Post Time", activeNotifications[i].getPostTime());
-                        extras.putString("Contact", sbn.getNotification().extras.getString("android.title"));
-                        intent.putExtras(extras);
-                        sendBroadcast(intent);
-                        break;
-                    }
-                }
-            }
-        }
-    }
+//    @Override
+//    public void onNotificationRemoved(StatusBarNotification sbn){
+//        int notificationCode = matchNotificationCode(sbn);
+//
+//        if(notificationCode != InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE) {
+//
+//            StatusBarNotification[] activeNotifications = this.getActiveNotifications();
+//
+//            if(activeNotifications != null && activeNotifications.length > 0) {
+//                for (int i = 0; i < activeNotifications.length; i++) {
+//                    if (notificationCode == matchNotificationCode(activeNotifications[i])) {
+//                        Intent intent = new  Intent("ceid.katefidis.calchas");
+//                        Bundle extras = new Bundle();
+//                        extras.putInt("Notification Code", notificationCode);
+//                        extras.putLong("Post Time", activeNotifications[i].getPostTime());
+//                        extras.putString("Contact", sbn.getNotification().extras.getString("android.title"));
+//                        intent.putExtras(extras);
+//                        sendBroadcast(intent);
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     private int matchNotificationCode(StatusBarNotification sbn) {
         String packageName = sbn.getPackageName();

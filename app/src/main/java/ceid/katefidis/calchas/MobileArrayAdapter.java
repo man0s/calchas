@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.QuickContactBadge;
 import android.widget.TextView;
 
@@ -65,7 +66,13 @@ public class MobileArrayAdapter extends ArrayAdapter<Protasi> implements Filtera
         {
             rowView = inflater.inflate(R.layout.contact, parent, false);
             TextView ContactName = (TextView) rowView.findViewById(R.id.contact_name_to_list);
-            ContactName.setText(prot.name);
+            if(prot.name.length() > 15)
+            {
+                String name = prot.name.substring(0, Math.min(prot.name.length(), 15)) + ".";
+                ContactName.setText(name);
+            } else ContactName.setText(prot.name);
+
+            //if(prot.type != null)  ContactName.setText(prot.name + "|" + prot.type);
 
             //Gia to badge
             QuickContactBadge eikonacode = (QuickContactBadge) rowView.findViewById(R.id.contact_photo);
@@ -75,6 +82,19 @@ public class MobileArrayAdapter extends ArrayAdapter<Protasi> implements Filtera
                 eikonacode.setImageBitmap(prot.photo);
             else
                 eikonacode.setImageResource(R.drawable.contact);
+
+            //Gia to icon
+            ImageView typeIcon = rowView.findViewById(R.id.type);
+            if(prot.type != null){
+                if(prot.type.equals("phone")){
+                    typeIcon.setImageResource(R.drawable.ic_call_black_24dp);
+                } else if(prot.type.equals("viber")) {
+                    typeIcon.setImageResource(R.drawable.ic_viber_24dp);
+                } else if(prot.type.equals("whatsapp")) {
+                    typeIcon.setImageResource(R.drawable.ic_whatsapp_24dp);
+                } else  typeIcon.setImageResource(R.drawable.ic_sms_black_24dp);
+            }
+
         }
         else
         {
@@ -90,12 +110,18 @@ public class MobileArrayAdapter extends ArrayAdapter<Protasi> implements Filtera
             network.setText(prot.network);
             if (prot.isContact)
             {
-                textView.setText(prot.name);
+                if(prot.name.length() > 15)
+                {
+                    String name = prot.name.substring(0, Math.min(prot.name.length(), 15)) + ".";
+                    textView.setText(name);
+                } else textView.setText(prot.name);
+                //if(prot.type != null)   textView.setText(prot.name + "|" + prot.type);
                 textView1.setText(prot.number);
             }
             else
             {
                 textView.setText(prot.number);
+                //if(prot.type != null)   textView.setText(prot.name + "|" + prot.type);
                 textView1.setText("");
             }
 
@@ -108,6 +134,18 @@ public class MobileArrayAdapter extends ArrayAdapter<Protasi> implements Filtera
             else
                 eikonacode.setImageResource(R.drawable.contact);
 
+            //Gia to icon
+            ImageView typeIcon = rowView.findViewById(R.id.type);
+            if(prot.type != null){
+                if(prot.type.equals("phone")){
+                    typeIcon.setImageResource(R.drawable.ic_call_black_24dp);
+                } else if(prot.type.equals("viber")) {
+                    typeIcon.setImageResource(R.drawable.ic_viber_24dp);
+                } else if(prot.type.equals("whatsapp")) {
+                    typeIcon.setImageResource(R.drawable.ic_whatsapp_24dp);
+                } else  typeIcon.setImageResource(R.drawable.ic_sms_black_24dp);
+            }
+            
         }
         return rowView;
     }

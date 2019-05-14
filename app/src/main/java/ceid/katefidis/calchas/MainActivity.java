@@ -73,13 +73,15 @@ class calllogrecord
     long date;
     String CachedName;
     boolean isContact;
+    String type;
 
-    public calllogrecord(String num, long mydate, String CachedName, boolean isContact)
+    public calllogrecord(String num, long mydate, String CachedName, boolean isContact, String type)
     {
         this.number = num;
         this.date = mydate;
         this.CachedName = CachedName;
         this.isContact = isContact;
+        this.type = type;
     }
 
 }
@@ -93,17 +95,19 @@ class Protasi
     double scoref;
     double scorer;
     boolean isContact;
+    String type;
     Bitmap photo;
     long date;
     boolean suggested;
     String network;
 
-    public Protasi(String num, String name,double scoref, double scorer, double score, boolean isContact, String contactID)
+    public Protasi(String num, String name,double scoref, double scorer, double score, boolean isContact, String type, String contactID)
     {
         this.number = num;
         this.score = score;
         this.name = name;
         this.isContact = isContact;
+        this.type = type;
         this.contactID = contactID;
         this.scoref = scoref;
         this.scorer = scorer;
@@ -515,7 +519,7 @@ public class MainActivity extends AppCompatActivity {
 
                 //afou ta ypologisa ftiaxnw ena neo antikeimeno protasi kai to apothikeuw sto antistoixo array list
                 //protasi prot = new protasi(uniqueCachedName, getContactName(uniqueCachedName), calcScore(freqscore, recenscore));
-                Protasi prot = new Protasi("NoNumberYet", uniqueCachedName, freqscore, recenscore, calcScore(freqscore, recenscore), false, "");
+                Protasi prot = new Protasi("NoNumberYet", uniqueCachedName, freqscore, recenscore, calcScore(freqscore, recenscore), false, null, "");
                 protaseis.add(prot);
 
             }
@@ -538,6 +542,7 @@ public class MainActivity extends AppCompatActivity {
                     if (protasitemp.name.equals(s1.CachedName)) {
                         protasitemp.number = s1.number;
                         protasitemp.date = s1.date;
+                        protasitemp.type = s1.type;
                         //Gia na kalypsw tin periptwsi pou to cachedname den exei ananewthei diavazw gia tis protaseis
                         //to kanoniko name apo tis epafes
                         //protasitemp.name = s1.CachedName;
@@ -610,7 +615,7 @@ public class MainActivity extends AppCompatActivity {
                     if (flag) {
                         for (calllogrecord singlecallrecord : subcalllog) {
                             if (singlecallrecord.CachedName.equals(uniquecallname)) {
-                                Protasi mycalllogrecord = new Protasi(singlecallrecord.number, singlecallrecord.CachedName, 0.0, 0.0, 0.0, singlecallrecord.isContact, "");
+                                Protasi mycalllogrecord = new Protasi(singlecallrecord.number, singlecallrecord.CachedName, 0.0, 0.0, 0.0, singlecallrecord.isContact, singlecallrecord.type, "");
                                 mycalllogrecord.date = singlecallrecord.date;
 
                                 //se periptwsi pou thenw na emfanizw kai tis photos sto unique call log
@@ -634,7 +639,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                 //meta to sort vazw ton seperator prwto sti lista
-                Protasi mycalllogrecordnull = new Protasi("-1", "Recent Calls", 0.0, 0.0, -3.0, false, "");
+                Protasi mycalllogrecordnull = new Protasi("-1", "Recent Calls", 0.0, 0.0, -3.0, false, null, "");
                 mycalllog.add(0, mycalllogrecordnull);
 
 			/*
@@ -1022,7 +1027,7 @@ public class MainActivity extends AppCompatActivity {
             //allos ena elegxos gia ta noumera me apokripsi
             if (!phNumber.isEmpty())
             {
-                calllogrecord temprecord = new calllogrecord(phNumber,callDate,cachedname,epafiboolean);
+                calllogrecord temprecord = new calllogrecord(phNumber,callDate,cachedname,epafiboolean, "phone");
 
                 //Se periptwsi pou i klisi einai me apokripsi to pedio phNumber einai arnitikos arithmos
                 //Se periptwsi pou exw asterakia stis kliseis p.x. endoetairika WIND *2145
@@ -1080,7 +1085,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
 
-                    subcalllog.add(new calllogrecord(SMSphNumber, SMScallDate, cachedname, epafiboolean));
+                    subcalllog.add(new calllogrecord(SMSphNumber, SMScallDate, cachedname, epafiboolean, "sms"));
 
                 }
             }
@@ -1096,7 +1101,7 @@ public class MainActivity extends AppCompatActivity {
         if(socialSeek && db.getNotificationsCount() > 0) {
             sdb = db.getWritableDatabase();
             String table = "notifications";
-            String[] columns = {"id", "timestamp", "contact"};
+            String[] columns = {"id", "timestamp", "contact", "type"};
             String orderBy = "timestamp DESC";
             String limit = null;
 
@@ -1107,17 +1112,18 @@ public class MainActivity extends AppCompatActivity {
                 String SOCIALcachedname = SOCIALcursor.getString(2);
                 String SOCIALphNumber = getPhoneNumber(SOCIALcachedname);
                 long SOCIALDate = SOCIALcursor.getLong(1);
+                String SOCIALtype = SOCIALcursor.getString(3);
                 boolean SOCIALepafiboolean = true;
 
                 if(!SOCIALphNumber.equals("")) {
                     //Log.i("Social", "MPHKE1--> " + SOCIALphNumber + " | " + SOCIALDate);
-                    subcalllog.add(new calllogrecord(SOCIALphNumber, SOCIALDate, SOCIALcachedname, SOCIALepafiboolean));
+                    subcalllog.add(new calllogrecord(SOCIALphNumber, SOCIALDate, SOCIALcachedname, SOCIALepafiboolean, SOCIALtype));
                 } else{
                     SOCIALphNumber = SOCIALcachedname;
                     SOCIALepafiboolean = false;
                     if (SOCIALphNumber.length() > 9 && SOCIALphNumber.matches("[+]?[0-9]+")) {
                         //Log.i("Social", "MPHKE2--> " + SOCIALphNumber + " | " + SOCIALDate);
-                        subcalllog.add(new calllogrecord(SOCIALphNumber, SOCIALDate, SOCIALcachedname, SOCIALepafiboolean));
+                        subcalllog.add(new calllogrecord(SOCIALphNumber, SOCIALDate, SOCIALcachedname, SOCIALepafiboolean, SOCIALtype));
                     }
                 }
             }
@@ -1250,7 +1256,7 @@ public class MainActivity extends AppCompatActivity {
         //Prosthetw stin ousia to header to Call Log
         //Vazontas mia fake "kataxwrisi" me arithmo tilefwnou -1 kai onoma Call Log
         //Des to MobileArrayAdapter.java
-        Protasi mycalllogrecordnull = new Protasi("-1", "Contacts", 0.0, 0.0, -3.0, false, "");
+        Protasi mycalllogrecordnull = new Protasi("-1", "Contacts", 0.0, 0.0, -3.0, false, null, "");
         mycontactlist.add(mycalllogrecordnull);
 
         ContentResolver cr = getContentResolver();
@@ -1273,7 +1279,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-                Protasi mycalllogrecord = new Protasi("", name, 0.0, 0.0, -2.0, true, id);
+                Protasi mycalllogrecord = new Protasi("", name, 0.0, 0.0, -2.0, true, null,  id);
 
                 if (withphotos)
                 {
@@ -1365,7 +1371,7 @@ public class MainActivity extends AppCompatActivity {
                 if(!Contact.equals("Viber"))
                 {
                     if(Contact.charAt(0) == '+') { Contact = Contact.replaceAll("\\s+",""); }
-                    db.addNotification(postTime, Contact);
+                    db.addNotification(postTime, Contact, "viber");
                     finish();
                     startActivity(getIntent());
                 }
@@ -1376,7 +1382,7 @@ public class MainActivity extends AppCompatActivity {
                 {
                     if(Contact.charAt(0) == '+') { Contact = Contact.replaceAll("\\s+",""); }
                     Log.i("WhatsApp", postTime + "| " + Contact);
-                    db.addNotification(postTime, Contact);
+                    db.addNotification(postTime, Contact, "whatsapp");
                     finish();
                     startActivity(getIntent());
                 }

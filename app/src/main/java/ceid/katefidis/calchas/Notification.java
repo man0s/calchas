@@ -10,10 +10,12 @@ public class Notification {
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_TIMESTAMP = "timestamp";
     public static final String COLUMN_CONTACT = "contact";
+    public static final String COLUMN_TYPE = "type";
 
     private int id;
     private long timestamp;
     private String contact;
+    private String type;
 
 
     // Create table SQL query
@@ -21,39 +23,24 @@ public class Notification {
             "CREATE TABLE " + TABLE_NAME + "("
                     + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + COLUMN_TIMESTAMP + " INTEGER,"
-                    + COLUMN_CONTACT + " TEXT"
+                    + COLUMN_CONTACT + " TEXT,"
+                    + COLUMN_TYPE + " TEXT"
                     + ")";
 
     public Notification() {
     }
 
-    public Notification(int id, long timestamp, String contact) {
+    public Notification(int id, long timestamp, String contact, String type) {
         this.id = id;
         this.timestamp = timestamp;
         this.contact = contact;
+        this.type = type;
     }
 
     public int getId() {
         return id;
     }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public String getContact() {
-        return contact;
-    }
-
     public void setId(int id) {
         this.id = id;
-    }
-
-    public void setContact(String contact) {
-        this.contact = contact;
     }
 }

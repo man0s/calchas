@@ -38,7 +38,7 @@ public class NotificationDBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public long addNotification(long timestamp, String contact) {
+    public long addNotification(long timestamp, String contact, String type) {
         // get writable database as we want to write data
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -47,6 +47,7 @@ public class NotificationDBHelper extends SQLiteOpenHelper {
         // no need to add it
         values.put(Notification.COLUMN_TIMESTAMP, timestamp);
         values.put(Notification.COLUMN_CONTACT, contact);
+        values.put(Notification.COLUMN_TYPE, type);
 
         // insert row
         long id = db.insert(Notification.TABLE_NAME, null, values);
