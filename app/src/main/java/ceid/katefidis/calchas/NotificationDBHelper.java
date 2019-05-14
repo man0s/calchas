@@ -7,6 +7,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class NotificationDBHelper extends SQLiteOpenHelper {
 
     // Database Version
@@ -24,8 +27,14 @@ public class NotificationDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        // create notes table
+        // create nots table
         db.execSQL(Notification.CREATE_TABLE);
+        // nots trigger for keeping the last 500 db entries
+        db.execSQL("CREATE TRIGGER notificationLimit" +
+                " AFTER INSERT on " + Notification.TABLE_NAME +
+                " BEGIN "+
+                "DELETE FROM " + Notification.TABLE_NAME + " WHERE " + Notification.COLUMN_TIMESTAMP + " <= (SELECT " + Notification.COLUMN_TIMESTAMP + " FROM " + Notification.TABLE_NAME + " ORDER BY " + Notification.COLUMN_TIMESTAMP + " DESC LIMIT 500, 1);" +
+                " END;");
     }
 
     // Upgrading database
@@ -57,6 +66,36 @@ public class NotificationDBHelper extends SQLiteOpenHelper {
 
         // return newly inserted row id
         return id;
+    }
+
+    public ArrayList<Notification> getAllNotifications() {
+        ArrayList<Notification> notifications = new ArrayList<>();
+
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + Notification.TABLE_NAME + " ORDER BY " +
+                Notification.COLUMN_TIMESTAMP + " DESC";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                Notification notification = new Notification();
+                notification.setId(cursor.getInt(cursor.getColumnIndex(Notification.COLUMN_ID)));
+                notification.setContact(cursor.getString(cursor.getColumnIndex(Notification.COLUMN_CONTACT)));
+                notification.setTimestamp(cursor.getLong(cursor.getColumnIndex(Notification.COLUMN_TIMESTAMP)));
+                notification.setType(cursor.getString(cursor.getColumnIndex(Notification.COLUMN_TYPE)));
+
+                notifications.add(notification);
+            } while (cursor.moveToNext());
+        }
+
+        // close db connection
+        db.close();
+
+        // return nots list
+        return notifications;
     }
 
     public int getNotificationsCount() {

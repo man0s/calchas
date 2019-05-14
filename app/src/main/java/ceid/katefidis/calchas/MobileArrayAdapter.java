@@ -87,12 +87,12 @@ public class MobileArrayAdapter extends ArrayAdapter<Protasi> implements Filtera
             ImageView typeIcon = rowView.findViewById(R.id.type);
             if(prot.type != null){
                 if(prot.type.equals("phone")){
-                    typeIcon.setImageResource(R.drawable.ic_call_black_24dp);
+                    typeIcon.setImageResource(R.drawable.ic_call_24dp);
                 } else if(prot.type.equals("viber")) {
                     typeIcon.setImageResource(R.drawable.ic_viber_24dp);
                 } else if(prot.type.equals("whatsapp")) {
                     typeIcon.setImageResource(R.drawable.ic_whatsapp_24dp);
-                } else  typeIcon.setImageResource(R.drawable.ic_sms_black_24dp);
+                } else  typeIcon.setImageResource(R.drawable.ic_sms_24dp);
             }
 
         }
@@ -138,14 +138,14 @@ public class MobileArrayAdapter extends ArrayAdapter<Protasi> implements Filtera
             ImageView typeIcon = rowView.findViewById(R.id.type);
             if(prot.type != null){
                 if(prot.type.equals("phone")){
-                    typeIcon.setImageResource(R.drawable.ic_call_black_24dp);
+                    typeIcon.setImageResource(R.drawable.ic_call_24dp);
                 } else if(prot.type.equals("viber")) {
                     typeIcon.setImageResource(R.drawable.ic_viber_24dp);
                 } else if(prot.type.equals("whatsapp")) {
                     typeIcon.setImageResource(R.drawable.ic_whatsapp_24dp);
-                } else  typeIcon.setImageResource(R.drawable.ic_sms_black_24dp);
+                } else  typeIcon.setImageResource(R.drawable.ic_sms_24dp);
             }
-            
+
         }
         return rowView;
     }
