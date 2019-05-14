@@ -875,7 +875,6 @@ public class MainActivity extends AppCompatActivity {
                                         });
                                 AlertDialog dialog = alertDialogBuilder.create();
                                 dialog.show();
-
                             } else {
                                 // build intent
                                 Uri number = Uri.parse("tel:" + numberToCall);
