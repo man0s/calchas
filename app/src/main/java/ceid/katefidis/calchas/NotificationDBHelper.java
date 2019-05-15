@@ -18,6 +18,9 @@ public class NotificationDBHelper extends SQLiteOpenHelper {
     // Database Name
     private static final String DATABASE_NAME = "notifications_db";
 
+    // DB Entries Limit
+    private static final int DATABASE_LIMIT = 500;
+
 
     public NotificationDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -29,11 +32,11 @@ public class NotificationDBHelper extends SQLiteOpenHelper {
 
         // create nots table
         db.execSQL(Notification.CREATE_TABLE);
-        // nots trigger for keeping the last 500 db entries
+        // nots trigger for keeping the last (500) db entries
         db.execSQL("CREATE TRIGGER notificationLimit" +
                 " AFTER INSERT on " + Notification.TABLE_NAME +
                 " BEGIN "+
-                "DELETE FROM " + Notification.TABLE_NAME + " WHERE " + Notification.COLUMN_TIMESTAMP + " <= (SELECT " + Notification.COLUMN_TIMESTAMP + " FROM " + Notification.TABLE_NAME + " ORDER BY " + Notification.COLUMN_TIMESTAMP + " DESC LIMIT 500, 1);" +
+                "DELETE FROM " + Notification.TABLE_NAME + " WHERE " + Notification.COLUMN_TIMESTAMP + " <= (SELECT " + Notification.COLUMN_TIMESTAMP + " FROM " + Notification.TABLE_NAME + " ORDER BY " + Notification.COLUMN_TIMESTAMP + " DESC LIMIT " + DATABASE_LIMIT + ", 1);" +
                 " END;");
     }
 
