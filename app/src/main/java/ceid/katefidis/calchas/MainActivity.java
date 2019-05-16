@@ -884,7 +884,7 @@ public class MainActivity extends AppCompatActivity {
                                 });
 
                             // Set the action buttons
-                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                              @Override
                              public void onClick(DialogInterface dialog, int selectedItem) {
                                 // User clicked OK
