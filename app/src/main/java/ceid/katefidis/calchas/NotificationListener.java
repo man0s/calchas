@@ -91,12 +91,14 @@ public class NotificationListener extends NotificationListenerService {
 //        else if(packageName.equals(ApplicationPackageNames.INSTAGRAM_PACK_NAME)){
 //            return(InterceptedNotificationCode.INSTAGRAM_CODE);
 //        }
-//        if(packageName.equals(ApplicationPackageNames.WHATSAPP_PACK_NAME) && sbn.getKey().contains("2131297581")){
         if(packageName.equals(ApplicationPackageNames.WHATSAPP_PACK_NAME)){
-            if(sbn.getKey().contains("|1|null|") || sbn.getKey().contains("|7|null|"))
+            if(sbn.getKey().contains("|1|null|") || sbn.getKey().contains("|4|null|")) //text msg || call bug fix (case "|2131297581|null|" probably is unstable)
                 return(InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE);
-            else
-                return(InterceptedNotificationCode.WHATSAPP_CODE);
+             else {
+                 if(sbn.getKey().contains("|1|") || sbn.getKey().contains("|7|null|") ) //|1|etc| for msg - |7|null for call/video call
+                    return(InterceptedNotificationCode.WHATSAPP_CODE);
+                 else return(InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE);
+            }
         }
         else if(packageName.equals(ApplicationPackageNames.VIBER_PACK_NAME)){
             if(sbn.getKey().contains("missed_call") || sbn.isOngoing())
