@@ -93,13 +93,13 @@ public class NotificationListener extends NotificationListenerService {
 //        }
 //        if(packageName.equals(ApplicationPackageNames.WHATSAPP_PACK_NAME) && sbn.getKey().contains("2131297581")){
         if(packageName.equals(ApplicationPackageNames.WHATSAPP_PACK_NAME)){
-            if(!sbn.getKey().contains("|7|") || !sbn.getKey().contains("|1|null|"))
+            if(sbn.getKey().contains("|1|null|") || sbn.getKey().contains("|7|null|"))
                 return(InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE);
             else
                 return(InterceptedNotificationCode.WHATSAPP_CODE);
         }
         else if(packageName.equals(ApplicationPackageNames.VIBER_PACK_NAME)){
-            if(sbn.getKey().contains("missed_call"))
+            if(sbn.getKey().contains("missed_call") || sbn.isOngoing())
                 return(InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE);
             else
                 return(InterceptedNotificationCode.VIBER_CODE);

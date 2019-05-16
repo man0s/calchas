@@ -1418,8 +1418,7 @@ public class MainActivity extends AppCompatActivity {
                 {
                     if(Contact.charAt(0) == '+') { Contact = Contact.replaceAll("\\s+",""); }
                     db.addNotification(postTime, Contact, "viber");
-                    finish();
-                    startActivity(getIntent());
+                    onResume(); //refresh
                 }
                 break;
             case NotificationListener.InterceptedNotificationCode.WHATSAPP_CODE:
@@ -1429,8 +1428,7 @@ public class MainActivity extends AppCompatActivity {
                     if(Contact.charAt(0) == '+') { Contact = Contact.replaceAll("\\s+",""); }
                     Log.i("WhatsApp", postTime + "| " + Contact);
                     db.addNotification(postTime, Contact, "whatsapp");
-                    finish();
-                    startActivity(getIntent());
+                    onResume(); //refresh
                 }
                 break;
             case NotificationListener.InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE:
