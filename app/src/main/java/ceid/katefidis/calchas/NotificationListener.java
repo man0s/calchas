@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+import android.text.TextUtils;
 import android.util.Log;
 
 public class NotificationListener extends NotificationListenerService {
@@ -38,22 +39,30 @@ public class NotificationListener extends NotificationListenerService {
         return super.onBind(intent);
     }
 
+    private String mPreviousNotificationKey;
+
     @Override
     public void onNotificationPosted(StatusBarNotification sbn){
         int notificationCode = matchNotificationCode(sbn);
 
-        if(notificationCode != InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE){
-            Intent intent = new  Intent("ceid.katefidis.calchas");
-            Bundle extras = new Bundle();
-            //if((notificationCode == 2 && !sbn.getKey().contains("missed_call")) {
-            Log.i("Social", sbn.getKey());
+        if (notificationCode != InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE) {
+            if(!sbn.getKey().equals(mPreviousNotificationKey)) {
+                Intent intent = new Intent("ceid.katefidis.calchas");
+                Bundle extras = new Bundle();
+                Log.i("Social", sbn.getKey());
                 extras.putInt("Notification Code", notificationCode);
                 extras.putLong("Post Time", sbn.getPostTime());
                 extras.putString("Contact", sbn.getNotification().extras.getString("android.title"));
                 intent.putExtras(extras);
                 sendBroadcast(intent);
-            //}
+            }
         }
+
+        //Viber Duplicate Notification Bug Fix
+        //metavliti gia na krataei to key tou prohgoumenou notification
+        //ongoing notification key gia call/videocall einai |201|null|
+        if(sbn.getKey().contains("|201|null|"))  mPreviousNotificationKey = sbn.getKey();
+        else mPreviousNotificationKey = null;
     }
 
 //    @Override
@@ -101,10 +110,10 @@ public class NotificationListener extends NotificationListenerService {
             }
         }
         else if(packageName.equals(ApplicationPackageNames.VIBER_PACK_NAME)){
-            if(sbn.getKey().contains("missed_call") || sbn.isOngoing())
-                return(InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE);
-            else
+            if(sbn.getKey().contains("|message|") || sbn.getKey().contains("|201|null|"))
                 return(InterceptedNotificationCode.VIBER_CODE);
+            else
+                return(InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE);
         }
         else{
             return(InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE);
