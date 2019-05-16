@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+import android.util.Log;
 
 public class NotificationListener extends NotificationListenerService {
     /*
@@ -44,11 +45,14 @@ public class NotificationListener extends NotificationListenerService {
         if(notificationCode != InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE){
             Intent intent = new  Intent("ceid.katefidis.calchas");
             Bundle extras = new Bundle();
-            extras.putInt("Notification Code", notificationCode);
-            extras.putLong("Post Time", sbn.getPostTime());
-            extras.putString("Contact", sbn.getNotification().extras.getString("android.title"));
-            intent.putExtras(extras);
-            sendBroadcast(intent);
+            //if((notificationCode == 2 && !sbn.getKey().contains("missed_call")) {
+            Log.i("Social", sbn.getKey());
+                extras.putInt("Notification Code", notificationCode);
+                extras.putLong("Post Time", sbn.getPostTime());
+                extras.putString("Contact", sbn.getNotification().extras.getString("android.title"));
+                intent.putExtras(extras);
+                sendBroadcast(intent);
+            //}
         }
     }
 
@@ -87,11 +91,18 @@ public class NotificationListener extends NotificationListenerService {
 //        else if(packageName.equals(ApplicationPackageNames.INSTAGRAM_PACK_NAME)){
 //            return(InterceptedNotificationCode.INSTAGRAM_CODE);
 //        }
+//        if(packageName.equals(ApplicationPackageNames.WHATSAPP_PACK_NAME) && sbn.getKey().contains("2131297581")){
         if(packageName.equals(ApplicationPackageNames.WHATSAPP_PACK_NAME)){
-            return(InterceptedNotificationCode.WHATSAPP_CODE);
+            if(!sbn.getKey().contains("|7|"))
+                return(InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE);
+            else
+                return(InterceptedNotificationCode.WHATSAPP_CODE);
         }
         else if(packageName.equals(ApplicationPackageNames.VIBER_PACK_NAME)){
-            return(InterceptedNotificationCode.VIBER_CODE);
+            if(sbn.getKey().contains("missed_call"))
+                return(InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE);
+            else
+                return(InterceptedNotificationCode.VIBER_CODE);
         }
         else{
             return(InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE);
