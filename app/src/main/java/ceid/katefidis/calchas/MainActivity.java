@@ -471,7 +471,7 @@ public class MainActivity extends AppCompatActivity {
             //pernw apo ta user preferences tis antistoixes times
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
             String strNumProtaseis = preferences.getString("protaseis", "7");
-            String selectedinterface = preferences.getString("inteface", "3");
+            final String selectedinterface = preferences.getString("inteface", "3");
             boolean showphoto = preferences.getBoolean("showphoto", true);
             boolean smsSeek = preferences.getBoolean("smsseek", true);
             boolean socialSeek = preferences.getBoolean("socialseek", false);
@@ -817,8 +817,8 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
                     view.setPressed(true);
-                    String numberToCall = "";
                     Protasi resultToCall = arrayAdapter.getItem(position);
+                    final String numberToCall = resultToCall.number;
 
 
                     //se periptwsi pou ginei click panw se seperator
@@ -847,52 +847,74 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(intent);
 
                         } else {
-                            numberToCall = resultToCall.number;
-//                            Intent intent = new Intent(Intent.ACTION_CALL);
-//                            intent.setData(Uri.parse("tel:" + numberToCall));
-//                            startActivity(intent);
-                            if(resultToCall.type.equals("whatsapp")) {
-                                final String dialogCallNumber = resultToCall.number;
-                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
-                                alertDialogBuilder.setTitle("Open with WhatsApp");
-                                alertDialogBuilder.setMessage("Do you want to open this number with WhatsApp?");
-                                alertDialogBuilder.setPositiveButton("Yes",
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int id) {
-                                                String url = "https://api.whatsapp.com/send?phone="+ dialogCallNumber;
-                                                Intent i = new Intent(Intent.ACTION_VIEW);
-                                                i.setData(Uri.parse(url));
-                                                startActivity(i);
-                                            }
-                                        });
-                                alertDialogBuilder.setNegativeButton("No",
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int id) {
-                                               Intent intent = new Intent(Intent.ACTION_CALL);
-                                               intent.setData(Uri.parse("tel:" + dialogCallNumber));
-                                               startActivity(intent);
-                                            }
-                                        });
-                                AlertDialog dialog = alertDialogBuilder.create();
-                                dialog.show();
-                            } else {
-                                // build intent
-                                Uri number = Uri.parse("tel:" + numberToCall);
-                                Intent callIntent = new Intent(Intent.ACTION_DIAL, number);
+                            //numberToCall = resultToCall.number;
+//                                // build intent
+//                                Uri number = Uri.parse("tel:" + numberToCall);
+//                                Intent callIntent = new Intent(Intent.ACTION_DIAL, number);
+//
+//                                // Verify it resolves
+//                                PackageManager packageManager = getPackageManager();
+//                                List<ResolveInfo> activities = packageManager.queryIntentActivities(callIntent, 0);
+//                                boolean isIntentSafe = activities.size() > 0;
+//
+//                                // Start an activity if it's safe
+//                                if (isIntentSafe) {
+//                                    startActivity(callIntent);
+//                                }
+                                // setup the alert builder
+                                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                builder.setTitle("Open with");
 
-                                // Verify it resolves
-                                PackageManager packageManager = getPackageManager();
-                                List<ResolveInfo> activities = packageManager.queryIntentActivities(callIntent, 0);
-                                boolean isIntentSafe = activities.size() > 0;
-
-                                // Start an activity if it's safe
-                                if (isIntentSafe) {
-                                    startActivity(callIntent);
+                                // add a radio button list
+                                String[] choices = {"Phone", "Viber", "WhatsApp", "Messages"};
+                                int checkedItem = 0; // phone
+                                if(resultToCall.type.equals("viber")) {
+                                    checkedItem = 1;
+                                } else if(resultToCall.type.equals("whatsapp")) {
+                                    checkedItem = 2;
+                                } else if(resultToCall.type.equals("sms")) {
+                                    checkedItem = 3;
                                 }
+                                final int[] selected = {checkedItem};
+                                builder.setSingleChoiceItems(choices, checkedItem, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        selected[0] = which;
+                                    }
+                                });
+
+                            // Set the action buttons
+                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                             @Override
+                             public void onClick(DialogInterface dialog, int selectedItem) {
+                                // User clicked OK
+                                 selectedItem = selected[0];
+                                 switch(selectedItem) {
+                                     case 0: //phone
+                                         Intent intent = new Intent(Intent.ACTION_DIAL);
+                                         intent.setData(Uri.parse("tel:" + numberToCall));
+                                         startActivity(intent);
+                                         break;
+                                     case 1: //viber
+                                         break;
+                                     case 2: //whatsapp
+                                         String url = "https://api.whatsapp.com/send?phone=" + numberToCall;
+                                         Intent i = new Intent(Intent.ACTION_VIEW);
+                                         i.setData(Uri.parse(url));
+                                         startActivity(i);
+                                         break;
+                                     case 3: //messages
+                                         break;
+                                 }
+
+                               }});
+                                builder.setNegativeButton("Cancel", null);
+
+                                // create and show the alert dialog
+                                AlertDialog dialog = builder.create();
+                                dialog.show();
                             }
 
-
-                        }
                     }
                 }
             });
