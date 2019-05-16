@@ -1162,11 +1162,14 @@ public class MainActivity extends AppCompatActivity {
                     //Log.i("Social", "MPHKE1--> " + SOCIALphNumber + " | " + SOCIALDate);
                     subcalllog.add(new calllogrecord(SOCIALphNumber, SOCIALDate, SOCIALcachedname, SOCIALepafiboolean, SOCIALtype));
                 } else{
-                    SOCIALphNumber = SOCIALcachedname;
-                    SOCIALepafiboolean = false;
-                    if (SOCIALphNumber.length() > 9 && SOCIALphNumber.matches("[+]?[0-9]+")) {
-                        //Log.i("Social", "MPHKE2--> " + SOCIALphNumber + " | " + SOCIALDate);
-                        subcalllog.add(new calllogrecord(SOCIALphNumber, SOCIALDate, SOCIALcachedname, SOCIALepafiboolean, SOCIALtype));
+                    if(SOCIALtype.equals("whatsapp")) //Viber Contact/No Contact Bug Fix
+                    {
+                        SOCIALphNumber = SOCIALcachedname;
+                        SOCIALepafiboolean = false;
+                        if (SOCIALphNumber.length() > 9 && SOCIALphNumber.matches("[+]?[0-9]+")) {
+                            //Log.i("Social", "MPHKE2--> " + SOCIALphNumber + " | " + SOCIALDate);
+                            subcalllog.add(new calllogrecord(SOCIALphNumber, SOCIALDate, SOCIALcachedname, SOCIALepafiboolean, SOCIALtype));
+                        }
                     }
                 }
             }
