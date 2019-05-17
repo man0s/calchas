@@ -1,5 +1,6 @@
 package ceid.katefidis.calchas;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -56,6 +57,7 @@ public class SettingsFragment extends PreferenceFragment {
             //hide the search menu item on this fragment
             MenuItem searchItem = menu.findItem(R.id.menu_settings);
             searchItem.setVisible(false);
+
     }
 
 }

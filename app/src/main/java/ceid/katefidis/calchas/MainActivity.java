@@ -891,19 +891,36 @@ public class MainActivity extends AppCompatActivity {
                                  selectedItem = selected[0];
                                  switch(selectedItem) {
                                      case 0: //phone
-                                         Intent intent = new Intent(Intent.ACTION_DIAL);
-                                         intent.setData(Uri.parse("tel:" + numberToCall));
-                                         startActivity(intent);
+                                         Intent phoneIntent = new Intent(Intent.ACTION_CALL);
+                                         phoneIntent.setData(Uri.parse("tel:" + numberToCall));
+                                         startActivity(phoneIntent);
                                          break;
                                      case 1: //viber
+                                             if(appInstalledOrNot("com.viber.voip")) //if app is installed in the device
+                                             {
+                                                 Intent viberIntent = new Intent(Intent.ACTION_VIEW);
+                                                 viberIntent.setPackage("com.viber.voip");
+                                                 //start viber even if it's not in the background
+                                                 viberIntent.setData(Uri.parse("viber://contact?number=" + Uri.encode(numberToCall)));
+                                                 startActivity(viberIntent);
+                                             } else {
+                                                 Toast.makeText(getApplicationContext(), "Viber is not installed!", Toast.LENGTH_LONG).show();
+                                             }
                                          break;
                                      case 2: //whatsapp
-                                         String url = "https://api.whatsapp.com/send?phone=" + numberToCall;
-                                         Intent i = new Intent(Intent.ACTION_VIEW);
-                                         i.setData(Uri.parse(url));
-                                         startActivity(i);
+                                            if(appInstalledOrNot("com.whatsapp")) //if app is installed in the device
+                                            {
+                                                 Intent whatsappIntent = new Intent(Intent.ACTION_VIEW);
+                                                 whatsappIntent.setData(Uri.parse("https://api.whatsapp.com/send?phone=" + numberToCall));
+                                                 startActivity(whatsappIntent);
+                                             } else {
+                                                 Toast.makeText(getApplicationContext(), "WhatsApp is not installed!", Toast.LENGTH_LONG).show();
+                                             }
                                          break;
                                      case 3: //messages
+                                         Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+                                         smsIntent.setData(Uri.parse("sms:" + numberToCall));
+                                         startActivity(smsIntent);
                                          break;
                                  }
 
@@ -1528,6 +1545,19 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
         return(alertDialogBuilder.create());
+    }
+
+    private boolean appInstalledOrNot(String uri) {
+        PackageManager pm = getPackageManager();
+        boolean app_installed;
+        try {
+            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
+            app_installed = true;
+        }
+        catch (PackageManager.NameNotFoundException e) {
+            app_installed = false;
+        }
+        return app_installed;
     }
 
 }
