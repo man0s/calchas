@@ -901,7 +901,14 @@ public class MainActivity extends AppCompatActivity {
                                                  Intent viberIntent = new Intent(Intent.ACTION_VIEW);
                                                  viberIntent.setPackage("com.viber.voip");
                                                  //start viber even if it's not in the background
-                                                 viberIntent.setData(Uri.parse("viber://contact?number=" + Uri.encode(numberToCall)));
+                                                 String apiViber;
+                                                 if(numberToCall.charAt(0) != '+') //no country prefix social number encoding fix
+                                                 {
+                                                     String fixedPrefixNumber = GetCountryZipCode() + numberToCall;
+                                                     apiViber = "viber://contact?number=" + fixedPrefixNumber;
+                                                 } else apiViber = "viber://contact?number=" + numberToCall.replace("+", "");
+                                                 Log.i("API", apiViber);
+                                                 viberIntent.setData(Uri.parse(apiViber));
                                                  startActivity(viberIntent);
                                              } else {
                                                  Toast.makeText(getApplicationContext(), "Viber is not installed!", Toast.LENGTH_LONG).show();
@@ -910,8 +917,15 @@ public class MainActivity extends AppCompatActivity {
                                      case 2: //whatsapp
                                             if(appInstalledOrNot("com.whatsapp")) //if app is installed in the device
                                             {
-                                                 Intent whatsappIntent = new Intent(Intent.ACTION_VIEW);
-                                                 whatsappIntent.setData(Uri.parse("https://api.whatsapp.com/send?phone=" + numberToCall));
+                                                Intent whatsappIntent = new Intent(Intent.ACTION_VIEW);
+                                                String apiWhatsApp;
+                                                if(numberToCall.charAt(0) != '+') //no country prefix social number encoding fix
+                                                {
+                                                    String fixedPrefixNumber = GetCountryZipCode() + numberToCall;
+                                                    apiWhatsApp = "https://api.whatsapp.com/send?phone=" + fixedPrefixNumber;
+                                                } else apiWhatsApp = "https://api.whatsapp.com/send?phone=" + numberToCall.replace("+", "");
+                                                Log.i("API", apiWhatsApp);
+                                                whatsappIntent.setData(Uri.parse(apiWhatsApp));
                                                  startActivity(whatsappIntent);
                                              } else {
                                                  Toast.makeText(getApplicationContext(), "WhatsApp is not installed!", Toast.LENGTH_LONG).show();
