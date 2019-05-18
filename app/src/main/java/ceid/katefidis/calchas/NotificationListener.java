@@ -110,7 +110,7 @@ public class NotificationListener extends NotificationListenerService {
             }
         }
         else if(packageName.equals(ApplicationPackageNames.VIBER_PACK_NAME)){
-            if(sbn.getKey().contains("|message|") || sbn.getKey().contains("|201|null|"))
+            if(sbn.getKey().contains("|-100|message|") || sbn.getKey().contains("|201|null|")) //text msg || call/vid call
                 return(InterceptedNotificationCode.VIBER_CODE);
             else
                 return(InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE);
