@@ -470,8 +470,6 @@ public class MainActivity extends AppCompatActivity {
             //loading spinner
             ProgressBar spinner = (ProgressBar)findViewById(R.id.progressBar);
 
-            //spinner.getIndeterminateDrawable().setColorFilter(0xFFFF0000, android.graphics.PorterDuff.Mode.MULTIPLY);
-
             //set spinner visible / pre calculations
             spinner.setVisibility(View.VISIBLE);
 
