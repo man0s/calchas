@@ -23,6 +23,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
 import android.provider.CallLog;
@@ -51,6 +52,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -464,6 +466,15 @@ public class MainActivity extends AppCompatActivity {
             //init database
             //StoreStatsSQLlite db = new StoreStatsSQLlite(this);
 
+
+            //loading spinner
+            ProgressBar spinner = (ProgressBar)findViewById(R.id.progressBar);
+
+            //spinner.getIndeterminateDrawable().setColorFilter(0xFFFF0000, android.graphics.PorterDuff.Mode.MULTIPLY);
+
+            //set spinner visible / pre calculations
+            spinner.setVisibility(View.VISIBLE);
+
             //DEVELOPER Epeidi ta evgala exw gia to dump!!!
             subcalllog = new ArrayList<calllogrecord>();
             finalprotaseis = new ArrayList<Protasi>();
@@ -752,6 +763,8 @@ public class MainActivity extends AppCompatActivity {
 
             try {
                 lista1.setAdapter(arrayAdapter);
+                //spinner hide
+                spinner.setVisibility(View.GONE);
                 //To vazw gia to onresume
                 //wste to edit text na min exei to focus kai emfanizetai to pliktrologio!
                 lista1.requestFocus();
@@ -783,6 +796,8 @@ public class MainActivity extends AppCompatActivity {
                 lista1.setTextFilterEnabled(true);
 //                editTxt.setVisibility(View.VISIBLE);
             }
+
+
 //            //diaforetika to krivw
 //            else
 //                editTxt.setVisibility(View.GONE);
@@ -994,6 +1009,7 @@ public class MainActivity extends AppCompatActivity {
 //
 //            start_time = System.currentTimeMillis();
         }
+
     }
 //
 //    private boolean isNetworkAvailable() {
