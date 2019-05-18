@@ -750,10 +750,11 @@ public class MainActivity extends AppCompatActivity {
             //ftiaxnw enan neo arrayAdapter
             arrayAdapter = new MobileArrayAdapter(this, finalprotaseis);
 
-            lista1.setAdapter(arrayAdapter);
-            //To vazw gia to onresume
-            //wste to edit text na min exei to focus kai emfanizetai to pliktrologio!
-            lista1.requestFocus();
+            try {
+                lista1.setAdapter(arrayAdapter);
+                //To vazw gia to onresume
+                //wste to edit text na min exei to focus kai emfanizetai to pliktrologio!
+                lista1.requestFocus();
 
             //Filtro///
 
@@ -926,7 +927,7 @@ public class MainActivity extends AppCompatActivity {
                                                 } else apiWhatsApp = "https://api.whatsapp.com/send?phone=" + numberToCall.replace("+", "");
                                                 Log.i("API", apiWhatsApp);
                                                 whatsappIntent.setData(Uri.parse(apiWhatsApp));
-                                                 startActivity(whatsappIntent);
+                                                startActivity(whatsappIntent);
                                              } else {
                                                  Toast.makeText(getApplicationContext(), "WhatsApp is not installed!", Toast.LENGTH_LONG).show();
                                              }
@@ -949,6 +950,10 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
+
+            } catch (Exception e) {
+                Log.d("Crash", "Error on setAdapter()!");
+            }
 
 //            //Otan patithei to koumpi twn epafwn
 //            ImageButton buttoncontracts = (ImageButton) findViewById(R.id.contactsButton);
