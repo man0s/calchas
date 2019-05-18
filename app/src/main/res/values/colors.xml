@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#212121</color>
     <color name="colorTextLight">#939393</color>
+    <color name="startBackground">#767676</color>
     <!--<color name="fonto">#F5F5F5</color>-->
     <!--<color name="pressedColor">#455a64</color>-->
     <!--<color name="grammata">#494949</color>-->

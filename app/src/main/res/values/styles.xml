@@ -15,6 +15,7 @@
         <item name="btmnavButtonChecked">@color/colorPrimary</item>
         <item name="btmnavButton">#767676</item>
         <item name="btmnavBackground">#ffffff</item>
+        <item name="android:windowBackground">@color/startBackground</item>
 
     </style>
 
@@ -31,6 +32,7 @@
         <item name="btmnavButtonChecked">#F5F5F5</item>
         <item name="btmnavButton">#a8a8a8</item>
         <item name="btmnavBackground">#212121</item>
+        <item name="android:windowBackground">@color/startBackground</item>
 
     </style>
 
