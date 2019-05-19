@@ -39,14 +39,14 @@ public class NotificationListener extends NotificationListenerService {
         return super.onBind(intent);
     }
 
-    private String mPreviousNotificationKey;
+    private String PreviousNotificationKey;
 
     @Override
     public void onNotificationPosted(StatusBarNotification sbn){
         int notificationCode = matchNotificationCode(sbn);
 
         if (notificationCode != InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE) {
-            if(!sbn.getKey().equals(mPreviousNotificationKey)) {
+            if(!sbn.getKey().equals(PreviousNotificationKey)) {
                 Intent intent = new Intent("ceid.katefidis.calchas");
                 Bundle extras = new Bundle();
                 Log.i("Social", sbn.getKey());
@@ -61,8 +61,8 @@ public class NotificationListener extends NotificationListenerService {
         //Viber Duplicate Notification Bug Fix
         //metavliti gia na krataei to key tou prohgoumenou notification
         //ongoing notification key gia call/videocall einai |201|null|
-        if(sbn.getKey().contains("|201|null|"))  mPreviousNotificationKey = sbn.getKey();
-        else mPreviousNotificationKey = null;
+        if(sbn.getKey().contains("|201|null|"))  PreviousNotificationKey = sbn.getKey();
+        else PreviousNotificationKey = null;
     }
 
 //    @Override
