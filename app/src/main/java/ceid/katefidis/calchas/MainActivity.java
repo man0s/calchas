@@ -241,6 +241,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        long startTime = System.currentTimeMillis();
+
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         boolean DarkMode = settings.getBoolean("DarkMode", false);
         boolean socialSeek = settings.getBoolean("socialseek", false);
@@ -309,15 +312,19 @@ public class MainActivity extends AppCompatActivity {
 //            countryCodes.put(g[1], Integer.parseInt(g[0]));
 //        }
 
-        boolean firstRun = settings.getBoolean("firstRun", true);
-        if ( firstRun )
-        {
-
+//        boolean firstRun = settings.getBoolean("firstRun", true);
+//        if ( firstRun )
+//        {
+//
 //            startActivityForResult(
 //                    new Intent(this, ConsentActivity.class),
 //                    1);
+//
+//        }
 
-        }
+        long endTime = System.currentTimeMillis();
+
+        Log.i("Time", "onCreate() took " + (endTime - startTime) + " milliseconds");
 
     }
 
@@ -457,6 +464,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        long startTime = System.currentTimeMillis();
+
 //        //start new tracker session
 //        tracker.send(new HitBuilders.AppViewBuilder()
 //                .setNewSession()
@@ -513,6 +522,7 @@ public class MainActivity extends AppCompatActivity {
             HashSet<String> subcallunique = new HashSet<String>();
             //edw tha apothikeusw tis protaseis
             final ArrayList<Protasi> protaseis = new ArrayList<Protasi>();
+
 
             //Pairnw to call log gia oses meres thelw kai to vaze se ena array list me calllog records
             subcalllog = getCallLog(freqWindow, smsSeek, socialSeek);
@@ -1008,6 +1018,10 @@ public class MainActivity extends AppCompatActivity {
 //            start_time = System.currentTimeMillis();
         }
 
+        long endTime = System.currentTimeMillis();
+
+        Log.i("Time", "onResume() took " + (endTime - startTime) + " milliseconds");
+
     }
 //
 //    private boolean isNetworkAvailable() {
@@ -1069,10 +1083,9 @@ public class MainActivity extends AppCompatActivity {
         return score;
     }
 
-    private ArrayList<calllogrecord> getCallLog (long days, boolean smsSeek, boolean socialSeek
-    )
+    private ArrayList<calllogrecord> getCallLog (long days, boolean smsSeek, boolean socialSeek)
     {
-
+        long startTime = System.currentTimeMillis();
         //Ena ArrayList gia na valw ta tilefwna tou call log pou anikoun sto freq window
         ArrayList<calllogrecord> subcalllog = new ArrayList<calllogrecord>();
 
@@ -1091,6 +1104,11 @@ public class MainActivity extends AppCompatActivity {
         //MONO gia Samsung tilefwna
         //http://stackoverflow.com/questions/11294563/sms-are-duplicated-as-callssamsung-galaxy-s-ii
         Cursor cur = null;
+
+
+        long startTimeQuery = System.currentTimeMillis();
+        long check_time = 0;
+
 
         try {
             cur = cr.query(CallLog.Calls.CONTENT_URI, selectCols, "logtype = 100 AND DATE >" + freq_window, null, "DATE DESC");
@@ -1117,27 +1135,33 @@ public class MainActivity extends AppCompatActivity {
             long callDate = cur.getLong(cur.getColumnIndex(CallLog.Calls.DATE));
 
             boolean epafiboolean = true;
-            if (cachedname == null)
-            {
+
+            long startTimeCheck = System.currentTimeMillis();
+
+            if (cachedname == null) {
                 epafiboolean = false;
                 cachedname = phNumber;
-
-                if(!getContactName(phNumber).equals(""))
+                String tempCachedName = getContactName(phNumber);
+                if (!tempCachedName.equals(""))
                 {
-                    cachedname = getContactName(phNumber);
+                    cachedname = tempCachedName;
                     epafiboolean = true;
                 } else if (phNumber.charAt(0) != '+')
                 {
                     //Country Code Bug Temp Fix
-                    phNumber = "+" + GetCountryZipCode() + phNumber;
-                    if(getContactName(phNumber).equals("")){
-                        cachedname = phNumber;
-                    } else {
-                        cachedname = getContactName(phNumber);
+                    String tempPhNumber = "+" + GetCountryZipCode() + phNumber;
+                    String tempCachedNameCode = getContactName(tempPhNumber);
+                    if(!tempCachedNameCode.equals("")){
+                        cachedname = tempCachedNameCode;
                         epafiboolean = true;
                     }
                 }
+
             }
+
+            long endTimeCheck = System.currentTimeMillis();
+
+            check_time += (endTimeCheck - startTimeCheck);
 
             //allos ena elegxos gia ta noumera me apokripsi
             if (!phNumber.isEmpty())
@@ -1163,6 +1187,11 @@ public class MainActivity extends AppCompatActivity {
 
         cur.close();
 
+        long endTimeQuery = System.currentTimeMillis();
+
+        Log.i("Time", "Call Log Check took " + check_time + " milliseconds");
+        Log.i("Time", "Call Log Query took " + (endTimeQuery - startTimeQuery) + " milliseconds");
+
         //SMS Log Seeker
         if(smsSeek) {
             Uri uriSms = Uri.parse("content://sms/inbox");
@@ -1181,7 +1210,6 @@ public class MainActivity extends AppCompatActivity {
 
 //                if((SMSphNumber.equals("12572")) || (SMSphNumber.length() > 9 && SMSphNumber.matches("[+]?[0-9]+")) ){
                 if (SMSphNumber.length() > 9 && SMSphNumber.matches("[+]?[0-9]+")) {
-                    Log.d("Mobile", "--> " + SMSphNumber);
 
                     epafiboolean = false;
                     cachedname = SMSphNumber;
@@ -1255,6 +1283,10 @@ public class MainActivity extends AppCompatActivity {
             Collections.sort(subcalllog, new SortDateCallLogRecord());
         }
 
+        long endTime = System.currentTimeMillis();
+
+        Log.i("Time", "getCallLog() took " + (endTime - startTime) + " milliseconds");
+
         return subcalllog;
 
     }
@@ -1266,10 +1298,6 @@ public class MainActivity extends AppCompatActivity {
 
         for (calllogrecord callrecord: calllog) {
             subcallunique.add(callrecord.CachedName);
-        }
-
-        for (String s : subcallunique) {
-            Log.i("UNIQUE SUGGESTIONS", "-->" + s);
         }
 
         return subcallunique;
