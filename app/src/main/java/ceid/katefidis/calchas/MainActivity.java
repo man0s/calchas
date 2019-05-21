@@ -1,6 +1,7 @@
 package ceid.katefidis.calchas;
 
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
@@ -8,6 +9,7 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -34,6 +36,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.SearchView;
@@ -1100,37 +1103,52 @@ public class MainActivity extends AppCompatActivity {
         //edw bazw poies steiles thelw na sikwsw apo to call log
         //http://developer.android.com/reference/android/provider/CallLog.Calls.html
         String[] selectCols = new String[] {CallLog.Calls.NUMBER, CallLog.Calls.DATE, CallLog.Calls.CACHED_NAME};
-
         //Gia na ferw mono tis kliseis kai oxi ta SMS exw prosthesie to logtype
         //MONO gia Samsung tilefwna
         //http://stackoverflow.com/questions/11294563/sms-are-duplicated-as-callssamsung-galaxy-s-ii
         Cursor cur = null;
 
 
-        long startTimeQuery = System.currentTimeMillis();
-        long check_time = 0;
+        long startTimeBug = System.currentTimeMillis();
+        //CACHED_NAME Android Bug/Duplication Protasi Bug Fix
+        String[] FirstRowBug_selectCols = new String[] {CallLog.Calls._ID, CallLog.Calls.NUMBER, CallLog.Calls.CACHED_NAME};
 
+        try {
+            cur = cr.query(CallLog.Calls.CONTENT_URI, FirstRowBug_selectCols, "logtype = 100 AND DATE >" + freq_window, null, "DATE DESC LIMIT 1");
+            if (cur == null)
+                cur = cr.query(CallLog.Calls.CONTENT_URI, FirstRowBug_selectCols, "DATE >" + freq_window, null, "DATE DESC LIMIT 1");
+        } catch (SQLiteException e) {
+                cur = cr.query(CallLog.Calls.CONTENT_URI, FirstRowBug_selectCols, "DATE >" + freq_window, null, "DATE DESC LIMIT 1");
+        }
+
+
+        //pernw to noumero ws double
+        double tempnumber = 1.0;
+
+        cur.moveToFirst();
+        Log.i("Bug", cur.getString(cur.getColumnIndex(CallLog.Calls._ID)) + "|" + cur.getString(cur.getColumnIndex(CallLog.Calls.CACHED_NAME)) + "|" + cur.getString(cur.getColumnIndex(CallLog.Calls.NUMBER)));
+        Integer FirstRowBug_ID = Integer.parseInt(cur.getString(cur.getColumnIndex(CallLog.Calls._ID)));
+        String FirstRowBug_temp_cached_name = cur.getString(cur.getColumnIndex(CallLog.Calls.CACHED_NAME));
+        if(FirstRowBug_temp_cached_name == null){
+            String FirstRowBug_CACHED_NAME = getContactName(cur.getString(cur.getColumnIndex(CallLog.Calls.NUMBER)));
+            if(FirstRowBug_CACHED_NAME != null) updateCachedName(cr, FirstRowBug_ID, FirstRowBug_CACHED_NAME);
+        }
+        cur.close();
+
+        long endTimeBug = System.currentTimeMillis();
+
+        Log.i("Time", "1. Bug Correction took " + (endTimeBug - startTimeBug) + " milliseconds");
+
+        long startTimeQuery = System.currentTimeMillis();
 
         try {
             cur = cr.query(CallLog.Calls.CONTENT_URI, selectCols, "logtype = 100 AND DATE >" + freq_window, null, "DATE DESC");
             if (cur == null)
                 cur = cr.query(CallLog.Calls.CONTENT_URI, selectCols, "DATE >" + freq_window, null, "DATE DESC");
         } catch (SQLiteException e) {
-                cur = cr.query(CallLog.Calls.CONTENT_URI, selectCols, "DATE >" + freq_window, null, "DATE DESC");
+            cur = cr.query(CallLog.Calls.CONTENT_URI, selectCols, "DATE >" + freq_window, null, "DATE DESC");
         }
 
-
-
-        //String number = cur.getColumnIndex( CallLog.Calls.NUMBER );
-        //String number = cur.getString(cur.getColumnIndex(CallLog.Calls.NUMBER));
-        //int date = cur.getColumnIndex( CallLog.Calls.DATE);
-        //int cname = cur.getColumnIndex( CallLog.Calls.CACHED_NAME);
-
-        //pernw to noumero ws double
-        double tempnumber = 1.0;
-
-        cur.moveToFirst();
-        Log.i("Bug", "--> " + cur.getLong(cur.getColumnIndex(CallLog.Calls.DATE)) + "|" + cur.getString(cur.getColumnIndex(CallLog.Calls.CACHED_NAME)));
 
         while ( cur.moveToNext() )
         {
@@ -1138,39 +1156,12 @@ public class MainActivity extends AppCompatActivity {
             String cachedname = cur.getString(cur.getColumnIndex(CallLog.Calls.CACHED_NAME));
             long callDate = cur.getLong(cur.getColumnIndex(CallLog.Calls.DATE));
 
-            Log.i("Bug", cur.getLong(cur.getColumnIndex(CallLog.Calls.DATE)) + "|" + cur.getString(cur.getColumnIndex(CallLog.Calls.CACHED_NAME)));
-
-
             boolean epafiboolean = true;
 
-            long startTimeCheck = System.currentTimeMillis();
-
-            if ((cachedname == null || cachedname.length() == 0)) {
+            if (cachedname == null) {
                 epafiboolean = false;
                 cachedname = phNumber;
-//                String tempCachedName = getContactName(phNumber);
-//                if (!tempCachedName.equals(""))
-//                {
-//                    cachedname = tempCachedName;
-//                    epafiboolean = true;
-//                } else
-
-                    if (phNumber.charAt(0) != '+')
-                {
-                    //Country Code Bug Temp Fix
-                    String tempPhNumber = "+" + GetCountryZipCode() + phNumber;
-                    String tempCachedNameCode = getContactName(tempPhNumber);
-                    if(!tempCachedNameCode.equals("")){
-                        cachedname = tempCachedNameCode;
-                        epafiboolean = true;
-                    }
-                }
-
             }
-
-            long endTimeCheck = System.currentTimeMillis();
-
-            check_time += (endTimeCheck - startTimeCheck);
 
             //allos ena elegxos gia ta noumera me apokripsi
             if (!phNumber.isEmpty())
@@ -1198,8 +1189,7 @@ public class MainActivity extends AppCompatActivity {
 
         long endTimeQuery = System.currentTimeMillis();
 
-        Log.i("Time", "1. Call Log Check took " + check_time + " milliseconds");
-        Log.i("Time", "2. Call Log Query took " + (endTimeQuery - startTimeQuery) + " milliseconds");
+        Log.i("Time", "3. Call Log Query took " + (endTimeQuery - startTimeQuery) + " milliseconds");
 
         //SMS Log Seeker
         if(smsSeek) {
@@ -1414,6 +1404,12 @@ public class MainActivity extends AppCompatActivity {
                 cur.close();
         }
         return contactName;
+    }
+
+    public void updateCachedName(ContentResolver cr, int id, @NonNull String name) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(CallLog.Calls.CACHED_NAME, name);
+        cr.update(CallLog.Calls.CONTENT_URI, contentValues, CallLog.Calls._ID + "=" + id, null);
     }
 
     public String getPhoneNumber(String name) {
