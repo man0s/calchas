@@ -23,7 +23,7 @@
             android:summary="Choose the number of suggestions" 
             android:entryValues="@array/numProtaseisValues"
             android:title="Suggestions" 
-       		android:defaultValue="7" />
+       		android:defaultValue="8" />
 
         <SwitchPreference
             android:defaultValue="true"

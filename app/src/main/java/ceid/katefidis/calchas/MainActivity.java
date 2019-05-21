@@ -213,6 +213,11 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("content://call_log/calls")));
                     return false;
                 case R.id.navigation_settings:
+                    //loading spinner
+                    ProgressBar spinner = (ProgressBar)findViewById(R.id.progressBar);
+
+                    //hide spinner
+                    spinner.setVisibility(View.GONE);
                     fm.beginTransaction()
                             .replace(R.id.main_container, new SettingsFragment(), "settings")
                             .disallowAddToBackStack()
@@ -251,6 +256,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         boolean DarkMode = settings.getBoolean("DarkMode", false);
         boolean socialSeek = settings.getBoolean("socialseek", false);
+        boolean firstRun = settings.getBoolean("firstRun", true);
 
         if(DarkMode) {
             setTheme(R.style.DarkTheme);
@@ -260,11 +266,16 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-        if(!Permissions.Check_PERMISSIONS(MainActivity.this))
-        {
-            //if not permisson granted so request permisson with request code
-            Permissions.Request_PERMISSIONS(MainActivity.this,1);
+
+        if(firstRun){
+            if(!Permissions.Check_PERMISSIONS(MainActivity.this))
+            {
+                //if not permisson granted so request permisson with request code
+                Permissions.Request_PERMISSIONS(MainActivity.this,1);
+            }
         }
+
+
         setContentView(R.layout.activity_main);
         setupWindowAnimations();
 
@@ -277,12 +288,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+
         // Finally we register a receiver to tell the MainActivity when a notification has been received
         suggestionsChangeBroadcastReceiver = new SuggestionsChangeBroadcastReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("ceid.katefidis.calchas");
         registerReceiver(suggestionsChangeBroadcastReceiver, intentFilter);
-
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         //set home tab as default navigation item
@@ -316,7 +327,6 @@ public class MainActivity extends AppCompatActivity {
 //            countryCodes.put(g[1], Integer.parseInt(g[0]));
 //        }
 
-//        boolean firstRun = settings.getBoolean("firstRun", true);
 //        if ( firstRun )
 //        {
 //
