@@ -1,5 +1,6 @@
 package ceid.katefidis.calchas;
 
+
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
@@ -1128,25 +1129,33 @@ public class MainActivity extends AppCompatActivity {
         //pernw to noumero ws double
         double tempnumber = 1.0;
 
+        cur.moveToFirst();
+        Log.i("Bug", "--> " + cur.getLong(cur.getColumnIndex(CallLog.Calls.DATE)) + "|" + cur.getString(cur.getColumnIndex(CallLog.Calls.CACHED_NAME)));
+
         while ( cur.moveToNext() )
         {
             String phNumber = cur.getString(cur.getColumnIndex(CallLog.Calls.NUMBER));
             String cachedname = cur.getString(cur.getColumnIndex(CallLog.Calls.CACHED_NAME));
             long callDate = cur.getLong(cur.getColumnIndex(CallLog.Calls.DATE));
 
+            Log.i("Bug", cur.getLong(cur.getColumnIndex(CallLog.Calls.DATE)) + "|" + cur.getString(cur.getColumnIndex(CallLog.Calls.CACHED_NAME)));
+
+
             boolean epafiboolean = true;
 
             long startTimeCheck = System.currentTimeMillis();
 
-            if (cachedname == null) {
+            if ((cachedname == null || cachedname.length() == 0)) {
                 epafiboolean = false;
                 cachedname = phNumber;
-                String tempCachedName = getContactName(phNumber);
-                if (!tempCachedName.equals(""))
-                {
-                    cachedname = tempCachedName;
-                    epafiboolean = true;
-                } else if (phNumber.charAt(0) != '+')
+//                String tempCachedName = getContactName(phNumber);
+//                if (!tempCachedName.equals(""))
+//                {
+//                    cachedname = tempCachedName;
+//                    epafiboolean = true;
+//                } else
+
+                    if (phNumber.charAt(0) != '+')
                 {
                     //Country Code Bug Temp Fix
                     String tempPhNumber = "+" + GetCountryZipCode() + phNumber;
@@ -1189,51 +1198,89 @@ public class MainActivity extends AppCompatActivity {
 
         long endTimeQuery = System.currentTimeMillis();
 
-        Log.i("Time", "Call Log Check took " + check_time + " milliseconds");
-        Log.i("Time", "Call Log Query took " + (endTimeQuery - startTimeQuery) + " milliseconds");
+        Log.i("Time", "1. Call Log Check took " + check_time + " milliseconds");
+        Log.i("Time", "2. Call Log Query took " + (endTimeQuery - startTimeQuery) + " milliseconds");
 
         //SMS Log Seeker
         if(smsSeek) {
-            Uri uriSms = Uri.parse("content://sms/inbox");
+
+            //SMS Inbox Query
+            Uri uriSmsInbox = Uri.parse("content://sms/inbox");
             String[] selectSMSCols = new String[]{"_id", "address", "date"};
-            Cursor SMScursor = null;
+            Cursor SMSinboxcursor = cr.query(uriSmsInbox, selectSMSCols, "DATE >" + freq_window, null, "DATE DESC");
 
-
-            SMScursor = cr.query(uriSms, selectSMSCols, "DATE >" + freq_window, null, "DATE DESC");
-
-            while (SMScursor.moveToNext()) {
-                String SMSphNumber = SMScursor.getString(1);
-                long SMScallDate = SMScursor.getLong(2);
-
-                String cachedname = null;
-                boolean epafiboolean = true;
+            while (SMSinboxcursor.moveToNext()) {
+                String SMSphNumber = SMSinboxcursor.getString(1);
+                long SMScallDate = SMSinboxcursor.getLong(2);
+                String SMScachedname;
+                boolean SMSepafiboolean;
 
 //                if((SMSphNumber.equals("12572")) || (SMSphNumber.length() > 9 && SMSphNumber.matches("[+]?[0-9]+")) ){
                 if (SMSphNumber.length() > 9 && SMSphNumber.matches("[+]?[0-9]+")) {
 
-                    epafiboolean = false;
-                    cachedname = SMSphNumber;
+                    SMSepafiboolean = false;
+                    SMScachedname = SMSphNumber;
 
-                    if (!getContactName(SMSphNumber).equals("")) {
-                        cachedname = getContactName(SMSphNumber);
-                        epafiboolean = true;
-                    } else if (SMSphNumber.charAt(0) != '+') {
+                    String tempCachedName = getContactName(SMSphNumber);
+                    if (!tempCachedName.equals(""))
+                    {
+                        SMScachedname = tempCachedName;
+                        SMSepafiboolean = true;
+                    } else if (SMSphNumber.charAt(0) != '+')
+                    {
                         //Country Code Bug Temp Fix
-                        SMSphNumber = "+" + GetCountryZipCode() + SMSphNumber;
-                        if (getContactName(SMSphNumber).equals("")) {
-                            cachedname = SMSphNumber;
-                        } else {
-                            cachedname = getContactName(SMSphNumber);
-                            epafiboolean = true;
+                        String tempPhNumber = "+" + GetCountryZipCode() + SMSphNumber;
+                        String tempCachedNameCode = getContactName(tempPhNumber);
+                        if(!tempCachedNameCode.equals("")){
+                            SMScachedname = tempCachedNameCode;
+                            SMSepafiboolean = true;
                         }
                     }
 
-                    subcalllog.add(new calllogrecord(SMSphNumber, SMScallDate, cachedname, epafiboolean, "sms"));
+                    subcalllog.add(new calllogrecord(SMSphNumber, SMScallDate, SMScachedname, SMSepafiboolean, "sms"));
 
                 }
             }
+            SMSinboxcursor.close();
 
-            SMScursor.close();
+            //SMS Sent Query
+            Uri uriSmsSent = Uri.parse("content://sms/sent");
+            Cursor SMSsentcursor = cr.query(uriSmsSent, selectSMSCols, "DATE >" + freq_window, null, "DATE DESC");
+
+            while (SMSsentcursor.moveToNext()) {
+                String SMSphNumber = SMSsentcursor.getString(1);
+                long SMScallDate = SMSsentcursor.getLong(2);
+                String SMScachedname;
+                boolean SMSepafiboolean;
+
+//                if((SMSphNumber.equals("12572")) || (SMSphNumber.length() > 9 && SMSphNumber.matches("[+]?[0-9]+")) ){
+                if (SMSphNumber.length() > 9 && SMSphNumber.matches("[+]?[0-9]+")) {
+
+                    SMSepafiboolean = false;
+                    SMScachedname = SMSphNumber;
+
+                    String tempCachedName = getContactName(SMSphNumber);
+                    if (!tempCachedName.equals(""))
+                    {
+                        SMScachedname = tempCachedName;
+                        SMSepafiboolean = true;
+                    } else if (SMSphNumber.charAt(0) != '+')
+                    {
+                        //Country Code Bug Temp Fix
+                        String tempPhNumber = "+" + GetCountryZipCode() + SMSphNumber;
+                        String tempCachedNameCode = getContactName(tempPhNumber);
+                        if(!tempCachedNameCode.equals("")){
+                            SMScachedname = tempCachedNameCode;
+                            SMSepafiboolean = true;
+                        }
+                    }
+
+                    subcalllog.add(new calllogrecord(SMSphNumber, SMScallDate, SMScachedname, SMSepafiboolean, "sms"));
+
+                }
+            }
+            SMSsentcursor.close();
+
         }
 
         db = new NotificationDBHelper(this);
