@@ -488,7 +488,7 @@ public class MainActivity extends AppCompatActivity {
 
             //pernw apo ta user preferences tis antistoixes times
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-            String strNumProtaseis = preferences.getString("protaseis", "7");
+            String strNumProtaseis = preferences.getString("protaseis", "8");
             final String selectedinterface = preferences.getString("inteface", "3");
             boolean showphoto = preferences.getBoolean("showphoto", true);
             boolean smsSeek = preferences.getBoolean("smsseek", true);
