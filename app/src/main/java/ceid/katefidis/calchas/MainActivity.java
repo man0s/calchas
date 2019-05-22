@@ -213,11 +213,6 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("content://call_log/calls")));
                     return false;
                 case R.id.navigation_settings:
-                    //loading spinner
-                    ProgressBar spinner = (ProgressBar)findViewById(R.id.progressBar);
-
-                    //hide spinner
-                    spinner.setVisibility(View.GONE);
                     fm.beginTransaction()
                             .replace(R.id.main_container, new SettingsFragment(), "settings")
                             .disallowAddToBackStack()
