@@ -1,10 +1,7 @@
 package ceid.katefidis.calchas;
 
 
-import android.Manifest;
 import android.app.AlertDialog;
-import android.app.SearchManager;
-import android.app.SearchableInfo;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -16,19 +13,15 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.preference.SwitchPreference;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
 import android.provider.Settings;
@@ -36,15 +29,11 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.telephony.PhoneNumberUtils;
 import android.telephony.TelephonyManager;
-import android.text.Editable;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.transition.Fade;
 import android.transition.Slide;
@@ -54,25 +43,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
 import java.io.InputStream;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
 
 
 class calllogrecord
@@ -483,20 +462,45 @@ public class MainActivity extends AppCompatActivity {
         if (Permissions.Check_PERMISSIONS(MainActivity.this)) {
             //init database
             //StoreStatsSQLlite db = new StoreStatsSQLlite(this);
+            new CalchasAsyncTask().execute();
+        }
 
+
+        long endTime = System.currentTimeMillis();
+
+        Log.i("Time", "onResume() took " + (endTime - startTime) + " milliseconds");
+
+    }
+//
+//    private boolean isNetworkAvailable() {
+//        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+//        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+//        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+//    }
+
+
+    private class CalchasAsyncTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
 
             //loading spinner
             ProgressBar spinner = (ProgressBar)findViewById(R.id.progressBar);
 
             //set spinner visible / pre calculations
-            spinner.setVisibility(View.VISIBLE);
+            if(spinner != null && spinner.getVisibility() != View.GONE) spinner.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
 
             //DEVELOPER Epeidi ta evgala exw gia to dump!!!
             subcalllog = new ArrayList<calllogrecord>();
             finalprotaseis = new ArrayList<Protasi>();
 
             //pernw apo ta user preferences tis antistoixes times
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
             String strNumProtaseis = preferences.getString("protaseis", "8");
             final String selectedinterface = preferences.getString("inteface", "3");
             boolean showphoto = preferences.getBoolean("showphoto", true);
@@ -775,8 +779,20 @@ public class MainActivity extends AppCompatActivity {
 //
 //        }
 
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+            final String selectedinterface = preferences.getString("inteface", "3");
+            ListView lista1 = (ListView) findViewById(R.id.list);
+            //loading spinner
+            ProgressBar spinner = (ProgressBar)findViewById(R.id.progressBar);
+
             //ftiaxnw enan neo arrayAdapter
-            arrayAdapter = new MobileArrayAdapter(this, finalprotaseis);
+            arrayAdapter = new MobileArrayAdapter(MainActivity.this, finalprotaseis);
 
             try {
                 lista1.setAdapter(arrayAdapter);
@@ -786,9 +802,9 @@ public class MainActivity extends AppCompatActivity {
                 //wste to edit text na min exei to focus kai emfanizetai to pliktrologio!
                 lista1.requestFocus();
 
-            //Filtro///
+                //Filtro///
 
-            // TextFilter
+                // TextFilter
 
 //            searchView.setIconified(false);
 //            searchView.setQuery("lol", false);
@@ -797,22 +813,22 @@ public class MainActivity extends AppCompatActivity {
 //            //Gia na arxikopoiite to koumpi se kathe onresume
 //            editTxt.setText("");
 
-            //Gia na arxikopoiite to koumpi se kathe onresume
+                //Gia na arxikopoiite to koumpi se kathe onresume
 
-            //Arxika vazw to visibility GONE
+                //Arxika vazw to visibility GONE
 //            editTxt.setVisibility(View.GONE);
 
-            //an o xristis exei kanei enable to search kai ena apo ta interfaces einai auta me ti megali lista
+                //an o xristis exei kanei enable to search kai ena apo ta interfaces einai auta me ti megali lista
 //            if (showsearch && (
-            if (
-                    selectedinterface.equalsIgnoreCase("3") ||
-                            selectedinterface.equalsIgnoreCase("4") ||
-                            selectedinterface.equalsIgnoreCase("5") ||
-                            selectedinterface.equalsIgnoreCase("6")
-            ) {
-                lista1.setTextFilterEnabled(true);
+                if (
+                        selectedinterface.equalsIgnoreCase("3") ||
+                                selectedinterface.equalsIgnoreCase("4") ||
+                                selectedinterface.equalsIgnoreCase("5") ||
+                                selectedinterface.equalsIgnoreCase("6")
+                ) {
+                    lista1.setTextFilterEnabled(true);
 //                editTxt.setVisibility(View.VISIBLE);
-            }
+                }
 
 
 //            //diaforetika to krivw
@@ -843,27 +859,27 @@ public class MainActivity extends AppCompatActivity {
 //                                               }
 //                                           }
 //            );
-            ////Filtro telos//
+                ////Filtro telos//
 
-            //apo edw kai katw einai o listener otan patisw ena list item
-            lista1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
-                    view.setPressed(true);
-                    Protasi resultToCall = arrayAdapter.getItem(position);
-                    final String numberToCall = resultToCall.number;
+                //apo edw kai katw einai o listener otan patisw ena list item
+                lista1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
+                        view.setPressed(true);
+                        Protasi resultToCall = arrayAdapter.getItem(position);
+                        final String numberToCall = resultToCall.number;
 
 
-                    //se periptwsi pou ginei click panw se seperator
-                    if (resultToCall.score == -3.0) {
-                        //min Kaneis tipota
+                        //se periptwsi pou ginei click panw se seperator
+                        if (resultToCall.score == -3.0) {
+                            //min Kaneis tipota
 
-                    } else {
+                        } else {
 
-                        int value = 0; //an to epilegmeno einai stis protaseis
-                        if (resultToCall.suggested) {
-                            value = 1;
-                        }
+                            int value = 0; //an to epilegmeno einai stis protaseis
+                            if (resultToCall.suggested) {
+                                value = 1;
+                            }
 //                    tracker.send(
 //                            new HitBuilders.EventBuilder()
 //                                    .setCategory("List")
@@ -872,15 +888,15 @@ public class MainActivity extends AppCompatActivity {
 //                                    .setValue(value)
 //                                    .build());
 
-                        if (resultToCall.score == -2.0) //se periptwsei pou kanei click panw se epafi tou contact list
-                        {
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, String.valueOf(resultToCall.contactID));
-                            intent.setData(uri);
-                            startActivity(intent);
+                            if (resultToCall.score == -2.0) //se periptwsei pou kanei click panw se epafi tou contact list
+                            {
+                                Intent intent = new Intent(Intent.ACTION_VIEW);
+                                Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, String.valueOf(resultToCall.contactID));
+                                intent.setData(uri);
+                                startActivity(intent);
 
-                        } else {
-                            //numberToCall = resultToCall.number;
+                            } else {
+                                //numberToCall = resultToCall.number;
 //                                // build intent
 //                                Uri number = Uri.parse("tel:" + numberToCall);
 //                                Intent callIntent = new Intent(Intent.ACTION_DIAL, number);
@@ -916,62 +932,62 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 });
 
-                            // Set the action buttons
-                            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                             @Override
-                             public void onClick(DialogInterface dialog, int selectedItem) {
-                                // User clicked OK
-                                 selectedItem = selected[0];
-                                 switch(selectedItem) {
-                                     case 0: //phone
-                                         Intent phoneIntent = new Intent(Intent.ACTION_CALL);
-                                         phoneIntent.setData(Uri.parse("tel:" + numberToCall));
-                                         startActivity(phoneIntent);
-                                         break;
-                                     case 1: //viber
-                                             if(appInstalledOrNot("com.viber.voip")) //if app is installed in the device
-                                             {
-                                                 Intent viberIntent = new Intent(Intent.ACTION_VIEW);
-                                                 viberIntent.setPackage("com.viber.voip");
-                                                 //start viber even if it's not in the background
-                                                 String apiViber;
-                                                 if(numberToCall.charAt(0) != '+') //no country prefix social number encoding fix
-                                                 {
-                                                     String fixedPrefixNumber = GetCountryZipCode() + numberToCall;
-                                                     apiViber = "viber://contact?number=" + fixedPrefixNumber;
-                                                 } else apiViber = "viber://contact?number=" + numberToCall.replace("+", "");
-                                                 Log.i("API", apiViber);
-                                                 viberIntent.setData(Uri.parse(apiViber));
-                                                 startActivity(viberIntent);
-                                             } else {
-                                                 Toast.makeText(getApplicationContext(), "Viber is not installed!", Toast.LENGTH_LONG).show();
-                                             }
-                                         break;
-                                     case 2: //whatsapp
-                                            if(appInstalledOrNot("com.whatsapp")) //if app is installed in the device
-                                            {
-                                                Intent whatsappIntent = new Intent(Intent.ACTION_VIEW);
-                                                String apiWhatsApp;
-                                                if(numberToCall.charAt(0) != '+') //no country prefix social number encoding fix
+                                // Set the action buttons
+                                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int selectedItem) {
+                                        // User clicked OK
+                                        selectedItem = selected[0];
+                                        switch(selectedItem) {
+                                            case 0: //phone
+                                                Intent phoneIntent = new Intent(Intent.ACTION_CALL);
+                                                phoneIntent.setData(Uri.parse("tel:" + numberToCall));
+                                                startActivity(phoneIntent);
+                                                break;
+                                            case 1: //viber
+                                                if(appInstalledOrNot("com.viber.voip")) //if app is installed in the device
                                                 {
-                                                    String fixedPrefixNumber = GetCountryZipCode() + numberToCall;
-                                                    apiWhatsApp = "https://api.whatsapp.com/send?phone=" + fixedPrefixNumber;
-                                                } else apiWhatsApp = "https://api.whatsapp.com/send?phone=" + numberToCall.replace("+", "");
-                                                Log.i("API", apiWhatsApp);
-                                                whatsappIntent.setData(Uri.parse(apiWhatsApp));
-                                                startActivity(whatsappIntent);
-                                             } else {
-                                                 Toast.makeText(getApplicationContext(), "WhatsApp is not installed!", Toast.LENGTH_LONG).show();
-                                             }
-                                         break;
-                                     case 3: //messages
-                                         Intent smsIntent = new Intent(Intent.ACTION_VIEW);
-                                         smsIntent.setData(Uri.parse("sms:" + numberToCall));
-                                         startActivity(smsIntent);
-                                         break;
-                                 }
+                                                    Intent viberIntent = new Intent(Intent.ACTION_VIEW);
+                                                    viberIntent.setPackage("com.viber.voip");
+                                                    //start viber even if it's not in the background
+                                                    String apiViber;
+                                                    if(numberToCall.charAt(0) != '+') //no country prefix social number encoding fix
+                                                    {
+                                                        String fixedPrefixNumber = GetCountryZipCode() + numberToCall;
+                                                        apiViber = "viber://contact?number=" + fixedPrefixNumber;
+                                                    } else apiViber = "viber://contact?number=" + numberToCall.replace("+", "");
+                                                    Log.i("API", apiViber);
+                                                    viberIntent.setData(Uri.parse(apiViber));
+                                                    startActivity(viberIntent);
+                                                } else {
+                                                    Toast.makeText(getApplicationContext(), "Viber is not installed!", Toast.LENGTH_LONG).show();
+                                                }
+                                                break;
+                                            case 2: //whatsapp
+                                                if(appInstalledOrNot("com.whatsapp")) //if app is installed in the device
+                                                {
+                                                    Intent whatsappIntent = new Intent(Intent.ACTION_VIEW);
+                                                    String apiWhatsApp;
+                                                    if(numberToCall.charAt(0) != '+') //no country prefix social number encoding fix
+                                                    {
+                                                        String fixedPrefixNumber = GetCountryZipCode() + numberToCall;
+                                                        apiWhatsApp = "https://api.whatsapp.com/send?phone=" + fixedPrefixNumber;
+                                                    } else apiWhatsApp = "https://api.whatsapp.com/send?phone=" + numberToCall.replace("+", "");
+                                                    Log.i("API", apiWhatsApp);
+                                                    whatsappIntent.setData(Uri.parse(apiWhatsApp));
+                                                    startActivity(whatsappIntent);
+                                                } else {
+                                                    Toast.makeText(getApplicationContext(), "WhatsApp is not installed!", Toast.LENGTH_LONG).show();
+                                                }
+                                                break;
+                                            case 3: //messages
+                                                Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+                                                smsIntent.setData(Uri.parse("sms:" + numberToCall));
+                                                startActivity(smsIntent);
+                                                break;
+                                        }
 
-                               }});
+                                    }});
                                 builder.setNegativeButton("Cancel", null);
 
                                 // create and show the alert dialog
@@ -979,9 +995,9 @@ public class MainActivity extends AppCompatActivity {
                                 dialog.show();
                             }
 
+                        }
                     }
-                }
-            });
+                });
 
             } catch (Exception e) {
                 Log.d("Crash", "Error on setAdapter()!");
@@ -1025,21 +1041,13 @@ public class MainActivity extends AppCompatActivity {
 //            });
 //
 //            start_time = System.currentTimeMillis();
+
+
         }
-
-        long endTime = System.currentTimeMillis();
-
-        Log.i("Time", "onResume() took " + (endTime - startTime) + " milliseconds");
-
     }
-//
-//    private boolean isNetworkAvailable() {
-//        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-//        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-//        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-//    }
 
-    private double calcFreq(ArrayList<calllogrecord> calllog, String uniqueCachedName)
+
+        private double calcFreq(ArrayList<calllogrecord> calllog, String uniqueCachedName)
     {
         int occurrences = 0;
         int calllogsize = calllog.size();
