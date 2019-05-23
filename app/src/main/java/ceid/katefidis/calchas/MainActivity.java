@@ -671,10 +671,12 @@ public class MainActivity extends AppCompatActivity {
                 //sortarw ta recent calls me xronologiki seira
                 Collections.sort(mycalllog, new SortDateProtaseis());
 
-
-                //meta to sort vazw ton seperator prwto sti lista
-                Protasi mycalllogrecordnull = new Protasi("-1", "Recent Calls", 0.0, 0.0, -3.0, false, null, "");
-                mycalllog.add(0, mycalllogrecordnull);
+                //an einai empty to callog, mhn to valeis
+                if (protaseis.size() > numProtaseis){
+                    //meta to sort vazw ton seperator prwto sti lista
+                    Protasi mycalllogrecordnull = new Protasi("-1", "Recent Calls", 0.0, 0.0, -3.0, false, null, "");
+                    mycalllog.add(0, mycalllogrecordnull);
+                }
 
 			/*
 			for (calllogrecord s1 : subcalllog)
