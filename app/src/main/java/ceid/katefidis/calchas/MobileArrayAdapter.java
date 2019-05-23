@@ -23,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.QuickContactBadge;
 import android.widget.TextView;
@@ -47,6 +48,8 @@ public class MobileArrayAdapter extends ArrayAdapter<Protasi> implements Filtera
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean DarkMode = settings.getBoolean("DarkMode", false);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.list_protaseis, parent, false);
 
@@ -83,13 +86,17 @@ public class MobileArrayAdapter extends ArrayAdapter<Protasi> implements Filtera
             //if(prot.type != null)  ContactName.setText(prot.name + "|" + prot.type);
 
             //Gia to badge
-            QuickContactBadge eikonacode = (QuickContactBadge) rowView.findViewById(R.id.contact_photo);
+            //QuickContactBadge eikonacode = (QuickContactBadge) rowView.findViewById(R.id.contact_photo);
+            RoundedQuickContactBadge eikonacode = (RoundedQuickContactBadge) rowView.findViewById(R.id.contact_photo);
             Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, String.valueOf(prot.contactID));
             eikonacode.assignContactUri(uri);
             if (prot.photo != null)
                 eikonacode.setImageBitmap(prot.photo);
             else
-                eikonacode.setImageResource(R.drawable.contact);
+            {
+                if(DarkMode) eikonacode.setImageResource(R.drawable.account_circle_white_48dp);
+                else eikonacode.setImageResource(R.drawable.account_circle_black_48dp);
+            }
 
             //Gia to icon
             ImageView typeIcon = rowView.findViewById(R.id.type);
@@ -134,13 +141,17 @@ public class MobileArrayAdapter extends ArrayAdapter<Protasi> implements Filtera
             }
 
             //Gia to badge
-            QuickContactBadge eikonacode = (QuickContactBadge) rowView.findViewById(R.id.contact_photo);
+            //QuickContactBadge eikonacode = (QuickContactBadge) rowView.findViewById(R.id.contact_photo);
+            RoundedQuickContactBadge eikonacode = (RoundedQuickContactBadge) rowView.findViewById(R.id.contact_photo);
             eikonacode.assignContactFromPhone(prot.number, true);
 
             if (prot.photo != null)
                 eikonacode.setImageBitmap(prot.photo);
             else
-                eikonacode.setImageResource(R.drawable.contact);
+            {
+                if(DarkMode) eikonacode.setImageResource(R.drawable.account_circle_white_48dp);
+                else eikonacode.setImageResource(R.drawable.account_circle_black_48dp);
+            }
 
             //Gia to icon
             ImageView typeIcon = rowView.findViewById(R.id.type);
