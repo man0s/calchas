@@ -203,8 +203,11 @@ public class MobileArrayAdapter extends ArrayAdapter<Protasi> implements Filtera
                     //tocheck2 = tocheck2.replaceAll("[^\\p{ASCII}]", "");
 
                     //if (p.name.toUpperCase(Locale.getDefault()).startsWith(constraint.toString().toUpperCase(Locale.getDefault())))
-                    if (tocheck1.toUpperCase(Locale.getDefault()).contains(tocheck2.toUpperCase(Locale.getDefault())))
-                        nProtaseis.add(p);
+                    //h protash den einai to seperator Recent Calls me arithmo -1
+                    if (!p.number.equals("-1")){
+                        if (tocheck1.toUpperCase(Locale.getDefault()).contains(tocheck2.toUpperCase(Locale.getDefault())))
+                            nProtaseis.add(p);
+                    }
                 }
 
                 results.values = nProtaseis;
