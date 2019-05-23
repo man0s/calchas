@@ -373,7 +373,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 arrayAdapter.getFilter().filter(query);
                 oldquery = query.length();
-                return false;
+                    return false;
             }
         });
 
@@ -1464,19 +1464,18 @@ public class MainActivity extends AppCompatActivity {
         mycontactlist.add(mycalllogrecordnull);
 
         ContentResolver cr = getContentResolver();
-        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,null, null , null, ContactsContract.Contacts.DISPLAY_NAME);
+        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, new String[] { ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.Contacts.HAS_PHONE_NUMBER }, ContactsContract.Contacts.HAS_PHONE_NUMBER + "='1'", null, ContactsContract.Contacts.DISPLAY_NAME);
+
         if (cur.getCount() > 0)
         {
             while (cur.moveToNext())
             {
 
                 String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
-                int hasphonenumber = cur.getInt(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
 
                 //se periptwsi pou to id einai mesa sto arraylist twn protasewn
-                //h' i epafi den exei kanena noumero HAS_PHONE_NUMBER == 0
                 //paw stin epomeni
-                if (protaseisContactsIds.contains(id) || hasphonenumber == 0)
+                if (protaseisContactsIds.contains(id))
                     continue;
 
                 String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));

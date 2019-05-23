@@ -1,13 +1,20 @@
 package ceid.katefidis.calchas;
 
+import java.io.InputStream;
 import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.QuickContactBadge;
 import android.widget.TextView;
 
@@ -190,10 +198,15 @@ public class MobileArrayAdapter extends ArrayAdapter<Protasi> implements Filtera
             }
             else
             {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+                boolean showphoto = preferences.getBoolean("showphoto", true);
+
                 // We perform filtering operation
                 ArrayList<Protasi> nProtaseis = new ArrayList<Protasi>();
 
-                for (Protasi p : protaseis)
+                ArrayList<Protasi> mycontactlist = getAllContacts(showphoto);
+
+                for (Protasi p : mycontactlist)
                 {
                     //edw einai o tropos me ton opoio ginetai to search
                     String tocheck1 = Normalizer.normalize(p.name, Normalizer.Form.NFD);
@@ -215,6 +228,47 @@ public class MobileArrayAdapter extends ArrayAdapter<Protasi> implements Filtera
 
             }
             return results;
+        }
+
+        private ArrayList<Protasi> getAllContacts (boolean withphotos)
+        {
+
+            ArrayList<Protasi> mycontactlist = new ArrayList<Protasi>();
+
+            ContentResolver cr = context.getContentResolver();
+            Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, new String[] { ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.Contacts.HAS_PHONE_NUMBER }, ContactsContract.Contacts.HAS_PHONE_NUMBER + "='1'", null, ContactsContract.Contacts.DISPLAY_NAME);
+            if (cur.getCount() > 0)
+            {
+                while (cur.moveToNext())
+                {
+
+                    String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
+
+                    String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+
+                    Protasi mycalllogrecord = new Protasi("", name, 0.0, 0.0, -2.0, true, null,  id);
+
+                    if (withphotos)
+                    {
+                        //an thelw kai tis photos
+                        long lid = Long.parseLong(id);
+                        Uri photoUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, lid);
+                        InputStream photoInput = ContactsContract.Contacts.openContactPhotoInputStream(context.getContentResolver(), photoUri);
+                        if (photoInput != null)
+                        {
+                            mycalllogrecord.photo = BitmapFactory.decodeStream(photoInput);
+                        }
+                        else
+                            mycalllogrecord.photo = null;
+                    }
+
+
+
+                    mycontactlist.add(mycalllogrecord);
+                }
+            }
+            cur.close();
+            return mycontactlist;
         }
 
         @SuppressWarnings("unchecked")
