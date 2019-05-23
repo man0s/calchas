@@ -1048,7 +1048,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
         private double calcFreq(ArrayList<calllogrecord> calllog, String uniqueCachedName)
     {
         int occurrences = 0;

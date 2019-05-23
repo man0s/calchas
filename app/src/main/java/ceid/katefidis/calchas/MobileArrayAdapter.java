@@ -283,6 +283,7 @@ public class MobileArrayAdapter extends ArrayAdapter<Protasi> implements Filtera
             //	notifyDataSetInvalidated();
             //else
             //{
+
             protaseis = (ArrayList<Protasi>) results.values;
             notifyDataSetChanged();
             //}
