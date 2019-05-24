@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Random;
+
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -13,6 +15,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
@@ -35,6 +38,7 @@ public class MobileArrayAdapter extends ArrayAdapter<Protasi> implements Filtera
     private Filter contactFilter;
     private ArrayList<Protasi> protaseis;
     private ArrayList<Protasi> originprotaseis;
+    private int colorIndex = 0;
 
 
     public MobileArrayAdapter(Context context, ArrayList<Protasi> protaseis)
@@ -52,6 +56,11 @@ public class MobileArrayAdapter extends ArrayAdapter<Protasi> implements Filtera
         boolean DarkMode = settings.getBoolean("DarkMode", false);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.list_protaseis, parent, false);
+
+
+        if(colorIndex > 11) colorIndex = 0;
+        String[] darkColors = context.getResources().getStringArray(R.array.darkColors);
+        String[] lightColors = context.getResources().getStringArray(R.array.lightColors);
 
         //set seperator view not clickable
         rowView.setClickable(false);
@@ -94,8 +103,17 @@ public class MobileArrayAdapter extends ArrayAdapter<Protasi> implements Filtera
                 eikonacode.setImageBitmap(prot.photo);
             else
             {
-                if(DarkMode) eikonacode.setImageResource(R.drawable.account_circle_white_48dp);
-                else eikonacode.setImageResource(R.drawable.account_circle_black_48dp);
+                if(DarkMode) {
+                    eikonacode.setImageResource(R.drawable.account_circle_black_48dp);
+                    int randomDarkColor = Color.parseColor(darkColors[colorIndex]);
+                    eikonacode.setColorFilter(randomDarkColor);
+                }
+                else {
+                    eikonacode.setImageResource(R.drawable.account_circle_black_48dp);
+                    int randomLightColor = Color.parseColor(lightColors[colorIndex]);
+                    eikonacode.setColorFilter(randomLightColor);
+                }
+                colorIndex++;
             }
 
             //Gia to icon
@@ -149,8 +167,17 @@ public class MobileArrayAdapter extends ArrayAdapter<Protasi> implements Filtera
                 eikonacode.setImageBitmap(prot.photo);
             else
             {
-                if(DarkMode) eikonacode.setImageResource(R.drawable.account_circle_white_48dp);
-                else eikonacode.setImageResource(R.drawable.account_circle_black_48dp);
+                if(DarkMode) {
+                    eikonacode.setImageResource(R.drawable.account_circle_black_48dp);
+                    int randomDarkColor = Color.parseColor(darkColors[colorIndex]);
+                    eikonacode.setColorFilter(randomDarkColor);
+                }
+                else {
+                    eikonacode.setImageResource(R.drawable.account_circle_black_48dp);
+                    int randomLightColor = Color.parseColor(lightColors[colorIndex]);
+                    eikonacode.setColorFilter(randomLightColor);
+                }
+                colorIndex++;
             }
 
             //Gia to icon

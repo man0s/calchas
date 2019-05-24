@@ -233,4 +233,62 @@
         <item>260,ZM</item>
         <item>263,ZW</item>
     </string-array>
+
+
+    <!-- 	Light theme -->
+    <string-array name="darkColors">
+        <!--reds-->
+        <item>#FF5252</item>
+        <!--amber-->
+        <item>#FFD740</item>
+        <!-- deep purples -->
+        <item>#7C4DFF</item>
+        <!-- cyan -->
+        <item>#64FFDA</item>
+        <!-- pinks -->
+        <item>#FF4081</item>
+        <!-- purples -->
+        <item>#E040FB</item>
+        <!-- green -->
+        <item>#69F0AE</item>
+        <!-- indigo -->
+        <item>#536DFE</item>
+        <!--deep orange-->
+        <item>#FF6E40</item>
+        <!--blue-->
+        <item>#448AFF</item>
+        <!--orange-->
+        <item>#FFAB40</item>
+        <!--teal-->
+        <item>#18FFFF</item>
+    </string-array>
+
+
+    <!-- Dark items -->
+    <string-array name="lightColors">
+        <!--reds-->
+        <item>#D50000</item>
+        <!--amber-->
+        <item>#FFAB00</item>
+        <!-- deep purples -->
+        <item>#6200EA</item>
+        <!-- cyan -->
+        <item>#00B8D4</item>
+        <!-- pinks -->
+        <item>#C51162</item>
+        <!-- purples -->
+        <item>#AA00FF</item>
+        <!-- green -->
+        <item>#00C853</item>
+        <!-- indigo -->
+        <item>#304FFE</item>
+        <!--deep orange-->
+        <item>#DD2600</item>
+        <!--blue-->
+        <item>#2962FF</item>
+        <!--orange-->
+        <item>#FF6D00</item>
+        <!-- teal -->
+        <item>#00BFA5</item>
+    </string-array>
 </resources>

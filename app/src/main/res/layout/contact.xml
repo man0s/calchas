@@ -4,13 +4,11 @@
     android:layout_height="match_parent"
     android:background="@android:color/transparent">
 
-    <QuickContactBadge
+    <ceid.katefidis.calchas.RoundedQuickContactBadge
         android:id="@+id/contact_photo"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        />
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_gravity="center|center_horizontal" />
 
     <TextView
         android:id="@+id/contact_name_to_list"
