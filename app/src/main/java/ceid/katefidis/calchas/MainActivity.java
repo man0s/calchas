@@ -1101,8 +1101,7 @@ public class MainActivity extends AppCompatActivity {
         return score;
     }
 
-    private ArrayList<calllogrecord> getCallLog (long days, boolean smsSeek, boolean socialSeek)
-    {
+    private ArrayList<calllogrecord> getCallLog (long days, boolean smsSeek, boolean socialSeek) {
         long startTime = System.currentTimeMillis();
         //Ena ArrayList gia na valw ta tilefwna tou call log pou anikoun sto freq window
         ArrayList<calllogrecord> subcalllog = new ArrayList<calllogrecord>();
@@ -1110,13 +1109,13 @@ public class MainActivity extends AppCompatActivity {
         //pairnw tin trexousa xroniki periodo kai aferw tis meres pou thelw wste na ftiaxw to Freg window
         //long freq_window = System.currentTimeMillis() / 1000L;
         long freq_window = System.currentTimeMillis();
-        freq_window = freq_window - days*24L*3600L*1000L;
+        freq_window = freq_window - days * 24L * 3600L * 1000L;
 
 
         ContentResolver cr = getContentResolver();
         //edw bazw poies steiles thelw na sikwsw apo to call log
         //http://developer.android.com/reference/android/provider/CallLog.Calls.html
-        String[] selectCols = new String[] {CallLog.Calls.NUMBER, CallLog.Calls.DATE, CallLog.Calls.CACHED_NAME};
+        String[] selectCols = new String[]{CallLog.Calls.NUMBER, CallLog.Calls.DATE, CallLog.Calls.CACHED_NAME};
         //Gia na ferw mono tis kliseis kai oxi ta SMS exw prosthesie to logtype
         //MONO gia Samsung tilefwna
         //http://stackoverflow.com/questions/11294563/sms-are-duplicated-as-callssamsung-galaxy-s-ii
@@ -1125,27 +1124,31 @@ public class MainActivity extends AppCompatActivity {
 
         long startTimeBug = System.currentTimeMillis();
         //CACHED_NAME Android Bug/Duplication Protasi Bug Fix
-        String[] FirstRowBug_selectCols = new String[] {CallLog.Calls._ID, CallLog.Calls.NUMBER, CallLog.Calls.CACHED_NAME};
+        String[] FirstRowBug_selectCols = new String[]{CallLog.Calls._ID, CallLog.Calls.NUMBER, CallLog.Calls.CACHED_NAME};
 
         try {
-            cur = cr.query(CallLog.Calls.CONTENT_URI, FirstRowBug_selectCols, "logtype = 100 AND DATE >" + freq_window, null, "DATE DESC LIMIT 1");
+            cur = cr.query(CallLog.Calls.CONTENT_URI, FirstRowBug_selectCols, "logtype = 100 AND DATE >" + freq_window, null, "DATE DESC LIMIT 5");
             if (cur == null)
-                cur = cr.query(CallLog.Calls.CONTENT_URI, FirstRowBug_selectCols, "DATE >" + freq_window, null, "DATE DESC LIMIT 1");
+                cur = cr.query(CallLog.Calls.CONTENT_URI, FirstRowBug_selectCols, "DATE >" + freq_window, null, "DATE DESC LIMIT 5");
         } catch (SQLiteException e) {
-                cur = cr.query(CallLog.Calls.CONTENT_URI, FirstRowBug_selectCols, "DATE >" + freq_window, null, "DATE DESC LIMIT 1");
+            cur = cr.query(CallLog.Calls.CONTENT_URI, FirstRowBug_selectCols, "DATE >" + freq_window, null, "DATE DESC LIMIT 5");
         }
 
 
         //pernw to noumero ws double
         double tempnumber = 1.0;
 
-        cur.moveToFirst();
-        Log.i("Bug", cur.getString(cur.getColumnIndex(CallLog.Calls._ID)) + "|" + cur.getString(cur.getColumnIndex(CallLog.Calls.CACHED_NAME)) + "|" + cur.getString(cur.getColumnIndex(CallLog.Calls.NUMBER)));
-        Integer FirstRowBug_ID = Integer.parseInt(cur.getString(cur.getColumnIndex(CallLog.Calls._ID)));
-        String FirstRowBug_temp_cached_name = cur.getString(cur.getColumnIndex(CallLog.Calls.CACHED_NAME));
-        if(FirstRowBug_temp_cached_name == null){
-            String FirstRowBug_CACHED_NAME = getContactName(cur.getString(cur.getColumnIndex(CallLog.Calls.NUMBER)));
-            if(FirstRowBug_CACHED_NAME != null) updateCachedName(cr, FirstRowBug_ID, FirstRowBug_CACHED_NAME);
+        //cur.moveToFirst();
+        while (cur.moveToNext())
+        {
+            Log.i("Bug", cur.getString(cur.getColumnIndex(CallLog.Calls._ID)) + "|" + cur.getString(cur.getColumnIndex(CallLog.Calls.CACHED_NAME)) + "|" + cur.getString(cur.getColumnIndex(CallLog.Calls.NUMBER)));
+            Integer FirstRowBug_ID = Integer.parseInt(cur.getString(cur.getColumnIndex(CallLog.Calls._ID)));
+            String FirstRowBug_temp_cached_name = cur.getString(cur.getColumnIndex(CallLog.Calls.CACHED_NAME));
+            if (FirstRowBug_temp_cached_name == null) {
+                String FirstRowBug_CACHED_NAME = getContactName(cur.getString(cur.getColumnIndex(CallLog.Calls.NUMBER)));
+                if (FirstRowBug_CACHED_NAME != null)
+                    updateCachedName(cr, FirstRowBug_ID, FirstRowBug_CACHED_NAME);
+            }
         }
         cur.close();
 
