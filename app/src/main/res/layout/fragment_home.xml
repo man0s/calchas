@@ -5,14 +5,23 @@
     android:layout_height="match_parent"
     tools:context=".HomeFragment">
 
-    <ListView
-        android:id="@+id/list"
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:background="?attr/colorBackground"
-        android:cacheColorHint="?attr/colorBackground" >
+    <!--<ListView-->
+        <!--android:id="@+id/list"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="fill_parent"-->
+        <!--android:background="?attr/colorBackground"-->
+        <!--android:cacheColorHint="?attr/colorBackground" >-->
 
-    </ListView>
+    <!--</ListView>-->
+
+        <ExpandableListView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:background="?attr/colorBackground"
+            android:cacheColorHint="?attr/colorBackground"
+            android:groupIndicator="@null"
+            android:childDivider="#00000000"/>
 
     <ProgressBar
         android:id="@+id/progressBar"

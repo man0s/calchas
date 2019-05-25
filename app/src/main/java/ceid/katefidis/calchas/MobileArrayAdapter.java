@@ -22,7 +22,10 @@ import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
+import android.widget.BaseExpandableListAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
@@ -30,9 +33,10 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.QuickContactBadge;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
-public class MobileArrayAdapter extends ArrayAdapter<Protasi> implements Filterable
+public class MobileArrayAdapter extends BaseExpandableListAdapter implements Filterable
 {
     private final Context context;
     private Filter contactFilter;
@@ -43,19 +47,24 @@ public class MobileArrayAdapter extends ArrayAdapter<Protasi> implements Filtera
 
     public MobileArrayAdapter(Context context, ArrayList<Protasi> protaseis)
     {
-        super(context, R.layout.list_protaseis, protaseis);
+        //super(context, R.layout.list_protaseis, protaseis);
         this.context = context;
         this.protaseis = protaseis;
         this.originprotaseis = protaseis;
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent)
+    public View getGroupView(int position, boolean isExpanded,
+                             View rowView, ViewGroup parent)
     {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         boolean DarkMode = settings.getBoolean("DarkMode", false);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.list_protaseis, parent, false);
+//        View rowView = inflater.inflate(R.layout.list_protaseis, parent, false);
+
+        if (rowView == null) {
+            rowView = inflater.inflate(R.layout.list_protaseis, null);
+        }
 
 
         if(colorIndex > 11) colorIndex = 0;
@@ -67,7 +76,8 @@ public class MobileArrayAdapter extends ArrayAdapter<Protasi> implements Filtera
         rowView.setEnabled(false);
 
         //Pairnw to antikeimeno pou fainetai sto position
-        Protasi prot = protaseis.get(position);
+//        Protasi prot = protaseis.get(position);
+        Protasi prot = (Protasi) getGroup(position);
 
         //se periptwsi pou antikeimeno tou list view einai kapoios seperator
         //fernw ws row to seperator.xml
@@ -195,6 +205,104 @@ public class MobileArrayAdapter extends ArrayAdapter<Protasi> implements Filtera
         }
         return rowView;
     }
+
+    @Override
+    public View getChildView(final int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+
+        final Protasi contacto = (Protasi) getChild(groupPosition, childPosition);
+
+        if (convertView == null) {
+
+            LayoutInflater layoutInflater = (LayoutInflater) this.context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+            convertView = layoutInflater.inflate(R.layout.expanded_protasi, null);
+
+        }
+
+        //CircleImageView circleImageView = convertView.findViewById(R.id.circleIMG);
+
+        //Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), contacto.getImg());
+        //circleImageView.setImageBitmap(bitmap);
+
+        LinearLayout layoutLlamar = convertView.findViewById(R.id.lLlamar);
+        LinearLayout layoutVideollamada = convertView.findViewById(R.id.lVideoLlamada);
+        LinearLayout layoutMensaje = convertView.findViewById(R.id.lMensaje);
+        LinearLayout layoutInfo = convertView.findViewById(R.id.lInfo);
+
+        layoutLlamar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(v.getContext(), "Call to: "
+                        + contacto.number, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        layoutMensaje.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(v.getContext(), "Message to: "
+                        + contacto.number, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        layoutVideollamada.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(v.getContext(), "Videocall: "
+                        + contacto.number, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.fade_in);
+        convertView.startAnimation(animation);
+
+
+        return convertView;
+    }
+
+
+    @Override
+    public int getGroupCount() {
+        return this.protaseis.size();
+    }
+
+    @Override
+    public int getChildrenCount(int groupPosition) {
+        return 1;
+    }
+
+    @Override
+    public Protasi getGroup(int groupPosition) {
+        return this.protaseis.get(groupPosition);
+    }
+
+    @Override
+    public Object getChild(int groupPosition, int childPosition) {
+        return this.protaseis.get(groupPosition);
+    }
+
+    @Override
+    public long getGroupId(int groupPosition) {
+        return groupPosition;
+    }
+
+    @Override
+    public long getChildId(int groupPosition, int childPosition) {
+        return childPosition;
+    }
+
+    @Override
+    public boolean hasStableIds() {
+        return false;
+    }
+
+    @Override
+    public boolean isChildSelectable(int groupPosition, int childPosition) {
+        return true;
+    }
+
 
     public void resetData()
     {

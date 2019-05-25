@@ -43,6 +43,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -168,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<calllogrecord> subcalllog = new ArrayList<calllogrecord>();
     ArrayList<Protasi> finalprotaseis = new ArrayList<Protasi>();
     MobileArrayAdapter arrayAdapter;
+    private int lastExpandedPosition = -1;
 //    //	Tracker tracker;
 //    Long start_time;
 //    Long end_time;
@@ -789,7 +791,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Void result) {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
             final String selectedinterface = preferences.getString("inteface", "3");
-            ListView lista1 = (ListView) findViewById(R.id.list);
+            final ExpandableListView lista1 = (ExpandableListView) findViewById(R.id.list);
             //loading spinner
             ProgressBar spinner = (ProgressBar)findViewById(R.id.progressBar);
 
@@ -803,6 +805,16 @@ public class MainActivity extends AppCompatActivity {
                 //To vazw gia to onresume
                 //wste to edit text na min exei to focus kai emfanizetai to pliktrologio!
                 lista1.requestFocus();
+
+                lista1.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+                    @Override
+                    public void onGroupExpand(int groupPosition) {
+                        if(lastExpandedPosition != -1 && groupPosition != lastExpandedPosition){
+                            lista1.collapseGroup(lastExpandedPosition);
+                        }
+                        lastExpandedPosition = groupPosition;
+                    }
+                });
 
                 //Filtro///
 
