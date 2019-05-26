@@ -21,6 +21,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
@@ -174,8 +175,8 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<calllogrecord> subcalllog = new ArrayList<calllogrecord>();
     ArrayList<Protasi> finalprotaseis = new ArrayList<Protasi>();
     MobileArrayAdapter arrayAdapter;
+    ExpandableListView lista1;
     private int lastExpandedPosition = -1;
-    private int lastClickedContact = -1;
 //    //	Tracker tracker;
 //    Long start_time;
 //    Long end_time;
@@ -405,6 +406,13 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private Parcelable state;
+    @Override
+    public void onPause() {
+        //apothikeusai thn katastasi ths listas otan paei onPause
+        state = lista1.onSaveInstanceState();
+        super.onPause();
+    }
 
 //    @Override
 //    protected void onPause()
@@ -534,7 +542,7 @@ public class MainActivity extends AppCompatActivity {
             //O arithmos twn protasewn diavazetai apo ta preferences tou xristi
             int numProtaseis = Integer.parseInt(strNumProtaseis);
 
-            ListView lista1 = (ListView) findViewById(R.id.list);
+            //ListView lista1 = (ListView) findViewById(R.id.list);
 
             //edw tha apothikeusw to call log gia to diastima pou me endiaferei
             //DEVELOPER OPTION TO EXW VGALEI EXE
@@ -797,12 +805,12 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Void result) {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
             final String selectedinterface = preferences.getString("inteface", "3");
-            final ExpandableListView lista1 = (ExpandableListView) findViewById(R.id.list);
             //loading spinner
             ProgressBar spinner = (ProgressBar)findViewById(R.id.progressBar);
 
             //ftiaxnw enan neo arrayAdapter
             arrayAdapter = new MobileArrayAdapter(MainActivity.this, finalprotaseis);
+            lista1 = (ExpandableListView) findViewById(R.id.list);
 
             try {
                 lista1.setAdapter(arrayAdapter);
@@ -812,7 +820,12 @@ public class MainActivity extends AppCompatActivity {
                 //wste to edit text na min exei to focus kai emfanizetai to pliktrologio!
                 lista1.requestFocus();
 
-                if( lastClickedContact != -1) lista1.setSelectedGroup(lastClickedContact - 6);
+                //an to saved state sto pause den einai miden, epanefere thn katastash ths listas.
+                if (state != null){
+                    lista1.onRestoreInstanceState(state);
+                }
+
+
 
                 lista1.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
                     @Override
@@ -821,7 +834,6 @@ public class MainActivity extends AppCompatActivity {
                             lista1.collapseGroup(lastExpandedPosition);
                         }
                         lastExpandedPosition = groupPosition;
-                        lastClickedContact = -1;
                     }
                 });
 
@@ -836,7 +848,8 @@ public class MainActivity extends AppCompatActivity {
                             Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, String.valueOf(prot.contactID));
                             intent.setData(uri);
                             startActivity(intent);
-                            lastClickedContact = i;
+                            arrayAdapter.notifyDataSetChanged();
+                            //lista1.setSelectedGroup(0);
                             return true;
                         }
                         return false;
