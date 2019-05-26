@@ -38,12 +38,16 @@ import android.text.TextUtils;
 import android.transition.Fade;
 import android.transition.Slide;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ExpandableListView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -170,8 +174,8 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<calllogrecord> subcalllog = new ArrayList<calllogrecord>();
     ArrayList<Protasi> finalprotaseis = new ArrayList<Protasi>();
     MobileArrayAdapter arrayAdapter;
-    private HashMap<Protasi, String> listProtaseis = new HashMap<>();
     private int lastExpandedPosition = -1;
+    private int lastClickedContact = -1;
 //    //	Tracker tracker;
 //    Long start_time;
 //    Long end_time;
@@ -603,7 +607,6 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 finalprotaseis.add(protasitemp);
-                listProtaseis.put(protasitemp, protasitemp.number);
 
                 i++;
                 //Thelw tis N kalyteres protaseis
@@ -799,7 +802,7 @@ public class MainActivity extends AppCompatActivity {
             ProgressBar spinner = (ProgressBar)findViewById(R.id.progressBar);
 
             //ftiaxnw enan neo arrayAdapter
-            arrayAdapter = new MobileArrayAdapter(MainActivity.this, finalprotaseis, listProtaseis);
+            arrayAdapter = new MobileArrayAdapter(MainActivity.this, finalprotaseis);
 
             try {
                 lista1.setAdapter(arrayAdapter);
@@ -809,6 +812,8 @@ public class MainActivity extends AppCompatActivity {
                 //wste to edit text na min exei to focus kai emfanizetai to pliktrologio!
                 lista1.requestFocus();
 
+                if( lastClickedContact != -1) lista1.setSelectedGroup(lastClickedContact - 6);
+
                 lista1.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
                     @Override
                     public void onGroupExpand(int groupPosition) {
@@ -816,6 +821,25 @@ public class MainActivity extends AppCompatActivity {
                             lista1.collapseGroup(lastExpandedPosition);
                         }
                         lastExpandedPosition = groupPosition;
+                        lastClickedContact = -1;
+                    }
+                });
+
+                lista1.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+                    @Override
+                    public boolean onGroupClick(ExpandableListView expandableListView, View view, int i, long l) {
+                        Protasi prot = (Protasi) arrayAdapter.getGroup(i);
+                        if(prot.score == -3.0){
+                            return true;
+                        } else if(prot.score == -2.0){
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, String.valueOf(prot.contactID));
+                            intent.setData(uri);
+                            startActivity(intent);
+                            lastClickedContact = i;
+                            return true;
+                        }
+                        return false;
                     }
                 });
 
@@ -1496,8 +1520,6 @@ public class MainActivity extends AppCompatActivity {
                     continue;
 
                 String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-
-
 
                 Protasi mycalllogrecord = new Protasi("", name, 0.0, 0.0, -2.0, true, null,  id);
 

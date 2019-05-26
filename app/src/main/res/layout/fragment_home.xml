@@ -20,7 +20,8 @@
             android:layout_height="fill_parent"
             android:background="?attr/colorBackground"
             android:cacheColorHint="?attr/colorBackground"
-            android:groupIndicator="@null" />
+            android:groupIndicator="@null"
+            android:childDivider="#00000000" />
 
     <ProgressBar
         android:id="@+id/progressBar"

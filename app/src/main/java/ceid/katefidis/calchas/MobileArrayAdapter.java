@@ -10,9 +10,12 @@ import java.util.Locale;
 import java.util.Random;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
@@ -44,185 +47,157 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
     private Filter contactFilter;
     private ArrayList<Protasi> protaseis;
     private ArrayList<Protasi> originprotaseis;
-    private HashMap<Protasi, String> listProtaseis;
     private int colorIndex = 0;
 
 
-    public MobileArrayAdapter(Context context, ArrayList<Protasi> protaseis, HashMap<Protasi, String> listProtaseis)
+    public MobileArrayAdapter(Context context, ArrayList<Protasi> protaseis)
     {
         //super(context, R.layout.list_protaseis, protaseis);
         this.context = context;
         this.protaseis = protaseis;
         this.originprotaseis = protaseis;
-        this.listProtaseis = listProtaseis;
     }
 
     @Override
     public View getGroupView(int position, boolean isExpanded,
                              View rowView, ViewGroup parent)
     {
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        boolean DarkMode = settings.getBoolean("DarkMode", false);
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        rowView = inflater.inflate(R.layout.list_protaseis, parent, false);
+            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+            boolean DarkMode = settings.getBoolean("DarkMode", false);
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            rowView = inflater.inflate(R.layout.list_protaseis, parent, false);
 //
 //        if (rowView == null) {
 //            rowView = inflater.inflate(R.layout.list_protaseis, null);
 //        }
 
 
-        if(colorIndex > 11) colorIndex = 0;
-        String[] darkColors = context.getResources().getStringArray(R.array.darkColors);
-        String[] lightColors = context.getResources().getStringArray(R.array.lightColors);
 
-        //set seperator view not clickable
-        rowView.setClickable(false);
-        rowView.setEnabled(false);
+            colorIndex = position;
+            if (colorIndex > 11) colorIndex = colorIndex%11;
 
-        //Pairnw to antikeimeno pou fainetai sto position
+            String[] darkColors = context.getResources().getStringArray(R.array.darkColors);
+            String[] lightColors = context.getResources().getStringArray(R.array.lightColors);
+
+
+            //Pairnw to antikeimeno pou fainetai sto position
 //        Protasi prot = protaseis.get(position);
-        Protasi prot = (Protasi) getGroup(position);
+            Protasi prot = (Protasi) getGroup(position);
 
-        //se periptwsi pou antikeimeno tou list view einai kapoios seperator
-        //fernw ws row to seperator.xml
-        if (prot.score == -3.0)
-        {
-            rowView = inflater.inflate(R.layout.seperator, parent, false);
-            TextView SeperatorText = (TextView) rowView.findViewById(R.id.seperator);
-            SeperatorText.setText(prot.name);
+            //se periptwsi pou antikeimeno tou list view einai kapoios seperator
+            //fernw ws row to seperator.xml
+            if (prot.score == -3.0) {
+                rowView = inflater.inflate(R.layout.seperator, parent, false);
+                rowView.setEnabled(false);
+                rowView.setClickable(false);
+                TextView SeperatorText = (TextView) rowView.findViewById(R.id.seperator);
+                SeperatorText.setText(prot.name);
 //            Typeface face = Typeface.createFromAsset(context.getAssets(),
 //                    "fonts/Lobster.ttf");
 //            SeperatorText.setTypeface(face);
 
-        }
-        //se periptwsi pou einai epafi fernw mono badge kai onoma
-        else if (prot.score == -2.0)
-        {
-            rowView = inflater.inflate(R.layout.contact, parent, false);
-            TextView ContactName = (TextView) rowView.findViewById(R.id.contact_name_to_list);
-            if(prot.name.length() > 16)
-            {
-                String name = prot.name.substring(0, Math.min(prot.name.length(), 16)) + ".";
-                ContactName.setText(name);
-            } else ContactName.setText(prot.name);
-
-            //if(prot.type != null)  ContactName.setText(prot.name + "|" + prot.type);
-
-            //Gia to badge
-            //QuickContactBadge eikonacode = (QuickContactBadge) rowView.findViewById(R.id.contact_photo);
-            RoundedQuickContactBadge eikonacode = (RoundedQuickContactBadge) rowView.findViewById(R.id.contact_photo);
-            Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, String.valueOf(prot.contactID));
-            eikonacode.assignContactUri(uri);
-            if (prot.photo != null)
-                eikonacode.setImageBitmap(prot.photo);
-            else
-            {
-                if(DarkMode) {
-                    eikonacode.setImageResource(R.drawable.account_circle_black_48dp);
-                    int randomDarkColor = Color.parseColor(darkColors[colorIndex]);
-                    eikonacode.setColorFilter(randomDarkColor);
-                }
-                else {
-                    eikonacode.setImageResource(R.drawable.account_circle_black_48dp);
-                    int randomLightColor = Color.parseColor(lightColors[colorIndex]);
-                    eikonacode.setColorFilter(randomLightColor);
-                }
-                colorIndex++;
             }
-
-            //Gia to icon
-            ImageView typeIcon = rowView.findViewById(R.id.type);
-            if(prot.type != null){
-                if(prot.type.equals("phone")){
-                    typeIcon.setImageResource(R.drawable.ic_call_24dp);
-                } else if(prot.type.equals("viber")) {
-                    typeIcon.setImageResource(R.drawable.ic_viber_24dp);
-                } else if(prot.type.equals("whatsapp")) {
-                    typeIcon.setImageResource(R.drawable.ic_whatsapp_24dp);
-                } else  typeIcon.setImageResource(R.drawable.ic_sms_24dp);
-            }
-
-        }
-        else
-        {
-            TextView textView = rowView.findViewById(R.id.contact_name);
-            TextView textView1 = rowView.findViewById(R.id.contact_number);
-            TextView datecontacted = rowView.findViewById(R.id.datecontacted);
-            TextView network = rowView.findViewById(R.id.network);
-
-            //Gia na efmanizetai i wra kai imerominia tis teleutaias epikoinwnias me tin protasi
-            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM HH:mm",Locale.getDefault());
-            String dateString = formatter.format(new Date(prot.date));
-            Log.d("ERROR", prot.date + "|" + dateString);
-            datecontacted.setText(dateString);
-            network.setText(prot.network);
-            if (prot.isContact)
-            {
-                if(prot.name.length() > 16)
-                {
+            //se periptwsi pou einai epafi fernw mono badge kai onoma
+            else if (prot.score == -2.0) {
+                rowView = inflater.inflate(R.layout.contact, parent, false);
+                TextView ContactName = (TextView) rowView.findViewById(R.id.contact_name_to_list);
+                if (prot.name.length() > 16) {
                     String name = prot.name.substring(0, Math.min(prot.name.length(), 16)) + ".";
-                    textView.setText(name);
-                } else textView.setText(prot.name);
-                //if(prot.type != null)   textView.setText(prot.name + "|" + prot.type);
-                textView1.setText(prot.number);
-            }
-            else
-            {
-                textView.setText(prot.number);
-                //if(prot.type != null)   textView.setText(prot.name + "|" + prot.type);
-                textView1.setText("");
-            }
+                    ContactName.setText(name);
+                } else ContactName.setText(prot.name);
 
-            //Gia to badge
-            //QuickContactBadge eikonacode = (QuickContactBadge) rowView.findViewById(R.id.contact_photo);
-            RoundedQuickContactBadge eikonacode = (RoundedQuickContactBadge) rowView.findViewById(R.id.contact_photo);
-            eikonacode.assignContactFromPhone(prot.number, true);
+                //if(prot.type != null)  ContactName.setText(prot.name + "|" + prot.type);
 
-            if (prot.photo != null)
-                eikonacode.setImageBitmap(prot.photo);
-            else
-            {
-                if(DarkMode) {
-                    eikonacode.setImageResource(R.drawable.account_circle_black_48dp);
-                    int randomDarkColor = Color.parseColor(darkColors[colorIndex]);
-                    eikonacode.setColorFilter(randomDarkColor);
+                //Gia to badge
+                //QuickContactBadge eikonacode = (QuickContactBadge) rowView.findViewById(R.id.contact_photo);
+                RoundedQuickContactBadge eikonacode = (RoundedQuickContactBadge) rowView.findViewById(R.id.contact_photo);
+                Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, String.valueOf(prot.contactID));
+                eikonacode.assignContactUri(uri);
+                if (prot.photo != null) {
+                    eikonacode.setImageBitmap(prot.photo);
+                } else {
+                    if (DarkMode) {
+                        eikonacode.setImageResource(R.drawable.account_circle_black_48dp);
+                        int randomDarkColor = Color.parseColor(darkColors[colorIndex]);
+                        eikonacode.setColorFilter(randomDarkColor);
+                    } else {
+                        eikonacode.setImageResource(R.drawable.account_circle_black_48dp);
+                        int randomLightColor = Color.parseColor(lightColors[colorIndex]);
+                        eikonacode.setColorFilter(randomLightColor);
+                    }
                 }
-                else {
-                    eikonacode.setImageResource(R.drawable.account_circle_black_48dp);
-                    int randomLightColor = Color.parseColor(lightColors[colorIndex]);
-                    eikonacode.setColorFilter(randomLightColor);
+
+            } else {
+                TextView textView = rowView.findViewById(R.id.contact_name);
+                TextView textView1 = rowView.findViewById(R.id.contact_number);
+                TextView datecontacted = rowView.findViewById(R.id.datecontacted);
+                TextView network = rowView.findViewById(R.id.network);
+
+                //Gia na efmanizetai i wra kai imerominia tis teleutaias epikoinwnias me tin protasi
+                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM HH:mm", Locale.getDefault());
+                String dateString = formatter.format(new Date(prot.date));
+                datecontacted.setText(dateString);
+                network.setText(prot.network);
+                if (prot.isContact) {
+                    if (prot.name.length() > 16) {
+                        String name = prot.name.substring(0, Math.min(prot.name.length(), 16)) + ".";
+                        textView.setText(name);
+                    } else textView.setText(prot.name);
+                    //if(prot.type != null)   textView.setText(prot.name + "|" + prot.type);
+                    textView1.setText(prot.number);
+                } else {
+                    textView.setText(prot.number);
+                    //if(prot.type != null)   textView.setText(prot.name + "|" + prot.type);
+                    textView1.setText("");
                 }
-                colorIndex++;
+
+                //Gia to badge
+                //QuickContactBadge eikonacode = (QuickContactBadge) rowView.findViewById(R.id.contact_photo);
+                RoundedQuickContactBadge eikonacode = (RoundedQuickContactBadge) rowView.findViewById(R.id.contact_photo);
+                eikonacode.assignContactFromPhone(prot.number, true);
+
+                if (prot.photo != null) {
+                    eikonacode.setImageBitmap(prot.photo);
+                } else {
+                    if (DarkMode) {
+                        eikonacode.setImageResource(R.drawable.account_circle_black_48dp);
+                        int randomDarkColor = Color.parseColor(darkColors[colorIndex]);
+                        eikonacode.setColorFilter(randomDarkColor);
+                    } else {
+                        eikonacode.setImageResource(R.drawable.account_circle_black_48dp);
+                        int randomLightColor = Color.parseColor(lightColors[colorIndex]);
+                        eikonacode.setColorFilter(randomLightColor);
+                    }
+                }
+
+                //Gia to icon
+                ImageView typeIcon = rowView.findViewById(R.id.type);
+                if (prot.type != null) {
+                    if (prot.type.equals("phone")) {
+                        typeIcon.setImageResource(R.drawable.ic_call_24dp);
+                    } else if (prot.type.equals("viber")) {
+                        typeIcon.setImageResource(R.drawable.ic_viber_24dp);
+                    } else if (prot.type.equals("whatsapp")) {
+                        typeIcon.setImageResource(R.drawable.ic_whatsapp_24dp);
+                    } else typeIcon.setImageResource(R.drawable.ic_sms_24dp);
+                }
+
             }
 
-            //Gia to icon
-            ImageView typeIcon = rowView.findViewById(R.id.type);
-            if(prot.type != null){
-                if(prot.type.equals("phone")){
-                    typeIcon.setImageResource(R.drawable.ic_call_24dp);
-                } else if(prot.type.equals("viber")) {
-                    typeIcon.setImageResource(R.drawable.ic_viber_24dp);
-                } else if(prot.type.equals("whatsapp")) {
-                    typeIcon.setImageResource(R.drawable.ic_whatsapp_24dp);
-                } else  typeIcon.setImageResource(R.drawable.ic_sms_24dp);
-            }
-
-        }
         return rowView;
     }
 
     @Override
     public View getChildView(final int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
-        final String phoneNumber = (String) getChild(groupPosition, childPosition);
+        //parent.setPressed(true);
+        final Protasi resultToCall = (Protasi) getChild(groupPosition, childPosition);
 
         if (convertView == null) {
 
             LayoutInflater layoutInflater = (LayoutInflater) this.context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
             convertView = layoutInflater.inflate(R.layout.expanded_protasi, null);
-
         }
 
 
@@ -231,43 +206,124 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         //Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), contacto.getImg());
         //circleImageView.setImageBitmap(bitmap);
 
-        LinearLayout layoutLlamar = convertView.findViewById(R.id.lLlamar);
-        LinearLayout layoutVideollamada = convertView.findViewById(R.id.lVideoLlamada);
-        LinearLayout layoutMensaje = convertView.findViewById(R.id.lMensaje);
-        LinearLayout layoutInfo = convertView.findViewById(R.id.lInfo);
+//        LinearLayout layoutLlamar = convertView.findViewById(R.id.lLlamar);
+//        LinearLayout layoutVideollamada = convertView.findViewById(R.id.lVideoLlamada);
+//        LinearLayout layoutMensaje = convertView.findViewById(R.id.lMensaje);
+//        LinearLayout layoutInfo = convertView.findViewById(R.id.lInfo);
+//
+//        layoutLlamar.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Toast.makeText(v.getContext(), "Call to: "
+//                        + resultToCall.number, Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//
+//        layoutMensaje.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Toast.makeText(v.getContext(), "Message to: "
+//                        + resultToCall.number, Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//
+//        layoutVideollamada.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Toast.makeText(v.getContext(), "Videocall: "
+//                        + resultToCall.number, Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
-        layoutLlamar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(v.getContext(), "Call to: "
-                        + phoneNumber, Toast.LENGTH_SHORT).show();
-            }
-        });
+        //se periptwsi pou ginei click panw se seperator
+        if (resultToCall.score == -3.0) {
+            //min Kaneis tipota
 
-        layoutMensaje.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(v.getContext(), "Message to: "
-                        + phoneNumber, Toast.LENGTH_SHORT).show();
-            }
-        });
+        } else {
 
-        layoutVideollamada.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(v.getContext(), "Videocall: "
-                        + phoneNumber, Toast.LENGTH_SHORT).show();
+            int value = 0; //an to epilegmeno einai stis protaseis
+            if (resultToCall.suggested) {
+                value = 1;
             }
-        });
+//                    tracker.send(
+//                            new HitBuilders.EventBuilder()
+//                                    .setCategory("List")
+//                                    .setAction("Click")
+//                                    .setLabel("WasSuggestion")
+//                                    .setValue(value)
+//                                    .build());
+
+            if (resultToCall.score == -2.0) //se periptwsei pou kanei click panw se epafi tou contact list
+            {
+
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, String.valueOf(resultToCall.contactID));
+                intent.setData(uri);
+                context.startActivity(intent);
+
+            } else {
+
+//                            case 0: //phone
+//                                Intent phoneIntent = new Intent(Intent.ACTION_CALL);
+//                                phoneIntent.setData(Uri.parse("tel:" + numberToCall));
+//                                startActivity(phoneIntent);
+//                                break;
+//                            case 1: //viber
+//                                if(appInstalledOrNot("com.viber.voip")) //if app is installed in the device
+//                                {
+//                                    Intent viberIntent = new Intent(Intent.ACTION_VIEW);
+//                                    viberIntent.setPackage("com.viber.voip");
+//                                    //start viber even if it's not in the background
+//                                    String apiViber;
+//                                    if(numberToCall.charAt(0) != '+') //no country prefix social number encoding fix
+//                                    {
+//                                        String fixedPrefixNumber = GetCountryZipCode() + numberToCall;
+//                                        apiViber = "viber://contact?number=" + fixedPrefixNumber;
+//                                    } else apiViber = "viber://contact?number=" + numberToCall.replace("+", "");
+//                                    Log.i("API", apiViber);
+//                                    viberIntent.setData(Uri.parse(apiViber));
+//                                    startActivity(viberIntent);
+//                                } else {
+//                                    Toast.makeText(getApplicationContext(), "Viber is not installed!", Toast.LENGTH_LONG).show();
+//                                }
+//                                break;
+//                            case 2: //whatsapp
+//                                if(appInstalledOrNot("com.whatsapp")) //if app is installed in the device
+//                                {
+//                                    Intent whatsappIntent = new Intent(Intent.ACTION_VIEW);
+//                                    String apiWhatsApp;
+//                                    if(numberToCall.charAt(0) != '+') //no country prefix social number encoding fix
+//                                    {
+//                                        String fixedPrefixNumber = GetCountryZipCode() + numberToCall;
+//                                        apiWhatsApp = "https://api.whatsapp.com/send?phone=" + fixedPrefixNumber;
+//                                    } else apiWhatsApp = "https://api.whatsapp.com/send?phone=" + numberToCall.replace("+", "");
+//                                    Log.i("API", apiWhatsApp);
+//                                    whatsappIntent.setData(Uri.parse(apiWhatsApp));
+//                                    startActivity(whatsappIntent);
+//                                } else {
+//                                    Toast.makeText(getApplicationContext(), "WhatsApp is not installed!", Toast.LENGTH_LONG).show();
+//                                }
+//                                break;
+//                            case 3: //messages
+//                                Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+//                                smsIntent.setData(Uri.parse("sms:" + numberToCall));
+//                                startActivity(smsIntent);
+//                                break;
+//                        }
+
+            }
+
+        }
 
 
         Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.fade_in);
-        animation.setDuration(500);
+        animation.setDuration(700);
         convertView.startAnimation(animation);
 
 
         return convertView;
     }
+
 
 
     @Override
@@ -287,7 +343,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        return this.listProtaseis.get(this.protaseis.get(groupPosition));
+        return this.protaseis.get(groupPosition);
     }
 
     @Override
