@@ -1720,7 +1720,7 @@ public class MainActivity extends AppCompatActivity {
         return(alertDialogBuilder.create());
     }
 
-    private boolean appInstalledOrNot(String uri) {
+    public boolean appInstalledOrNot(String uri) {
         PackageManager pm = getPackageManager();
         boolean app_installed;
         try {

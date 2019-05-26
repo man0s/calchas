@@ -17,12 +17,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -200,41 +202,6 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
             convertView = layoutInflater.inflate(R.layout.expanded_protasi, null);
         }
 
-
-        //CircleImageView circleImageView = convertView.findViewById(R.id.circleIMG);
-
-        //Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), contacto.getImg());
-        //circleImageView.setImageBitmap(bitmap);
-
-//        LinearLayout layoutLlamar = convertView.findViewById(R.id.lLlamar);
-//        LinearLayout layoutVideollamada = convertView.findViewById(R.id.lVideoLlamada);
-//        LinearLayout layoutMensaje = convertView.findViewById(R.id.lMensaje);
-//        LinearLayout layoutInfo = convertView.findViewById(R.id.lInfo);
-//
-//        layoutLlamar.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Toast.makeText(v.getContext(), "Call to: "
-//                        + resultToCall.number, Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//
-//        layoutMensaje.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Toast.makeText(v.getContext(), "Message to: "
-//                        + resultToCall.number, Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//
-//        layoutVideollamada.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Toast.makeText(v.getContext(), "Videocall: "
-//                        + resultToCall.number, Toast.LENGTH_SHORT).show();
-//            }
-//        });
-
         //se periptwsi pou ginei click panw se seperator
         if (resultToCall.score == -3.0) {
             //min Kaneis tipota
@@ -262,54 +229,72 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                 context.startActivity(intent);
 
             } else {
-
 //                            case 0: //phone
 //                                Intent phoneIntent = new Intent(Intent.ACTION_CALL);
 //                                phoneIntent.setData(Uri.parse("tel:" + numberToCall));
 //                                startActivity(phoneIntent);
 //                                break;
-//                            case 1: //viber
-//                                if(appInstalledOrNot("com.viber.voip")) //if app is installed in the device
-//                                {
-//                                    Intent viberIntent = new Intent(Intent.ACTION_VIEW);
-//                                    viberIntent.setPackage("com.viber.voip");
-//                                    //start viber even if it's not in the background
-//                                    String apiViber;
-//                                    if(numberToCall.charAt(0) != '+') //no country prefix social number encoding fix
-//                                    {
-//                                        String fixedPrefixNumber = GetCountryZipCode() + numberToCall;
-//                                        apiViber = "viber://contact?number=" + fixedPrefixNumber;
-//                                    } else apiViber = "viber://contact?number=" + numberToCall.replace("+", "");
-//                                    Log.i("API", apiViber);
-//                                    viberIntent.setData(Uri.parse(apiViber));
-//                                    startActivity(viberIntent);
-//                                } else {
-//                                    Toast.makeText(getApplicationContext(), "Viber is not installed!", Toast.LENGTH_LONG).show();
-//                                }
-//                                break;
-//                            case 2: //whatsapp
-//                                if(appInstalledOrNot("com.whatsapp")) //if app is installed in the device
-//                                {
-//                                    Intent whatsappIntent = new Intent(Intent.ACTION_VIEW);
-//                                    String apiWhatsApp;
-//                                    if(numberToCall.charAt(0) != '+') //no country prefix social number encoding fix
-//                                    {
-//                                        String fixedPrefixNumber = GetCountryZipCode() + numberToCall;
-//                                        apiWhatsApp = "https://api.whatsapp.com/send?phone=" + fixedPrefixNumber;
-//                                    } else apiWhatsApp = "https://api.whatsapp.com/send?phone=" + numberToCall.replace("+", "");
-//                                    Log.i("API", apiWhatsApp);
-//                                    whatsappIntent.setData(Uri.parse(apiWhatsApp));
-//                                    startActivity(whatsappIntent);
-//                                } else {
-//                                    Toast.makeText(getApplicationContext(), "WhatsApp is not installed!", Toast.LENGTH_LONG).show();
-//                                }
-//                                break;
-//                            case 3: //messages
-//                                Intent smsIntent = new Intent(Intent.ACTION_VIEW);
-//                                smsIntent.setData(Uri.parse("sms:" + numberToCall));
-//                                startActivity(smsIntent);
-//                                break;
-//                        }
+
+                final String numberToCall = resultToCall.number;
+                LinearLayout layoutMsg = convertView.findViewById(R.id.msg_expanded);
+
+                layoutMsg.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                                Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+                                smsIntent.setData(Uri.parse("sms:" + numberToCall));
+                                context.startActivity(smsIntent);
+                    }
+                });
+
+                LinearLayout layoutViber = convertView.findViewById(R.id.viber_expanded);
+
+                layoutViber.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(appInstalledOrNot("com.viber.voip")) //if app is installed in the device
+                                {
+                                    Intent viberIntent = new Intent(Intent.ACTION_VIEW);
+                                    viberIntent.setPackage("com.viber.voip");
+                                    //start viber even if it's not in the background
+                                    String apiViber;
+                                    if(numberToCall.charAt(0) != '+') //no country prefix social number encoding fix
+                                    {
+                                        String fixedPrefixNumber = GetCountryZipCode() + numberToCall;
+                                        apiViber = "viber://contact?number=" + fixedPrefixNumber;
+                                    } else apiViber = "viber://contact?number=" + numberToCall.replace("+", "");
+                                    Log.i("API", apiViber);
+                                    viberIntent.setData(Uri.parse(apiViber));
+                                    context.startActivity(viberIntent);
+                                } else {
+                                    Toast.makeText(context, "Viber is not installed!", Toast.LENGTH_LONG).show();
+                                }
+                    }
+                });
+
+                LinearLayout layoutWhatsApp = convertView.findViewById(R.id.whatsapp_expanded);
+
+                layoutWhatsApp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(appInstalledOrNot("com.whatsapp")) //if app is installed in the device
+                                {
+                                    Intent whatsappIntent = new Intent(Intent.ACTION_VIEW);
+                                    String apiWhatsApp;
+                                    if(numberToCall.charAt(0) != '+') //no country prefix social number encoding fix
+                                    {
+                                        String fixedPrefixNumber = GetCountryZipCode() + numberToCall;
+                                        apiWhatsApp = "https://api.whatsapp.com/send?phone=" + fixedPrefixNumber;
+                                    } else apiWhatsApp = "https://api.whatsapp.com/send?phone=" + numberToCall.replace("+", "");
+                                    Log.i("API", apiWhatsApp);
+                                    whatsappIntent.setData(Uri.parse(apiWhatsApp));
+                                    context.startActivity(whatsappIntent);
+                                } else {
+                                    Toast.makeText(context, "WhatsApp is not installed!", Toast.LENGTH_LONG).show();
+                                }
+
+                    }
+                });
 
             }
 
@@ -497,5 +482,36 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
             notifyDataSetChanged();
             //}
         }
+    }
+
+    private String GetCountryZipCode(){
+        String CountryID="";
+        String CountryZipCode="";
+
+        TelephonyManager manager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        //getNetworkCountryIso
+        CountryID= manager.getSimCountryIso().toUpperCase();
+        String[] rl=context.getResources().getStringArray(R.array.CountryCodes);
+        for(int i=0;i<rl.length;i++){
+            String[] g=rl[i].split(",");
+            if(g[1].trim().equals(CountryID.trim())){
+                CountryZipCode=g[0];
+                break;
+            }
+        }
+        return CountryZipCode;
+    }
+
+    private boolean appInstalledOrNot(String uri) {
+        PackageManager pm = context.getPackageManager();
+        boolean app_installed;
+        try {
+            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
+            app_installed = true;
+        }
+        catch (PackageManager.NameNotFoundException e) {
+            app_installed = false;
+        }
+        return app_installed;
     }
 }
