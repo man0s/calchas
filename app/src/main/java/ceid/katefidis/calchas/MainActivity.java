@@ -204,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
                     fm.beginTransaction()
                             .replace(R.id.main_container, new SettingsFragment(), "settings")
                             .disallowAddToBackStack()
+//                            .addToBackStack(null)
                             .commit();
                     return true;
             }
@@ -221,7 +222,8 @@ public class MainActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
             mBottomNavigationView.getMenu().findItem(R.id.navigation_settings).setChecked(false);
             mBottomNavigationView.getMenu().findItem(R.id.navigation_home).setChecked(true);
-//            fm.popBackStack();
+//            /fm.popBackStack();
+//            onResume();
             Intent intent = new Intent(this, MainActivity.class);
             finish();
             startActivity(intent);
@@ -823,6 +825,7 @@ public class MainActivity extends AppCompatActivity {
                 //an to saved state sto pause den einai miden, epanefere thn katastash ths listas.
                 if (state != null){
                     lista1.onRestoreInstanceState(state);
+                    arrayAdapter.notifyDataSetChanged();
                 }
 
 
@@ -848,7 +851,7 @@ public class MainActivity extends AppCompatActivity {
                             Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, String.valueOf(prot.contactID));
                             intent.setData(uri);
                             startActivity(intent);
-                            arrayAdapter.notifyDataSetChanged();
+                            //arrayAdapter.notifyDataSetChanged();
                             //lista1.setSelectedGroup(0);
                             return true;
                         }

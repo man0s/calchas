@@ -1,114 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/expanded"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/colorBackground"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:id="@+id/expanded">
+    android:orientation="vertical">
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:orientation="horizontal"
-        android:padding="16dp">
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp">
 
+        <ImageView
+            android:id="@+id/msg_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_weight="1"
+            android:tint="?attr/colorTextLight"
+            app:srcCompat="@drawable/ic_sms_24dp" />
 
-        <LinearLayout
-            android:id="@+id/lLlamar"
-            android:layout_width="0dp"
+        <TextView
+            android:id="@+id/msg_text"
+            android:layout_width="225dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginBottom="8dp"
-                android:src="@drawable/ic_llamada" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Call"
-                android:textColor="?attr/colorText" />
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/lMensaje"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginBottom="8dp"
-                android:src="@drawable/ic_mensaje" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Message"
-                android:textColor="?attr/colorText" />
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/lVideoLlamada"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginBottom="8dp"
-                android:src="@drawable/ic_videollamada" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Video"
-                android:textColor="?attr/colorText" />
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/lInfo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginBottom="8dp"
-                android:src="@drawable/ic_info" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Info"
-                android:textColor="?attr/colorText" />
-
-
-        </LinearLayout>
+            android:text="Send a message"
+            android:textSize="18sp"
+            android:textColor="?attr/colorText"/>
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp">
+
+        <ImageView
+            android:id="@+id/viber_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/ic_viber_24dp" />
+
+        <TextView
+            android:id="@+id/viber_text"
+            android:layout_width="225dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Open with Viber"
+            android:textSize="18sp"
+            android:textColor="?attr/colorText" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp">
+
+        <ImageView
+            android:id="@+id/whatsapp_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/ic_whatsapp_24dp" />
+
+        <TextView
+            android:id="@+id/whatsapp_text"
+            android:layout_width="225dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Open with WhatsApp"
+            android:textSize="18sp"
+            android:textColor="?attr/colorText" />
+
+    </LinearLayout>
 
     <View
         android:id="@+id/child_seperator"

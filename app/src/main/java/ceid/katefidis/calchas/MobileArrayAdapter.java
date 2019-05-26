@@ -317,7 +317,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
 
         Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.fade_in);
-        animation.setDuration(700);
+        animation.setDuration(300);
         convertView.startAnimation(animation);
 
 
