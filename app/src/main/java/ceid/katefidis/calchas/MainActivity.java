@@ -52,6 +52,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 
 
@@ -169,6 +170,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<calllogrecord> subcalllog = new ArrayList<calllogrecord>();
     ArrayList<Protasi> finalprotaseis = new ArrayList<Protasi>();
     MobileArrayAdapter arrayAdapter;
+    private HashMap<Protasi, String> listProtaseis = new HashMap<>();
     private int lastExpandedPosition = -1;
 //    //	Tracker tracker;
 //    Long start_time;
@@ -601,6 +603,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 finalprotaseis.add(protasitemp);
+                listProtaseis.put(protasitemp, protasitemp.number);
 
                 i++;
                 //Thelw tis N kalyteres protaseis
@@ -796,7 +799,7 @@ public class MainActivity extends AppCompatActivity {
             ProgressBar spinner = (ProgressBar)findViewById(R.id.progressBar);
 
             //ftiaxnw enan neo arrayAdapter
-            arrayAdapter = new MobileArrayAdapter(MainActivity.this, finalprotaseis);
+            arrayAdapter = new MobileArrayAdapter(MainActivity.this, finalprotaseis, listProtaseis);
 
             try {
                 lista1.setAdapter(arrayAdapter);

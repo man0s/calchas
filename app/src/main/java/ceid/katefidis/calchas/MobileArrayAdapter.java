@@ -5,6 +5,7 @@ import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Random;
 
@@ -19,6 +20,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,15 +44,17 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
     private Filter contactFilter;
     private ArrayList<Protasi> protaseis;
     private ArrayList<Protasi> originprotaseis;
+    private HashMap<Protasi, String> listProtaseis;
     private int colorIndex = 0;
 
 
-    public MobileArrayAdapter(Context context, ArrayList<Protasi> protaseis)
+    public MobileArrayAdapter(Context context, ArrayList<Protasi> protaseis, HashMap<Protasi, String> listProtaseis)
     {
         //super(context, R.layout.list_protaseis, protaseis);
         this.context = context;
         this.protaseis = protaseis;
         this.originprotaseis = protaseis;
+        this.listProtaseis = listProtaseis;
     }
 
     @Override
@@ -60,11 +64,11 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         boolean DarkMode = settings.getBoolean("DarkMode", false);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//        View rowView = inflater.inflate(R.layout.list_protaseis, parent, false);
-
-        if (rowView == null) {
-            rowView = inflater.inflate(R.layout.list_protaseis, null);
-        }
+        rowView = inflater.inflate(R.layout.list_protaseis, parent, false);
+//
+//        if (rowView == null) {
+//            rowView = inflater.inflate(R.layout.list_protaseis, null);
+//        }
 
 
         if(colorIndex > 11) colorIndex = 0;
@@ -141,14 +145,15 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         }
         else
         {
-            TextView textView = (TextView) rowView.findViewById(R.id.contact_name);
-            TextView textView1 = (TextView) rowView.findViewById(R.id.contact_number);
-            TextView datecontacted = (TextView) rowView.findViewById(R.id.datecontacted);
-            TextView network = (TextView) rowView.findViewById(R.id.network);
+            TextView textView = rowView.findViewById(R.id.contact_name);
+            TextView textView1 = rowView.findViewById(R.id.contact_number);
+            TextView datecontacted = rowView.findViewById(R.id.datecontacted);
+            TextView network = rowView.findViewById(R.id.network);
 
             //Gia na efmanizetai i wra kai imerominia tis teleutaias epikoinwnias me tin protasi
             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM HH:mm",Locale.getDefault());
             String dateString = formatter.format(new Date(prot.date));
+            Log.d("ERROR", prot.date + "|" + dateString);
             datecontacted.setText(dateString);
             network.setText(prot.network);
             if (prot.isContact)
@@ -209,7 +214,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
     @Override
     public View getChildView(final int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
-        final Protasi contacto = (Protasi) getChild(groupPosition, childPosition);
+        final String phoneNumber = (String) getChild(groupPosition, childPosition);
 
         if (convertView == null) {
 
@@ -219,6 +224,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
             convertView = layoutInflater.inflate(R.layout.expanded_protasi, null);
 
         }
+
 
         //CircleImageView circleImageView = convertView.findViewById(R.id.circleIMG);
 
@@ -234,7 +240,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
             @Override
             public void onClick(View v) {
                 Toast.makeText(v.getContext(), "Call to: "
-                        + contacto.number, Toast.LENGTH_SHORT).show();
+                        + phoneNumber, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -242,7 +248,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
             @Override
             public void onClick(View v) {
                 Toast.makeText(v.getContext(), "Message to: "
-                        + contacto.number, Toast.LENGTH_SHORT).show();
+                        + phoneNumber, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -250,12 +256,13 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
             @Override
             public void onClick(View v) {
                 Toast.makeText(v.getContext(), "Videocall: "
-                        + contacto.number, Toast.LENGTH_SHORT).show();
+                        + phoneNumber, Toast.LENGTH_SHORT).show();
             }
         });
 
 
         Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.fade_in);
+        animation.setDuration(500);
         convertView.startAnimation(animation);
 
 
@@ -274,13 +281,13 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
     }
 
     @Override
-    public Protasi getGroup(int groupPosition) {
+    public Object getGroup(int groupPosition) {
         return this.protaseis.get(groupPosition);
     }
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        return this.protaseis.get(groupPosition);
+        return this.listProtaseis.get(this.protaseis.get(groupPosition));
     }
 
     @Override
