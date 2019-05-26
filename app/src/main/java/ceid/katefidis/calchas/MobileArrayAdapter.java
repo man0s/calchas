@@ -21,6 +21,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.Image;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
@@ -133,13 +134,13 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                 TextView textView = rowView.findViewById(R.id.contact_name);
                 TextView textView1 = rowView.findViewById(R.id.contact_number);
                 TextView datecontacted = rowView.findViewById(R.id.datecontacted);
-                TextView network = rowView.findViewById(R.id.network);
+                //TextView network = rowView.findViewById(R.id.network);
 
                 //Gia na efmanizetai i wra kai imerominia tis teleutaias epikoinwnias me tin protasi
                 SimpleDateFormat formatter = new SimpleDateFormat("dd/MM HH:mm", Locale.getDefault());
                 String dateString = formatter.format(new Date(prot.date));
                 datecontacted.setText(dateString);
-                network.setText(prot.network);
+                //network.setText(prot.network);
                 if (prot.isContact) {
                     if (prot.name.length() > 16) {
                         String name = prot.name.substring(0, Math.min(prot.name.length(), 16)) + ".";
@@ -184,6 +185,21 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                     } else typeIcon.setImageResource(R.drawable.ic_sms_24dp);
                 }
 
+            }
+
+            final String numberToCall = prot.number;
+
+            ImageView callIcon = (ImageView) rowView.findViewById(R.id.call_action);
+            if(callIcon != null)
+            {
+                callIcon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent phoneIntent = new Intent(Intent.ACTION_CALL);
+                        phoneIntent.setData(Uri.parse("tel:" + numberToCall));
+                        context.startActivity(phoneIntent);
+                    }
+                });
             }
 
         return rowView;

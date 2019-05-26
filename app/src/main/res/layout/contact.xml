@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent"
+    android:background="?attr/colorBackground"
     android:foreground="?android:attr/selectableItemBackground">
 
     <ceid.katefidis.calchas.RoundedQuickContactBadge
@@ -16,13 +16,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/contact_photo"
-        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
         android:layout_toRightOf="@+id/contact_photo"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="?attr/colorText"
-        android:gravity="center_vertical"
         android:background="?attr/colorBackground"
-        android:padding="5dp"/>
+        android:gravity="center_vertical"
+        android:padding="5dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="?attr/colorText" />
 
 </RelativeLayout>

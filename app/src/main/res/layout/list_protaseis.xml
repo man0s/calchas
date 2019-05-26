@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/transparent" >
+    android:background="@android:color/transparent">
 
     <ceid.katefidis.calchas.RoundedQuickContactBadge
         android:id="@+id/contact_photo"
@@ -14,13 +14,13 @@
         android:layout_marginEnd="1dp" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/contact_name"
@@ -36,9 +36,43 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="?attr/colorText" />
 
+            <!--<TextView-->
+            <!--android:id="@+id/datecontacted"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="right|center"-->
+            <!--android:gravity="right|center"-->
+            <!--android:text="HH:MM"-->
+            <!--android:textAppearance="?android:attr/textAppearanceSmall"-->
+            <!--android:textColor="?attr/colorTextLight" />-->
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/type"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="2dp"
+                android:contentDescription="TODO"
+                app:srcCompat="@drawable/ic_call_black_24dp" />
+
+            <TextView
+                android:id="@+id/contact_number"
+                android:layout_width="150dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="left"
+                android:layout_marginLeft="1dp"
+                android:text="+xxxxxxxxxxxxx"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="?attr/colorTextLight" />
+
             <TextView
                 android:id="@+id/datecontacted"
-                android:layout_width="match_parent"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|center"
                 android:gravity="right|center"
@@ -46,44 +80,33 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="?attr/colorTextLight" />
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" >
-
-            <ImageView
-                android:id="@+id/type"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginLeft="2dp"
-                app:srcCompat="@drawable/ic_call_black_24dp"
-                android:contentDescription="TODO" />
-
-            <TextView
-                android:id="@+id/contact_number"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="bottom|left"
-                android:layout_marginLeft="1dp"
-                android:text="+xxxxxxxxxxxxx"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="?attr/colorTextLight" />
-
-            <TextView
-                android:id="@+id/network"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|right"
-                android:gravity="right|center"
-                android:text="Network"
-                android:ellipsize="end"
-                android:maxEms="12"
-                android:maxLines="1"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="?attr/colorTextLight" />
+            <!--<TextView-->
+            <!--android:id="@+id/network"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="bottom|right"-->
+            <!--android:gravity="right|center"-->
+            <!--android:text="Network"-->
+            <!--android:ellipsize="end"-->
+            <!--android:maxEms="12"-->
+            <!--android:maxLines="1"-->
+            <!--android:textAppearance="?android:attr/textAppearanceSmall"-->
+            <!--android:textColor="?attr/colorTextLight" />-->
 
         </LinearLayout>
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/call_action"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:padding="10dp"
+        android:tint="?attr/colorText"
+        app:srcCompat="@drawable/ic_call_black_72dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:contentDescription="TODO" tools:targetApi="m" />
+
 </LinearLayout>
 

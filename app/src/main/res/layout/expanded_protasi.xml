@@ -13,11 +13,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:orientation="horizontal"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"
+        android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"
-        android:clickable="true" >
+        android:orientation="horizontal"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
 
         <ImageView
             android:id="@+id/msg_icon"
@@ -42,11 +42,11 @@
         android:id="@+id/viber_expanded"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"
+        android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"
-        android:clickable="true" >
+        android:orientation="horizontal"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
 
         <ImageView
             android:id="@+id/viber_icon"
@@ -71,11 +71,11 @@
         android:id="@+id/whatsapp_expanded"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"
+        android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"
-        android:clickable="true" >
+        android:orientation="horizontal"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
 
         <ImageView
             android:id="@+id/whatsapp_icon"
