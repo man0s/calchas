@@ -21,9 +21,11 @@
 
         <ImageView
             android:id="@+id/msg_icon"
-            android:layout_width="24dp"
+            android:layout_width="0dp"
             android:layout_height="24dp"
             android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"
             android:tint="?attr/colorText"
             app:srcCompat="@drawable/ic_sms_24dp" />
 
@@ -50,7 +52,7 @@
 
         <ImageView
             android:id="@+id/viber_icon"
-            android:layout_width="24dp"
+            android:layout_width="0dp"
             android:layout_height="24dp"
             android:layout_weight="1"
             app:srcCompat="@drawable/ic_viber_24dp" />
@@ -79,7 +81,7 @@
 
         <ImageView
             android:id="@+id/whatsapp_icon"
-            android:layout_width="24dp"
+            android:layout_width="0dp"
             android:layout_height="24dp"
             android:layout_weight="1"
             app:srcCompat="@drawable/ic_whatsapp_24dp" />
