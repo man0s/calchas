@@ -378,6 +378,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String query) {
+                //if lastexpandedgroup is expanded..collapse it!
+                if(lista1.isGroupExpanded(lastExpandedPosition)) lista1.collapseGroup(lastExpandedPosition);
                 if (query.length() < oldquery)
                 {
                     // We're deleting char so we need to reset the adapter data
@@ -390,6 +392,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
         return true;
+    }
+
+    //method to expand all groups
+    private void collapseAll() {
+        int count = arrayAdapter.getGroupCount();
+        for (int i = 0; i < count; i++){
+            lista1.collapseGroup(i);
+        }
+        lastExpandedPosition = -1;
     }
 
     @Override

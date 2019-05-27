@@ -382,6 +382,12 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         return contactFilter;
     }
 
+    public boolean isFilterEnabled()
+    {
+        if(contactFilter == null) return false;
+        else return true;
+    }
+
     public Protasi getItem(int position)
     {
         return protaseis.get(position);
