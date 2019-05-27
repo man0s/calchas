@@ -394,15 +394,6 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    //method to expand all groups
-    private void collapseAll() {
-        int count = arrayAdapter.getGroupCount();
-        for (int i = 0; i < count; i++){
-            lista1.collapseGroup(i);
-        }
-        lastExpandedPosition = -1;
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
