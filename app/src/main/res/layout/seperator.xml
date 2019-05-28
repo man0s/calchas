@@ -1,32 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <View
+        android:id="@+id/separator1"
         android:layout_width="fill_parent"
         android:layout_height="1dp"
-        android:id="@+id/separator1"
-        android:visibility="visible"
-        android:background="?attr/colorPrimary"/>
+        android:background="?attr/colorPrimary"
+        android:visibility="visible" />
 
     <TextView
         android:id="@+id/seperator"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="?attr/colorPrimary"
         android:gravity="center_horizontal|center"
+        android:text="Recent Calls"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#FFFFFF"
         android:textColorHint="?attr/colorTextLight"
+        android:textSize="22sp"
         android:textStyle="normal" />
 
     <View
+        android:id="@+id/separator2"
         android:layout_width="fill_parent"
         android:layout_height="1dp"
-        android:id="@+id/separator2"
-        android:visibility="visible"
-        android:background="?attr/colorPrimary"/>
+        android:background="?attr/colorPrimary"
+        android:visibility="visible" />
 
 </LinearLayout>
