@@ -5,23 +5,17 @@ import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Random;
-
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.media.Image;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
@@ -32,14 +26,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ArrayAdapter;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.QuickContactBadge;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -74,8 +65,6 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 //            rowView = inflater.inflate(R.layout.list_protaseis, null);
 //        }
 
-
-
             colorIndex = position;
             if (colorIndex > 11) colorIndex = colorIndex%11;
 
@@ -104,8 +93,8 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
             else if (prot.score == -2.0) {
                 rowView = inflater.inflate(R.layout.contact, parent, false);
                 TextView ContactName = (TextView) rowView.findViewById(R.id.contact_name_to_list);
-                if (prot.name.length() > 16) {
-                    String name = prot.name.substring(0, Math.min(prot.name.length(), 16)) + ".";
+                if (prot.name.length() > 20) {
+                    String name = prot.name.substring(0, Math.min(prot.name.length(), 20)) + ".";
                     ContactName.setText(name);
                 } else ContactName.setText(prot.name);
 
@@ -142,8 +131,8 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                 datecontacted.setText(dateString);
                 //network.setText(prot.network);
                 if (prot.isContact) {
-                    if (prot.name.length() > 16) {
-                        String name = prot.name.substring(0, Math.min(prot.name.length(), 16)) + ".";
+                    if (prot.name.length() > 20) {
+                        String name = prot.name.substring(0, Math.min(prot.name.length(), 20)) + ".";
                         textView.setText(name);
                     } else textView.setText(prot.name);
                     //if(prot.type != null)   textView.setText(prot.name + "|" + prot.type);
