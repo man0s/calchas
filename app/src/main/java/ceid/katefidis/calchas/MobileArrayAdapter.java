@@ -1,6 +1,9 @@
 package ceid.katefidis.calchas;
 
 import java.io.InputStream;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -20,6 +23,7 @@ import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.telephony.TelephonyManager;
+import android.util.EventLog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,13 +47,16 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
     private ArrayList<Protasi> originprotaseis;
     private int colorIndex = 0;
 
+    EventDetails event_details;
 
-    public MobileArrayAdapter(Context context, ArrayList<Protasi> protaseis)
+
+    public MobileArrayAdapter(Context context, ArrayList<Protasi> protaseis, EventDetails event_details)
     {
         //super(context, R.layout.list_protaseis, protaseis);
         this.context = context;
         this.protaseis = protaseis;
         this.originprotaseis = protaseis;
+        this.event_details = event_details;
     }
 
     @Override
@@ -74,7 +81,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
             //Pairnw to antikeimeno pou fainetai sto position
 //        Protasi prot = protaseis.get(position);
-            Protasi prot = (Protasi) getGroup(position);
+            final Protasi prot = (Protasi) getGroup(position);
 
             //se periptwsi pou antikeimeno tou list view einai kapoios seperator
             //fernw ws row to seperator.xml
@@ -176,7 +183,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
             }
 
-            final String numberToCall = prot.number;
+            final Protasi protasiToCall = prot;
 
             ImageView callIcon = (ImageView) rowView.findViewById(R.id.call_action);
             if(callIcon != null)
@@ -185,8 +192,17 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                     @Override
                     public void onClick(View v) {
                         Intent phoneIntent = new Intent(Intent.ACTION_CALL);
-                        phoneIntent.setData(Uri.parse("tel:" + numberToCall));
+                        phoneIntent.setData(Uri.parse("tel:" + protasiToCall.number));
                         context.startActivity(phoneIntent);
+                        notifyDataSetChanged();
+
+                        //insert details to db
+                        if(!protasiToCall.isContact){
+                            event_details.chosen = md5encrypt(protasiToCall.number);
+                        } else event_details.chosen = protasiToCall.contactID;
+                        event_details.sf = protasiToCall.scoref;
+                        event_details.sr = protasiToCall.scorer;
+                        insertToDB();
                     }
                 });
             }
@@ -240,15 +256,23 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 //                                startActivity(phoneIntent);
 //                                break;
 
-                final String numberToCall = resultToCall.number;
                 LinearLayout layoutMsg = convertView.findViewById(R.id.msg_expanded);
 
                 layoutMsg.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                                 Intent smsIntent = new Intent(Intent.ACTION_VIEW);
-                                smsIntent.setData(Uri.parse("sms:" + numberToCall));
+                                smsIntent.setData(Uri.parse("sms:" + resultToCall.number));
                                 context.startActivity(smsIntent);
+                                notifyDataSetChanged();
+
+                                //insert details to db
+                                if(!resultToCall.isContact){
+                                    event_details.chosen = md5encrypt(resultToCall.number);
+                                } else event_details.chosen = resultToCall.contactID;
+                                event_details.sf = resultToCall.scoref;
+                                event_details.sr = resultToCall.scorer;
+                                insertToDB();
                     }
                 });
 
@@ -263,14 +287,22 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                                     viberIntent.setPackage("com.viber.voip");
                                     //start viber even if it's not in the background
                                     String apiViber;
-                                    if(numberToCall.charAt(0) != '+') //no country prefix social number encoding fix
+                                    if(resultToCall.number.charAt(0) != '+') //no country prefix social number encoding fix
                                     {
-                                        String fixedPrefixNumber = GetCountryZipCode() + numberToCall;
+                                        String fixedPrefixNumber = GetCountryZipCode() + resultToCall.number;
                                         apiViber = "viber://contact?number=" + fixedPrefixNumber;
-                                    } else apiViber = "viber://contact?number=" + numberToCall.replace("+", "");
+                                    } else apiViber = "viber://contact?number=" + resultToCall.number.replace("+", "");
                                     Log.i("API", apiViber);
                                     viberIntent.setData(Uri.parse(apiViber));
                                     context.startActivity(viberIntent);
+
+                                    //insert details to db
+                                    if(!resultToCall.isContact){
+                                        event_details.chosen = md5encrypt(resultToCall.number);
+                                    } else event_details.chosen = resultToCall.contactID;
+                                    event_details.sf = resultToCall.scoref;
+                                    event_details.sr = resultToCall.scorer;
+                                    insertToDB();
                                 } else {
                                     Toast.makeText(context, "Viber is not installed!", Toast.LENGTH_LONG).show();
                                 }
@@ -286,14 +318,22 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                                 {
                                     Intent whatsappIntent = new Intent(Intent.ACTION_VIEW);
                                     String apiWhatsApp;
-                                    if(numberToCall.charAt(0) != '+') //no country prefix social number encoding fix
+                                    if(resultToCall.number.charAt(0) != '+') //no country prefix social number encoding fix
                                     {
-                                        String fixedPrefixNumber = GetCountryZipCode() + numberToCall;
+                                        String fixedPrefixNumber = GetCountryZipCode() + resultToCall.number;
                                         apiWhatsApp = "https://api.whatsapp.com/send?phone=" + fixedPrefixNumber;
-                                    } else apiWhatsApp = "https://api.whatsapp.com/send?phone=" + numberToCall.replace("+", "");
+                                    } else apiWhatsApp = "https://api.whatsapp.com/send?phone=" + resultToCall.number.replace("+", "");
                                     Log.i("API", apiWhatsApp);
                                     whatsappIntent.setData(Uri.parse(apiWhatsApp));
                                     context.startActivity(whatsappIntent);
+
+                                    //insert details to db
+                                    if(!resultToCall.isContact){
+                                        event_details.chosen = md5encrypt(resultToCall.number);
+                                    } else event_details.chosen = resultToCall.contactID;
+                                    event_details.sf = resultToCall.scoref;
+                                    event_details.sr = resultToCall.scorer;
+                                    insertToDB();
                                 } else {
                                     Toast.makeText(context, "WhatsApp is not installed!", Toast.LENGTH_LONG).show();
                                 }
@@ -518,5 +558,26 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
             app_installed = false;
         }
         return app_installed;
+    }
+
+    private String md5encrypt(String numberToEncrypt)
+    {
+        //md5 number encryption
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance("MD5");
+            byte[] messageDigest = md.digest(numberToEncrypt.getBytes());
+            BigInteger number = new BigInteger(1, messageDigest);
+            String hashNumber = number.toString(16);
+            return hashNumber;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private void insertToDB()
+    {
+        Log.i("event_details", event_details.protaseis + "|" + event_details.chosen + "|" + event_details.sf + "|" + event_details.sr);
     }
 }

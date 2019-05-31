@@ -54,6 +54,9 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import java.io.InputStream;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -107,8 +110,6 @@ class Protasi
         this.scorer = scorer;
         this.suggested = false;
     }
-
-
 }
 
 class CompareProtaseis implements Comparator<Protasi>
@@ -183,6 +184,8 @@ public class MainActivity extends AppCompatActivity {
     //HashMap<String, Integer> countryCodes;
     private NotificationDBHelper db;
     private SQLiteDatabase sdb;
+
+    EventDetails event_details;
 
 
     final Fragment homeFragment = new HomeFragment();
@@ -627,7 +630,10 @@ public class MainActivity extends AppCompatActivity {
 
                 if(protasitemp.isContact)
                 protaseisDB += protasitemp.contactID + ", ";
-                else protaseisDB += protasitemp.number + ", ";
+                else  {
+                    //encrypt plain number text to md5
+                    protaseisDB += md5encrypt(protasitemp.number) + ", ";
+                }
 
                 if (protasitemp.type.equals("phone")) {
                     protaseis_last_channelDB += 1 + ", ";
@@ -649,9 +655,7 @@ public class MainActivity extends AppCompatActivity {
             protaseisDB = protaseisDB.substring(0, protaseisDB.length() - 2);
             protaseis_last_channelDB.substring(0, protaseis_last_channelDB.length() - 2);
 
-
-            Log.d("protaseisDB", protaseisDB);
-            Log.d("protaseisDB", protaseis_last_channelDB);
+            event_details = new EventDetails(protaseisDB, protaseis_last_channelDB);
             ///////////////// ----------- INTERFACES ----------- /////////////////
             //Kanw sort tis final protaseis alphavitika
 
@@ -837,7 +841,7 @@ public class MainActivity extends AppCompatActivity {
             ProgressBar spinner = (ProgressBar)findViewById(R.id.progressBar);
 
             //ftiaxnw enan neo arrayAdapter
-            arrayAdapter = new MobileArrayAdapter(MainActivity.this, finalprotaseis);
+            arrayAdapter = new MobileArrayAdapter(MainActivity.this, finalprotaseis, event_details);
             lista1 = (ExpandableListView) findViewById(R.id.list);
 
             try {
@@ -870,6 +874,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public boolean onGroupClick(ExpandableListView expandableListView, View view, int i, long l) {
                         Protasi prot = (Protasi) arrayAdapter.getGroup(i);
+                        Log.d("ProtaseisDB", "Clicked -->" + prot.contactID);
                         if(prot.score == -3.0){
                             return true;
                         } else if(prot.score == -2.0){
@@ -884,6 +889,7 @@ public class MainActivity extends AppCompatActivity {
                         return false;
                     }
                 });
+
 
                 //Filtro///
 
@@ -1506,6 +1512,22 @@ public class MainActivity extends AppCompatActivity {
         Slide slide = new Slide();
         slide.setDuration(1000);
         getWindow().setReturnTransition(slide);
+    }
+
+    private String md5encrypt(String numberToEncrypt)
+    {
+        //md5 number encryption
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance("MD5");
+            byte[] messageDigest = md.digest(numberToEncrypt.getBytes());
+            BigInteger number = new BigInteger(1, messageDigest);
+            String hashNumber = number.toString(16);
+            return hashNumber;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private void changeInterceptedNotification(int notificationCode, long postTime, String Contact){
