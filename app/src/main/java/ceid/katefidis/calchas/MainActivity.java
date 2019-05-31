@@ -592,9 +592,12 @@ public class MainActivity extends AppCompatActivity {
 
             //DEVEOPER OPTION
             //final ArrayList<protasi> finalprotaseis = new ArrayList<protasi>();
+
+            String protaseisDB="";
+            String protaseis_last_channelDB="";
+
             int i = 0;
             for (Protasi protasitemp : protaseis) {
-
 
                 for (calllogrecord s1 : subcalllog) {
                     if (protasitemp.name.equals(s1.CachedName)) {
@@ -622,6 +625,18 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
+                if(protasitemp.isContact)
+                protaseisDB += protasitemp.contactID + ", ";
+                else protaseisDB += protasitemp.number + ", ";
+
+                if (protasitemp.type.equals("phone")) {
+                    protaseis_last_channelDB += 1 + ", ";
+                } else if (protasitemp.type.equals("viber")) {
+                    protaseis_last_channelDB += 3 + ", ";
+                } else if (protasitemp.type.equals("whatsapp")) {
+                    protaseis_last_channelDB += 4 + ", ";
+                } else protaseis_last_channelDB += 2 + ", ";
+
                 finalprotaseis.add(protasitemp);
 
                 i++;
@@ -631,7 +646,12 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
 
+            protaseisDB = protaseisDB.substring(0, protaseisDB.length() - 2);
+            protaseis_last_channelDB.substring(0, protaseis_last_channelDB.length() - 2);
 
+
+            Log.d("protaseisDB", protaseisDB);
+            Log.d("protaseisDB", protaseis_last_channelDB);
             ///////////////// ----------- INTERFACES ----------- /////////////////
             //Kanw sort tis final protaseis alphavitika
 
