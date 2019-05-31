@@ -1,6 +1,7 @@
 package ceid.katefidis.calchas;
 
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -655,7 +656,9 @@ public class MainActivity extends AppCompatActivity {
             protaseisDB = protaseisDB.substring(0, protaseisDB.length() - 2);
             protaseis_last_channelDB.substring(0, protaseis_last_channelDB.length() - 2);
 
-            event_details = new EventDetails(protaseisDB, protaseis_last_channelDB);
+            String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+            event_details = new EventDetails(deviceID, protaseisDB, protaseis_last_channelDB);
             ///////////////// ----------- INTERFACES ----------- /////////////////
             //Kanw sort tis final protaseis alphavitika
 

@@ -578,6 +578,6 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
     private void insertToDB()
     {
-        Log.i("event_details", event_details.protaseis + "|" + event_details.chosen + "|" + event_details.sf + "|" + event_details.sr);
+        Log.i("event_details", event_details.uid + " | " + event_details.chosen + " | " + event_details.sf + " | " + event_details.sr);
     }
 }
