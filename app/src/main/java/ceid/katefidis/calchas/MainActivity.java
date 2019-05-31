@@ -413,8 +413,12 @@ public class MainActivity extends AppCompatActivity {
     private Parcelable state;
     @Override
     public void onPause() {
-        //apothikeusai thn katastasi ths listas otan paei onPause
-        state = lista1.onSaveInstanceState();
+        try {
+            //apothikeusai thn katastasi ths listas otan paei onPause
+            state = lista1.onSaveInstanceState();
+        } catch (Exception e) {
+            Log.d("Error", "App has crashed onPause()");
+        }
         super.onPause();
     }
 
