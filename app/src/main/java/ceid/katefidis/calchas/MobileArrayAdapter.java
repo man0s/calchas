@@ -47,7 +47,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
     private ArrayList<Protasi> originprotaseis;
     private int colorIndex = 0;
 
-    EventDetails event_details;
+    private EventDetails event_details;
 
 
     public MobileArrayAdapter(Context context, ArrayList<Protasi> protaseis, EventDetails event_details)
