@@ -10,7 +10,7 @@ public class EventDetails {
     double sr;
     String protaseis_last_channel;
     String location_coords;
-    String location_accuracy
+    String location_accuracy;
 
 
     public EventDetails(String uid, String protaseis, String protaseis_last_channel)
