@@ -19,6 +19,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.location.Location;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
@@ -578,6 +579,15 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
     private void insertToDB()
     {
+        MyLocation.LocationResult locationResult = new MyLocation.LocationResult(){
+            @Override
+            public void gotLocation(Location location){
+                //Got the location!
+            }
+        };
+        MyLocation myLocation = new MyLocation();
+        myLocation.getLocation(context, locationResult);
         Log.i("event_details", event_details.uid + " | " + event_details.chosen + " | " + event_details.sf + " | " + event_details.sr);
+        Log.i("loc_details", "-->0" + myLocation.getLocation(context, locationResult));
     }
 }

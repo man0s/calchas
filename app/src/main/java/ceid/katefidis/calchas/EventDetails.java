@@ -11,6 +11,9 @@ public class EventDetails {
     String protaseis_last_channel;
     String location_coords;
     String location_accuracy;
+    Integer activity_type;
+    Integer activity_confidence;
+    Integer connectivity;
 
 
     public EventDetails(String uid, String protaseis, String protaseis_last_channel)
