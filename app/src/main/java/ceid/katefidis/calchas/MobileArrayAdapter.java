@@ -1,5 +1,7 @@
 package ceid.katefidis.calchas;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -9,6 +11,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Scanner;
+
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -19,8 +23,15 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.BatteryManager;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.telephony.TelephonyManager;
@@ -38,6 +49,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import static android.content.Context.BATTERY_SERVICE;
+import static android.content.Context.SENSOR_SERVICE;
 
 
 public class MobileArrayAdapter extends BaseExpandableListAdapter implements Filterable
@@ -577,17 +591,84 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         return null;
     }
 
+    private static Integer getConnectivityType(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = cm.getActiveNetworkInfo();
+        if(info==null || !info.isConnected())
+            return 1; //not connected
+        if(info.getType() == ConnectivityManager.TYPE_WIFI)
+            return 2;
+        if(info.getType() == ConnectivityManager.TYPE_MOBILE){
+            int networkType = info.getSubtype();
+            switch (networkType) {
+                case TelephonyManager.NETWORK_TYPE_GPRS:
+                case TelephonyManager.NETWORK_TYPE_EDGE:
+                case TelephonyManager.NETWORK_TYPE_CDMA:
+                case TelephonyManager.NETWORK_TYPE_1xRTT:
+                case TelephonyManager.NETWORK_TYPE_IDEN: //api<8 : replace by 11
+                    return 3;
+                case TelephonyManager.NETWORK_TYPE_UMTS:
+                case TelephonyManager.NETWORK_TYPE_EVDO_0:
+                case TelephonyManager.NETWORK_TYPE_EVDO_A:
+                case TelephonyManager.NETWORK_TYPE_HSDPA:
+                case TelephonyManager.NETWORK_TYPE_HSUPA:
+                case TelephonyManager.NETWORK_TYPE_HSPA:
+                case TelephonyManager.NETWORK_TYPE_EVDO_B: //api<9 : replace by 14
+                case TelephonyManager.NETWORK_TYPE_EHRPD:  //api<11 : replace by 12
+                case TelephonyManager.NETWORK_TYPE_HSPAP:  //api<13 : replace by 15
+                case TelephonyManager.NETWORK_TYPE_TD_SCDMA:  //api<25 : replace by 17
+                    return 3;
+                case TelephonyManager.NETWORK_TYPE_LTE:    //api<11 : replace by 13
+                case TelephonyManager.NETWORK_TYPE_IWLAN:  //api<25 : replace by 18
+                case 19:  //LTE_CA
+                    return 3;
+                default:
+                    return 1;
+            }
+        }
+        return 1;
+    }
+
     private void insertToDB()
     {
         MyLocation.LocationResult locationResult = new MyLocation.LocationResult(){
             @Override
             public void gotLocation(Location location){
                 //Got the location!
+                event_details.location_coords = location.getLatitude() + ", " + location.getLongitude();
+                event_details.location_accuracy = String.valueOf(location.getAccuracy());
+
+                Log.i("event_details_loc", event_details.location_coords + " | " + event_details.location_accuracy);
             }
         };
         MyLocation myLocation = new MyLocation();
-        myLocation.getLocation(context, locationResult);
+        boolean gotLocation = myLocation.getLocation(context, locationResult);
+
+        //get battery lvl
+        BatteryManager bm = (BatteryManager)context.getSystemService(BATTERY_SERVICE);
+        event_details.battery_level = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+
+
+
+
+        SensorManager mSensorManager = (SensorManager)context.getSystemService(SENSOR_SERVICE);
+        Sensor mLight = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        event_details.ambient_light = mLight.getMaximumRange();
+
+
+
+
+        //get connectivity type
+        event_details.connectivity = getConnectivityType(context);
+
         Log.i("event_details", event_details.uid + " | " + event_details.chosen + " | " + event_details.sf + " | " + event_details.sr);
-        Log.i("loc_details", "-->0" + myLocation.getLocation(context, locationResult));
+        Log.i("event_details_bat", event_details.battery_level + "%");
+        Log.i("event_details_conn", String.valueOf(event_details.connectivity));
+        Log.i("event_details_light", String.valueOf(event_details.ambient_light));
+
+        if(!gotLocation)
+        {
+            Log.i("event_details_loc", "CANNOT");
+        }
     }
 }

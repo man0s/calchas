@@ -14,6 +14,8 @@ public class EventDetails {
     Integer activity_type;
     Integer activity_confidence;
     Integer connectivity;
+    Integer battery_level;
+    float ambient_light;
 
 
     public EventDetails(String uid, String protaseis, String protaseis_last_channel)
