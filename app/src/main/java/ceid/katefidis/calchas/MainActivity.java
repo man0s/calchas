@@ -653,12 +653,15 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
 
-            protaseisDB = protaseisDB.substring(0, protaseisDB.length() - 2);
-            protaseis_last_channelDB.substring(0, protaseis_last_channelDB.length() - 2);
+            if(protaseisDB.length() > 1) { //uparxoun protaseis
+                protaseisDB = protaseisDB.substring(0, protaseisDB.length() - 2);
+                protaseis_last_channelDB.substring(0, protaseis_last_channelDB.length() - 2);
 
-            String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+                String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
-            event_details = new EventDetails(deviceID, protaseisDB, protaseis_last_channelDB);
+                event_details = new EventDetails(deviceID, protaseisDB, protaseis_last_channelDB);
+
+            }
             ///////////////// ----------- INTERFACES ----------- /////////////////
             //Kanw sort tis final protaseis alphavitika
 

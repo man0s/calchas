@@ -1,9 +1,21 @@
 package ceid.katefidis.calchas;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.Normalizer;
@@ -53,6 +65,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import static android.content.Context.BATTERY_SERVICE;
 import static android.content.Context.SENSOR_SERVICE;
@@ -221,7 +235,11 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                         } else event_details.chosen = protasiToCall.contactID;
                         event_details.sf = protasiToCall.scoref;
                         event_details.sr = protasiToCall.scorer;
-                        insertToDB();
+                        try {
+                            insertToDB();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
             }
@@ -291,7 +309,11 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                                 } else event_details.chosen = resultToCall.contactID;
                                 event_details.sf = resultToCall.scoref;
                                 event_details.sr = resultToCall.scorer;
-                                insertToDB();
+                        try {
+                            insertToDB();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
 
@@ -321,7 +343,11 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                                     } else event_details.chosen = resultToCall.contactID;
                                     event_details.sf = resultToCall.scoref;
                                     event_details.sr = resultToCall.scorer;
-                                    insertToDB();
+                                    try {
+                                        insertToDB();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
                                 } else {
                                     Toast.makeText(context, "Viber is not installed!", Toast.LENGTH_LONG).show();
                                 }
@@ -352,7 +378,11 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                                     } else event_details.chosen = resultToCall.contactID;
                                     event_details.sf = resultToCall.scoref;
                                     event_details.sr = resultToCall.scorer;
-                                    insertToDB();
+                                    try {
+                                        insertToDB();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
                                 } else {
                                     Toast.makeText(context, "WhatsApp is not installed!", Toast.LENGTH_LONG).show();
                                 }
@@ -633,8 +663,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         return 1;
     }
 
-    private void insertToDB()
-    {
+    private void insertToDB() throws IOException {
         MyLocation.LocationResult locationResult = new MyLocation.LocationResult(){
             @Override
             public void gotLocation(Location location){
@@ -669,6 +698,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         Log.i("event_details_bat", event_details.battery_level + "%");
         Log.i("event_details_conn", String.valueOf(event_details.connectivity));
         Log.i("event_details_light", String.valueOf(event_details.ambient_light));
+
 
         if(!gotLocation)
         {
