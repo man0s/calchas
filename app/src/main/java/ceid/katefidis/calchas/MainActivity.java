@@ -710,7 +710,12 @@ public class MainActivity extends AppCompatActivity {
                                 if (showphoto && mycalllogrecord.isContact) {
                                     try {
                                         mycalllogrecord.contactID = getContactID(mycalllogrecord.number);
-                                        mycalllogrecord.photo = loadPhoto(Long.parseLong(mycalllogrecord.contactID));
+                                        try {
+                                            mycalllogrecord.photo = loadPhoto(Long.parseLong(mycalllogrecord.contactID));
+                                        } catch (NumberFormatException nfe)
+                                        {
+                                            Log.d("Photo", "contact id is not a number");
+                                        }
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }

@@ -2,19 +2,14 @@ package ceid.katefidis.calchas;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -22,8 +17,8 @@ import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Locale;
-import java.util.Scanner;
 
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
@@ -36,23 +31,17 @@ import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.hardware.display.DisplayManager;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.BatteryManager;
-import android.os.Build;
-import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.telephony.TelephonyManager;
-import android.util.EventLog;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,9 +54,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import org.json.JSONObject;
 import javax.net.ssl.HttpsURLConnection;
-
 import static android.content.Context.BATTERY_SERVICE;
 import static android.content.Context.SENSOR_SERVICE;
 
@@ -694,15 +682,104 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         //get connectivity type
         event_details.connectivity = getConnectivityType(context);
 
+
         Log.i("event_details", event_details.uid + " | " + event_details.chosen + " | " + event_details.sf + " | " + event_details.sr);
         Log.i("event_details_bat", event_details.battery_level + "%");
         Log.i("event_details_conn", String.valueOf(event_details.connectivity));
         Log.i("event_details_light", String.valueOf(event_details.ambient_light));
 
 
+        String[] data = {"Testos", "Testakis", "22"};
+        new AsyncHttpPost().execute(data);
+
         if(!gotLocation)
         {
             Log.i("event_details_loc", "CANNOT");
         }
     }
+
+    private class AsyncHttpPost extends AsyncTask<String, String, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Log.i("POST", "Posting session's data to server..");
+        }
+
+        @Override
+        protected String doInBackground(String... arg) {
+            try {
+                //GET Request
+                //return RequestHandler.sendGet("https://prodevsblog.com/android_get.php");
+
+                // POST Request
+                JSONObject postDataParams = new JSONObject();
+                postDataParams.put("fname", "Testos");
+                postDataParams.put("lname", "Testakis");
+                postDataParams.put("age", "17");
+
+                return sendPost("http://okeanos.katefidis.ga/calchas/post.php",postDataParams);
+            } catch(Exception e){
+                return "Exception: " + e.getMessage();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.i("POST", "AsyncTask executed. (" + result + ")");
+        }
+    }
+
+    public static String sendPost(String r_url , JSONObject postDataParams) throws Exception {
+        URL url = new URL(r_url);
+
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setReadTimeout(20000);
+        conn.setConnectTimeout(20000);
+        conn.setRequestMethod("POST");
+        conn.setDoInput(true);
+        conn.setDoOutput(true);
+
+        OutputStream os = conn.getOutputStream();
+        BufferedWriter writer = new BufferedWriter( new OutputStreamWriter(os, "UTF-8"));
+        writer.write(encodeParams(postDataParams));
+        writer.flush();
+        writer.close();
+        os.close();
+
+        int responseCode=conn.getResponseCode(); // To Check for 200
+        if (responseCode == HttpsURLConnection.HTTP_OK) {
+
+            BufferedReader in=new BufferedReader( new InputStreamReader(conn.getInputStream()));
+            StringBuffer sb = new StringBuffer("");
+            String line="";
+            while((line = in.readLine()) != null) {
+                sb.append(line);
+                break;
+            }
+            in.close();
+            return sb.toString();
+        }
+        return null;
+    }
+
+    private static String encodeParams(JSONObject params) throws Exception {
+        StringBuilder result = new StringBuilder();
+        boolean first = true;
+        Iterator<String> itr = params.keys();
+        while(itr.hasNext()){
+            String key= itr.next();
+            Object value = params.get(key);
+            if (first)
+                first = false;
+            else
+                result.append("&");
+
+            result.append(URLEncoder.encode(key, "UTF-8"));
+            result.append("=");
+            result.append(URLEncoder.encode(value.toString(), "UTF-8"));
+        }
+        return result.toString();
+    }
+
 }
