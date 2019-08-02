@@ -18,8 +18,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -33,6 +35,8 @@ import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.location.Location;
+
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -40,6 +44,7 @@ import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
+import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -54,14 +59,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import org.json.JSONObject;
+
 import javax.net.ssl.HttpsURLConnection;
+
 import static android.content.Context.BATTERY_SERVICE;
 import static android.content.Context.SENSOR_SERVICE;
 
 
-public class MobileArrayAdapter extends BaseExpandableListAdapter implements Filterable
-{
+public class MobileArrayAdapter extends BaseExpandableListAdapter implements Filterable {
     private final Context context;
     private Filter contactFilter;
     private ArrayList<Protasi> protaseis;
@@ -71,8 +78,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
     private EventDetails event_details;
 
 
-    public MobileArrayAdapter(Context context, ArrayList<Protasi> protaseis, EventDetails event_details)
-    {
+    public MobileArrayAdapter(Context context, ArrayList<Protasi> protaseis, EventDetails event_details) {
         //super(context, R.layout.list_protaseis, protaseis);
         this.context = context;
         this.protaseis = protaseis;
@@ -82,155 +88,153 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
     @Override
     public View getGroupView(int position, boolean isExpanded,
-                             View rowView, ViewGroup parent)
-    {
-            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-            boolean DarkMode = settings.getBoolean("DarkMode", false);
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            rowView = inflater.inflate(R.layout.list_protaseis, parent, false);
+                             View rowView, ViewGroup parent) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean DarkMode = settings.getBoolean("DarkMode", false);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        rowView = inflater.inflate(R.layout.list_protaseis, parent, false);
 //
 //        if (rowView == null) {
 //            rowView = inflater.inflate(R.layout.list_protaseis, null);
 //        }
 
-            colorIndex = position;
-            if (colorIndex > 11) colorIndex = colorIndex%11;
+        colorIndex = position;
+        if (colorIndex > 11) colorIndex = colorIndex % 11;
 
-            String[] darkColors = context.getResources().getStringArray(R.array.darkColors);
-            String[] lightColors = context.getResources().getStringArray(R.array.lightColors);
+        String[] darkColors = context.getResources().getStringArray(R.array.darkColors);
+        String[] lightColors = context.getResources().getStringArray(R.array.lightColors);
 
 
-            //Pairnw to antikeimeno pou fainetai sto position
+        //Pairnw to antikeimeno pou fainetai sto position
 //        Protasi prot = protaseis.get(position);
-            final Protasi prot = (Protasi) getGroup(position);
+        final Protasi prot = (Protasi) getGroup(position);
 
-            //se periptwsi pou antikeimeno tou list view einai kapoios seperator
-            //fernw ws row to seperator.xml
-            if (prot.score == -3.0) {
-                rowView = inflater.inflate(R.layout.seperator, parent, false);
-                rowView.setEnabled(false);
-                rowView.setClickable(false);
-                TextView SeperatorText = (TextView) rowView.findViewById(R.id.seperator);
-                SeperatorText.setText(prot.name);
+        //se periptwsi pou antikeimeno tou list view einai kapoios seperator
+        //fernw ws row to seperator.xml
+        if (prot.score == -3.0) {
+            rowView = inflater.inflate(R.layout.seperator, parent, false);
+            rowView.setEnabled(false);
+            rowView.setClickable(false);
+            TextView SeperatorText = (TextView) rowView.findViewById(R.id.seperator);
+            SeperatorText.setText(prot.name);
 //            Typeface face = Typeface.createFromAsset(context.getAssets(),
 //                    "fonts/Lobster.ttf");
 //            SeperatorText.setTypeface(face);
 
+        }
+        //se periptwsi pou einai epafi fernw mono badge kai onoma
+        else if (prot.score == -2.0) {
+            rowView = inflater.inflate(R.layout.contact, parent, false);
+            TextView ContactName = (TextView) rowView.findViewById(R.id.contact_name_to_list);
+            if (prot.name.length() > 20) {
+                String name = prot.name.substring(0, Math.min(prot.name.length(), 20)) + ".";
+                ContactName.setText(name);
+            } else ContactName.setText(prot.name);
+
+            //if(prot.type != null)  ContactName.setText(prot.name + "|" + prot.type);
+
+            //Gia to badge
+            //QuickContactBadge eikonacode = (QuickContactBadge) rowView.findViewById(R.id.contact_photo);
+            RoundedQuickContactBadge eikonacode = (RoundedQuickContactBadge) rowView.findViewById(R.id.contact_photo);
+            Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, String.valueOf(prot.contactID));
+            eikonacode.assignContactUri(uri);
+            if (prot.photo != null) {
+                eikonacode.setImageBitmap(prot.photo);
+            } else {
+                if (DarkMode) {
+                    eikonacode.setImageResource(R.drawable.account_circle_black_48dp);
+                    int randomDarkColor = Color.parseColor(darkColors[colorIndex]);
+                    eikonacode.setColorFilter(randomDarkColor);
+                } else {
+                    eikonacode.setImageResource(R.drawable.account_circle_black_48dp);
+                    int randomLightColor = Color.parseColor(lightColors[colorIndex]);
+                    eikonacode.setColorFilter(randomLightColor);
+                }
             }
-            //se periptwsi pou einai epafi fernw mono badge kai onoma
-            else if (prot.score == -2.0) {
-                rowView = inflater.inflate(R.layout.contact, parent, false);
-                TextView ContactName = (TextView) rowView.findViewById(R.id.contact_name_to_list);
+
+        } else {
+            TextView textView = rowView.findViewById(R.id.contact_name);
+            TextView textView1 = rowView.findViewById(R.id.contact_number);
+            TextView datecontacted = rowView.findViewById(R.id.datecontacted);
+            //TextView network = rowView.findViewById(R.id.network);
+
+            //Gia na efmanizetai i wra kai imerominia tis teleutaias epikoinwnias me tin protasi
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM HH:mm", Locale.getDefault());
+            String dateString = formatter.format(new Date(prot.date));
+            datecontacted.setText(dateString);
+            //network.setText(prot.network);
+            if (prot.isContact) {
                 if (prot.name.length() > 20) {
                     String name = prot.name.substring(0, Math.min(prot.name.length(), 20)) + ".";
-                    ContactName.setText(name);
-                } else ContactName.setText(prot.name);
-
-                //if(prot.type != null)  ContactName.setText(prot.name + "|" + prot.type);
-
-                //Gia to badge
-                //QuickContactBadge eikonacode = (QuickContactBadge) rowView.findViewById(R.id.contact_photo);
-                RoundedQuickContactBadge eikonacode = (RoundedQuickContactBadge) rowView.findViewById(R.id.contact_photo);
-                Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, String.valueOf(prot.contactID));
-                eikonacode.assignContactUri(uri);
-                if (prot.photo != null) {
-                    eikonacode.setImageBitmap(prot.photo);
-                } else {
-                    if (DarkMode) {
-                        eikonacode.setImageResource(R.drawable.account_circle_black_48dp);
-                        int randomDarkColor = Color.parseColor(darkColors[colorIndex]);
-                        eikonacode.setColorFilter(randomDarkColor);
-                    } else {
-                        eikonacode.setImageResource(R.drawable.account_circle_black_48dp);
-                        int randomLightColor = Color.parseColor(lightColors[colorIndex]);
-                        eikonacode.setColorFilter(randomLightColor);
-                    }
-                }
-
+                    textView.setText(name);
+                } else textView.setText(prot.name);
+                //if(prot.type != null)   textView.setText(prot.name + "|" + prot.type);
+                textView1.setText(prot.number);
             } else {
-                TextView textView = rowView.findViewById(R.id.contact_name);
-                TextView textView1 = rowView.findViewById(R.id.contact_number);
-                TextView datecontacted = rowView.findViewById(R.id.datecontacted);
-                //TextView network = rowView.findViewById(R.id.network);
-
-                //Gia na efmanizetai i wra kai imerominia tis teleutaias epikoinwnias me tin protasi
-                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM HH:mm", Locale.getDefault());
-                String dateString = formatter.format(new Date(prot.date));
-                datecontacted.setText(dateString);
-                //network.setText(prot.network);
-                if (prot.isContact) {
-                    if (prot.name.length() > 20) {
-                        String name = prot.name.substring(0, Math.min(prot.name.length(), 20)) + ".";
-                        textView.setText(name);
-                    } else textView.setText(prot.name);
-                    //if(prot.type != null)   textView.setText(prot.name + "|" + prot.type);
-                    textView1.setText(prot.number);
-                } else {
-                    textView.setText(prot.number);
-                    //if(prot.type != null)   textView.setText(prot.name + "|" + prot.type);
-                    textView1.setText("");
-                }
-
-                //Gia to badge
-                //QuickContactBadge eikonacode = (QuickContactBadge) rowView.findViewById(R.id.contact_photo);
-                RoundedQuickContactBadge eikonacode = (RoundedQuickContactBadge) rowView.findViewById(R.id.contact_photo);
-                eikonacode.assignContactFromPhone(prot.number, true);
-
-                if (prot.photo != null) {
-                    eikonacode.setImageBitmap(prot.photo);
-                } else {
-                    if (DarkMode) {
-                        eikonacode.setImageResource(R.drawable.account_circle_black_48dp);
-                        int randomDarkColor = Color.parseColor(darkColors[colorIndex]);
-                        eikonacode.setColorFilter(randomDarkColor);
-                    } else {
-                        eikonacode.setImageResource(R.drawable.account_circle_black_48dp);
-                        int randomLightColor = Color.parseColor(lightColors[colorIndex]);
-                        eikonacode.setColorFilter(randomLightColor);
-                    }
-                }
-
-                //Gia to icon
-                ImageView typeIcon = rowView.findViewById(R.id.type);
-                if (prot.type != null) {
-                    if (prot.type.equals("phone")) {
-                        typeIcon.setImageResource(R.drawable.ic_call_24dp);
-                    } else if (prot.type.equals("viber")) {
-                        typeIcon.setImageResource(R.drawable.ic_viber_24dp);
-                    } else if (prot.type.equals("whatsapp")) {
-                        typeIcon.setImageResource(R.drawable.ic_whatsapp_24dp);
-                    } else typeIcon.setImageResource(R.drawable.ic_sms_24dp);
-                }
-
+                textView.setText(prot.number);
+                //if(prot.type != null)   textView.setText(prot.name + "|" + prot.type);
+                textView1.setText("");
             }
 
-            final Protasi protasiToCall = prot;
+            //Gia to badge
+            //QuickContactBadge eikonacode = (QuickContactBadge) rowView.findViewById(R.id.contact_photo);
+            RoundedQuickContactBadge eikonacode = (RoundedQuickContactBadge) rowView.findViewById(R.id.contact_photo);
+            eikonacode.assignContactFromPhone(prot.number, true);
 
-            ImageView callIcon = (ImageView) rowView.findViewById(R.id.call_action);
-            if(callIcon != null)
-            {
-                callIcon.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent phoneIntent = new Intent(Intent.ACTION_CALL);
-                        phoneIntent.setData(Uri.parse("tel:" + protasiToCall.number));
-                        context.startActivity(phoneIntent);
-                        notifyDataSetChanged();
-
-                        //insert details to db
-                        if(!protasiToCall.isContact){
-                            event_details.chosen = md5encrypt(protasiToCall.number);
-                        } else event_details.chosen = protasiToCall.contactID;
-                        event_details.sf = protasiToCall.scoref;
-                        event_details.sr = protasiToCall.scorer;
-                        try {
-                            insertToDB();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
+            if (prot.photo != null) {
+                eikonacode.setImageBitmap(prot.photo);
+            } else {
+                if (DarkMode) {
+                    eikonacode.setImageResource(R.drawable.account_circle_black_48dp);
+                    int randomDarkColor = Color.parseColor(darkColors[colorIndex]);
+                    eikonacode.setColorFilter(randomDarkColor);
+                } else {
+                    eikonacode.setImageResource(R.drawable.account_circle_black_48dp);
+                    int randomLightColor = Color.parseColor(lightColors[colorIndex]);
+                    eikonacode.setColorFilter(randomLightColor);
+                }
             }
+
+            //Gia to icon
+            ImageView typeIcon = rowView.findViewById(R.id.type);
+            if (prot.type != null) {
+                if (prot.type.equals("phone")) {
+                    typeIcon.setImageResource(R.drawable.ic_call_24dp);
+                } else if (prot.type.equals("viber")) {
+                    typeIcon.setImageResource(R.drawable.ic_viber_24dp);
+                } else if (prot.type.equals("whatsapp")) {
+                    typeIcon.setImageResource(R.drawable.ic_whatsapp_24dp);
+                } else typeIcon.setImageResource(R.drawable.ic_sms_24dp);
+            }
+
+        }
+
+        final Protasi protasiToCall = prot;
+
+        ImageView callIcon = (ImageView) rowView.findViewById(R.id.call_action);
+        if (callIcon != null) {
+            callIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent phoneIntent = new Intent(Intent.ACTION_CALL);
+                    phoneIntent.setData(Uri.parse("tel:" + protasiToCall.number));
+                    context.startActivity(phoneIntent);
+                    notifyDataSetChanged();
+
+                    //insert details to db
+                    if (!protasiToCall.isContact) {
+                        event_details.chosen = md5encrypt(protasiToCall.number);
+                    } else event_details.chosen = protasiToCall.contactID;
+                    event_details.sf = protasiToCall.scoref;
+                    event_details.sr = protasiToCall.scorer;
+                    try {
+                        insertToDB();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
 
         return rowView;
     }
@@ -286,17 +290,17 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                 layoutMsg.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                                Intent smsIntent = new Intent(Intent.ACTION_VIEW);
-                                smsIntent.setData(Uri.parse("sms:" + resultToCall.number));
-                                context.startActivity(smsIntent);
-                                notifyDataSetChanged();
+                        Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+                        smsIntent.setData(Uri.parse("sms:" + resultToCall.number));
+                        context.startActivity(smsIntent);
+                        notifyDataSetChanged();
 
-                                //insert details to db
-                                if(!resultToCall.isContact){
-                                    event_details.chosen = md5encrypt(resultToCall.number);
-                                } else event_details.chosen = resultToCall.contactID;
-                                event_details.sf = resultToCall.scoref;
-                                event_details.sr = resultToCall.scorer;
+                        //insert details to db
+                        if (!resultToCall.isContact) {
+                            event_details.chosen = md5encrypt(resultToCall.number);
+                        } else event_details.chosen = resultToCall.contactID;
+                        event_details.sf = resultToCall.scoref;
+                        event_details.sr = resultToCall.scorer;
                         try {
                             insertToDB();
                         } catch (IOException e) {
@@ -310,35 +314,36 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                 layoutViber.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(appInstalledOrNot("com.viber.voip")) //if app is installed in the device
-                                {
-                                    Intent viberIntent = new Intent(Intent.ACTION_VIEW);
-                                    viberIntent.setPackage("com.viber.voip");
-                                    //start viber even if it's not in the background
-                                    String apiViber;
-                                    if(resultToCall.number.charAt(0) != '+') //no country prefix social number encoding fix
-                                    {
-                                        String fixedPrefixNumber = GetCountryZipCode() + resultToCall.number;
-                                        apiViber = "viber://contact?number=" + fixedPrefixNumber;
-                                    } else apiViber = "viber://contact?number=" + resultToCall.number.replace("+", "");
-                                    Log.i("API", apiViber);
-                                    viberIntent.setData(Uri.parse(apiViber));
-                                    context.startActivity(viberIntent);
+                        if (appInstalledOrNot("com.viber.voip")) //if app is installed in the device
+                        {
+                            Intent viberIntent = new Intent(Intent.ACTION_VIEW);
+                            viberIntent.setPackage("com.viber.voip");
+                            //start viber even if it's not in the background
+                            String apiViber;
+                            if (resultToCall.number.charAt(0) != '+') //no country prefix social number encoding fix
+                            {
+                                String fixedPrefixNumber = GetCountryZipCode() + resultToCall.number;
+                                apiViber = "viber://contact?number=" + fixedPrefixNumber;
+                            } else
+                                apiViber = "viber://contact?number=" + resultToCall.number.replace("+", "");
+                            Log.i("API", apiViber);
+                            viberIntent.setData(Uri.parse(apiViber));
+                            context.startActivity(viberIntent);
 
-                                    //insert details to db
-                                    if(!resultToCall.isContact){
-                                        event_details.chosen = md5encrypt(resultToCall.number);
-                                    } else event_details.chosen = resultToCall.contactID;
-                                    event_details.sf = resultToCall.scoref;
-                                    event_details.sr = resultToCall.scorer;
-                                    try {
-                                        insertToDB();
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                } else {
-                                    Toast.makeText(context, "Viber is not installed!", Toast.LENGTH_LONG).show();
-                                }
+                            //insert details to db
+                            if (!resultToCall.isContact) {
+                                event_details.chosen = md5encrypt(resultToCall.number);
+                            } else event_details.chosen = resultToCall.contactID;
+                            event_details.sf = resultToCall.scoref;
+                            event_details.sr = resultToCall.scorer;
+                            try {
+                                insertToDB();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            Toast.makeText(context, "Viber is not installed!", Toast.LENGTH_LONG).show();
+                        }
                     }
                 });
 
@@ -347,33 +352,34 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                 layoutWhatsApp.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(appInstalledOrNot("com.whatsapp")) //if app is installed in the device
-                                {
-                                    Intent whatsappIntent = new Intent(Intent.ACTION_VIEW);
-                                    String apiWhatsApp;
-                                    if(resultToCall.number.charAt(0) != '+') //no country prefix social number encoding fix
-                                    {
-                                        String fixedPrefixNumber = GetCountryZipCode() + resultToCall.number;
-                                        apiWhatsApp = "https://api.whatsapp.com/send?phone=" + fixedPrefixNumber;
-                                    } else apiWhatsApp = "https://api.whatsapp.com/send?phone=" + resultToCall.number.replace("+", "");
-                                    Log.i("API", apiWhatsApp);
-                                    whatsappIntent.setData(Uri.parse(apiWhatsApp));
-                                    context.startActivity(whatsappIntent);
+                        if (appInstalledOrNot("com.whatsapp")) //if app is installed in the device
+                        {
+                            Intent whatsappIntent = new Intent(Intent.ACTION_VIEW);
+                            String apiWhatsApp;
+                            if (resultToCall.number.charAt(0) != '+') //no country prefix social number encoding fix
+                            {
+                                String fixedPrefixNumber = GetCountryZipCode() + resultToCall.number;
+                                apiWhatsApp = "https://api.whatsapp.com/send?phone=" + fixedPrefixNumber;
+                            } else
+                                apiWhatsApp = "https://api.whatsapp.com/send?phone=" + resultToCall.number.replace("+", "");
+                            Log.i("API", apiWhatsApp);
+                            whatsappIntent.setData(Uri.parse(apiWhatsApp));
+                            context.startActivity(whatsappIntent);
 
-                                    //insert details to db
-                                    if(!resultToCall.isContact){
-                                        event_details.chosen = md5encrypt(resultToCall.number);
-                                    } else event_details.chosen = resultToCall.contactID;
-                                    event_details.sf = resultToCall.scoref;
-                                    event_details.sr = resultToCall.scorer;
-                                    try {
-                                        insertToDB();
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                } else {
-                                    Toast.makeText(context, "WhatsApp is not installed!", Toast.LENGTH_LONG).show();
-                                }
+                            //insert details to db
+                            if (!resultToCall.isContact) {
+                                event_details.chosen = md5encrypt(resultToCall.number);
+                            } else event_details.chosen = resultToCall.contactID;
+                            event_details.sf = resultToCall.scoref;
+                            event_details.sr = resultToCall.scorer;
+                            try {
+                                insertToDB();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            Toast.makeText(context, "WhatsApp is not installed!", Toast.LENGTH_LONG).show();
+                        }
 
                     }
                 });
@@ -390,7 +396,6 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
         return convertView;
     }
-
 
 
     @Override
@@ -434,46 +439,37 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
     }
 
 
-    public void resetData()
-    {
+    public void resetData() {
         protaseis = originprotaseis;
     }
 
     @Override
-    public Filter getFilter()
-    {
+    public Filter getFilter() {
         if (contactFilter == null)
             contactFilter = new ProtaseisFilter();
 
         return contactFilter;
     }
 
-    public Protasi getItem(int position)
-    {
+    public Protasi getItem(int position) {
         return protaseis.get(position);
     }
 
-    public int getCount()
-    {
+    public int getCount() {
         return protaseis.size();
     }
 
     @SuppressLint("NewApi")
-    private class ProtaseisFilter extends Filter
-    {
+    private class ProtaseisFilter extends Filter {
         @Override
-        protected FilterResults performFiltering(CharSequence constraint)
-        {
+        protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults results = new FilterResults();
             // We implement here the filter logic
-            if (constraint == null || constraint.length() == 0)
-            {
+            if (constraint == null || constraint.length() == 0) {
                 // No filter implemented we return all the list
                 results.values = protaseis;
                 results.count = protaseis.size();
-            }
-            else
-            {
+            } else {
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
                 boolean showphoto = preferences.getBoolean("showphoto", true);
 
@@ -482,8 +478,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
                 ArrayList<Protasi> mycontactlist = getAllContacts(showphoto);
 
-                for (Protasi p : mycontactlist)
-                {
+                for (Protasi p : mycontactlist) {
                     //edw einai o tropos me ton opoio ginetai to search
                     String tocheck1 = Normalizer.normalize(p.name, Normalizer.Form.NFD);
                     String tocheck2 = Normalizer.normalize(constraint.toString(), Normalizer.Form.NFD);
@@ -493,7 +488,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
                     //if (p.name.toUpperCase(Locale.getDefault()).startsWith(constraint.toString().toUpperCase(Locale.getDefault())))
                     //h protash den einai to seperator Recent Calls me arithmo -1
-                    if (!p.number.equals("-1")){
+                    if (!p.number.equals("-1")) {
                         if (tocheck1.toUpperCase(Locale.getDefault()).contains(tocheck2.toUpperCase(Locale.getDefault())))
                             nProtaseis.add(p);
                     }
@@ -506,38 +501,31 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
             return results;
         }
 
-        private ArrayList<Protasi> getAllContacts (boolean withphotos)
-        {
+        private ArrayList<Protasi> getAllContacts(boolean withphotos) {
 
             ArrayList<Protasi> mycontactlist = new ArrayList<Protasi>();
 
             ContentResolver cr = context.getContentResolver();
-            Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, new String[] { ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.Contacts.HAS_PHONE_NUMBER }, ContactsContract.Contacts.HAS_PHONE_NUMBER + "='1'", null, ContactsContract.Contacts.DISPLAY_NAME);
-            if (cur.getCount() > 0)
-            {
-                while (cur.moveToNext())
-                {
+            Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, new String[]{ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.Contacts.HAS_PHONE_NUMBER}, ContactsContract.Contacts.HAS_PHONE_NUMBER + "='1'", null, ContactsContract.Contacts.DISPLAY_NAME);
+            if (cur.getCount() > 0) {
+                while (cur.moveToNext()) {
 
                     String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
 
                     String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
 
-                    Protasi mycalllogrecord = new Protasi("", name, 0.0, 0.0, -2.0, true, null,  id);
+                    Protasi mycalllogrecord = new Protasi("", name, 0.0, 0.0, -2.0, true, null, id);
 
-                    if (withphotos)
-                    {
+                    if (withphotos) {
                         //an thelw kai tis photos
                         long lid = Long.parseLong(id);
                         Uri photoUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, lid);
                         InputStream photoInput = ContactsContract.Contacts.openContactPhotoInputStream(context.getContentResolver(), photoUri);
-                        if (photoInput != null)
-                        {
+                        if (photoInput != null) {
                             mycalllogrecord.photo = BitmapFactory.decodeStream(photoInput);
-                        }
-                        else
+                        } else
                             mycalllogrecord.photo = null;
                     }
-
 
 
                     mycontactlist.add(mycalllogrecord);
@@ -549,8 +537,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
         @SuppressWarnings("unchecked")
         @Override
-        protected void publishResults(CharSequence constraint, FilterResults results)
-        {
+        protected void publishResults(CharSequence constraint, FilterResults results) {
 
             //Now we have to inform the adapter about the new list filtered
             //an to gramma pou tha patithei antistoixei se miden apotelesmata
@@ -566,18 +553,18 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         }
     }
 
-    private String GetCountryZipCode(){
-        String CountryID="";
-        String CountryZipCode="";
+    private String GetCountryZipCode() {
+        String CountryID = "";
+        String CountryZipCode = "";
 
         TelephonyManager manager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         //getNetworkCountryIso
-        CountryID= manager.getSimCountryIso().toUpperCase();
-        String[] rl=context.getResources().getStringArray(R.array.CountryCodes);
-        for(int i=0;i<rl.length;i++){
-            String[] g=rl[i].split(",");
-            if(g[1].trim().equals(CountryID.trim())){
-                CountryZipCode=g[0];
+        CountryID = manager.getSimCountryIso().toUpperCase();
+        String[] rl = context.getResources().getStringArray(R.array.CountryCodes);
+        for (int i = 0; i < rl.length; i++) {
+            String[] g = rl[i].split(",");
+            if (g[1].trim().equals(CountryID.trim())) {
+                CountryZipCode = g[0];
                 break;
             }
         }
@@ -590,15 +577,13 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         try {
             pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
             app_installed = true;
-        }
-        catch (PackageManager.NameNotFoundException e) {
+        } catch (PackageManager.NameNotFoundException e) {
             app_installed = false;
         }
         return app_installed;
     }
 
-    private String md5encrypt(String numberToEncrypt)
-    {
+    private String md5encrypt(String numberToEncrypt) {
         //md5 number encryption
         MessageDigest md = null;
         try {
@@ -616,11 +601,11 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
     private static Integer getConnectivityType(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo info = cm.getActiveNetworkInfo();
-        if(info==null || !info.isConnected())
+        if (info == null || !info.isConnected())
             return 1; //not connected
-        if(info.getType() == ConnectivityManager.TYPE_WIFI)
+        if (info.getType() == ConnectivityManager.TYPE_WIFI)
             return 2;
-        if(info.getType() == ConnectivityManager.TYPE_MOBILE){
+        if (info.getType() == ConnectivityManager.TYPE_MOBILE) {
             int networkType = info.getSubtype();
             switch (networkType) {
                 case TelephonyManager.NETWORK_TYPE_GPRS:
@@ -652,35 +637,25 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
     }
 
     private void insertToDB() throws IOException {
-        MyLocation.LocationResult locationResult = new MyLocation.LocationResult(){
-            @Override
-            public void gotLocation(Location location){
-                //Got the location!
-                event_details.location_coords = location.getLatitude() + ", " + location.getLongitude();
-                event_details.location_accuracy = String.valueOf(location.getAccuracy());
-
-                Log.i("event_details_loc", event_details.location_coords + " | " + event_details.location_accuracy);
-            }
-        };
-        MyLocation myLocation = new MyLocation();
-        boolean gotLocation = myLocation.getLocation(context, locationResult);
 
         //get battery lvl
-        BatteryManager bm = (BatteryManager)context.getSystemService(BATTERY_SERVICE);
+        BatteryManager bm = (BatteryManager) context.getSystemService(BATTERY_SERVICE);
         event_details.battery_level = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
 
 
-
-
-        SensorManager mSensorManager = (SensorManager)context.getSystemService(SENSOR_SERVICE);
+        SensorManager mSensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
         Sensor mLight = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         event_details.ambient_light = mLight.getMaximumRange();
 
-
+        double[] gps = getGPS(); //get location info from GPS
+        event_details.location_coords = gps[0] + ", " + gps[1]; //lat, lng
+        event_details.location_accuracy = Double.toString(gps[2]);//location accuracy
 
 
         //get connectivity type
         event_details.connectivity = getConnectivityType(context);
+
+
 
 
         Log.i("event_details", event_details.uid + " | " + event_details.chosen + " | " + event_details.sf + " | " + event_details.sr);
@@ -689,13 +664,10 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         Log.i("event_details_light", String.valueOf(event_details.ambient_light));
 
 
-        String[] data = {"Testos", "Testakis", "22"};
-        new AsyncHttpPost().execute(data);
+            Log.i("LOCATION", "--> " + event_details.location_coords +" ACC--> " + event_details.location_accuracy);
+            String[] data = {event_details.location_coords, event_details.location_accuracy, "22"};
+            new AsyncHttpPost().execute(data);
 
-        if(!gotLocation)
-        {
-            Log.i("event_details_loc", "CANNOT");
-        }
     }
 
     private class AsyncHttpPost extends AsyncTask<String, String, String> {
@@ -714,12 +686,12 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
                 // POST Request
                 JSONObject postDataParams = new JSONObject();
-                postDataParams.put("fname", "Testos");
-                postDataParams.put("lname", "Testakis");
-                postDataParams.put("age", "17");
+                postDataParams.put("fname", arg[0]);
+                postDataParams.put("lname", arg[1]);
+                postDataParams.put("age", arg[2]);
 
-                return sendPost("http://okeanos.katefidis.ga/calchas/post.php",postDataParams);
-            } catch(Exception e){
+                return sendPost("http://okeanos.katefidis.ga/calchas/post.php", postDataParams);
+            } catch (Exception e) {
                 return "Exception: " + e.getMessage();
             }
         }
@@ -730,7 +702,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         }
     }
 
-    public static String sendPost(String r_url , JSONObject postDataParams) throws Exception {
+    private static String sendPost(String r_url, JSONObject postDataParams) throws Exception {
         URL url = new URL(r_url);
 
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -741,19 +713,19 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         conn.setDoOutput(true);
 
         OutputStream os = conn.getOutputStream();
-        BufferedWriter writer = new BufferedWriter( new OutputStreamWriter(os, "UTF-8"));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
         writer.write(encodeParams(postDataParams));
         writer.flush();
         writer.close();
         os.close();
 
-        int responseCode=conn.getResponseCode(); // To Check for 200
+        int responseCode = conn.getResponseCode(); // To Check for 200
         if (responseCode == HttpsURLConnection.HTTP_OK) {
 
-            BufferedReader in=new BufferedReader( new InputStreamReader(conn.getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             StringBuffer sb = new StringBuffer("");
-            String line="";
-            while((line = in.readLine()) != null) {
+            String line = "";
+            while ((line = in.readLine()) != null) {
                 sb.append(line);
                 break;
             }
@@ -767,8 +739,8 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         StringBuilder result = new StringBuilder();
         boolean first = true;
         Iterator<String> itr = params.keys();
-        while(itr.hasNext()){
-            String key= itr.next();
+        while (itr.hasNext()) {
+            String key = itr.next();
             Object value = params.get(key);
             if (first)
                 first = false;
@@ -781,5 +753,28 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         }
         return result.toString();
     }
+
+    private double[] getGPS() {
+        LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        List<String> providers = lm.getProviders(true);
+
+        /* Loop over the array backwards, and if you get an accurate location, then break                 out the loop*/
+        Location l = null;
+
+        for (int i = providers.size() - 1; i >= 0; i--) {
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    l = lm.getLastKnownLocation(providers.get(i));
+                }
+        if (l != null) break;
+    }
+
+    double[] gps = new double[3];
+    if (l != null) {
+        gps[0] = l.getLatitude();
+        gps[1] = l.getLongitude();
+        gps[2] = l.getAccuracy();
+    }
+    return gps;
+}
 
 }
