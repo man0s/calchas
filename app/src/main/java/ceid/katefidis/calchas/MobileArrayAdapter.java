@@ -658,7 +658,9 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         //get connectivity type
         event_details.connectivity = getConnectivityType(context);
 
-        event_details.screen_state = isScreenOn(context); //screen_state, true for ON, false for OFF
+        boolean screenState = isScreenOn(context);  //screen_state, true for ON, false for OFF
+        if(screenState) event_details.screen_state = "on";
+        else event_details.screen_state = "off";
 
         event_details.ringer_mode = getRingMode(); //0 for error?, 1 for silent mode, 2 for vibrate mode, 3 for normal mode
 

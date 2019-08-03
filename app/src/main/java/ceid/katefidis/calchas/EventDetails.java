@@ -16,7 +16,7 @@ public class EventDetails {
     Integer connectivity;
     Integer battery_level;
     float ambient_light;
-    boolean screen_state;
+    String screen_state;
     Integer ringer_mode;
 
 
