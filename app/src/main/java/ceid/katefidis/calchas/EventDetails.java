@@ -16,6 +16,8 @@ public class EventDetails {
     Integer connectivity;
     Integer battery_level;
     float ambient_light;
+    boolean screen_state;
+    Integer ringer_mode;
 
 
     public EventDetails(String uid, String protaseis, String protaseis_last_channel)

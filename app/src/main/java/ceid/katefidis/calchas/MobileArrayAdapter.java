@@ -34,19 +34,24 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.hardware.display.DisplayManager;
 import android.location.Location;
 
 import android.location.LocationManager;
+import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.BatteryManager;
+import android.os.Build;
+import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -651,9 +656,14 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         event_details.location_coords = gps[0] + ", " + gps[1]; //lat, lng
         event_details.location_accuracy = Double.toString(gps[2]);//location accuracy
 
-
         //get connectivity type
         event_details.connectivity = getConnectivityType(context);
+
+        event_details.screen_state = isScreenOn(context); //screen_state, true for ON, false for OFF
+
+        event_details.ringer_mode = getRingMode(); //0 for error?, 1 for silent mode, 2 for vibrate mode, 3 for normal mode
+
+
 
 
 
@@ -776,5 +786,44 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
     }
     return gps;
 }
+
+    /**
+     * Is the screen of the device on.
+     * @param context the context
+     * @return true when (at least one) screen is on
+     */
+    private boolean isScreenOn(Context context) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            DisplayManager dm = (DisplayManager) context.getSystemService(Context.DISPLAY_SERVICE);
+            boolean screenOn = false;
+            for (Display display : dm.getDisplays()) {
+                if (display.getState() != Display.STATE_OFF) {
+                    screenOn = true;
+                }
+            }
+            return screenOn;
+        } else {
+            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            //noinspection deprecation
+            return pm.isScreenOn();
+        }
+    }
+
+    private Integer getRingMode(){
+        AudioManager am = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
+        int mode = 0;
+        switch (am.getRingerMode()) {
+            case AudioManager.RINGER_MODE_SILENT:
+                mode = 1;
+                break;
+            case AudioManager.RINGER_MODE_VIBRATE:
+                mode = 2;
+                break;
+            case AudioManager.RINGER_MODE_NORMAL:
+                mode = 3;
+                break;
+        }
+        return mode;
+    }
 
 }
