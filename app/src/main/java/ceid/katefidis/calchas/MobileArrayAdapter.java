@@ -672,6 +672,8 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         Log.i("event_details_bat", event_details.battery_level + "%");
         Log.i("event_details_conn", String.valueOf(event_details.connectivity));
         Log.i("event_details_light", String.valueOf(event_details.ambient_light));
+        Log.i("event_details_screen", String.valueOf(event_details.screen_state));
+        Log.i("event_details_ringer", String.valueOf(event_details.ringer_mode));
 
 
             Log.i("LOCATION", "--> " + event_details.location_coords +" ACC--> " + event_details.location_accuracy);
