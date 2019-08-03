@@ -702,7 +702,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                 postDataParams.put("lname", arg[1]);
                 postDataParams.put("age", arg[2]);
 
-                return sendPost("http://okeanos.katefidis.ga/calchas/post.php", postDataParams);
+                return sendPost("https://okeanos.katefidis.ga/calchas/post.php", postDataParams);
             } catch (Exception e) {
                 return "Exception: " + e.getMessage();
             }
