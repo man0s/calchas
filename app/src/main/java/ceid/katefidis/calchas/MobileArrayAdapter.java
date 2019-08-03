@@ -33,6 +33,8 @@ import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.hardware.display.DisplayManager;
 import android.location.Location;
@@ -81,6 +83,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
     private int colorIndex = 0;
 
     private EventDetails event_details;
+    final boolean[] flag = new boolean[1];
 
 
     public MobileArrayAdapter(Context context, ArrayList<Protasi> protaseis, EventDetails event_details) {
@@ -647,11 +650,6 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         BatteryManager bm = (BatteryManager) context.getSystemService(BATTERY_SERVICE);
         event_details.battery_level = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
 
-
-        SensorManager mSensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
-        Sensor mLight = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
-        event_details.ambient_light = mLight.getMaximumRange();
-
         double[] gps = getGPS(); //get location info from GPS
         event_details.location_coords = gps[0] + ", " + gps[1]; //lat, lng
         event_details.location_accuracy = Double.toString(gps[2]);//location accuracy
@@ -664,22 +662,50 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         event_details.ringer_mode = getRingMode(); //0 for error?, 1 for silent mode, 2 for vibrate mode, 3 for normal mode
 
 
-
-
-
-
         Log.i("event_details", event_details.uid + " | " + event_details.chosen + " | " + event_details.sf + " | " + event_details.sr);
         Log.i("event_details_bat", event_details.battery_level + "%");
         Log.i("event_details_conn", String.valueOf(event_details.connectivity));
-        Log.i("event_details_light", String.valueOf(event_details.ambient_light));
+//        Log.i("event_details_light", String.valueOf(event_details.ambient_light));
         Log.i("event_details_screen", String.valueOf(event_details.screen_state));
         Log.i("event_details_ringer", String.valueOf(event_details.ringer_mode));
 
+        SensorManager mSensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
+        Sensor mLight = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        AsyncLightSensor task = new AsyncLightSensor();
+        task.doInBackground(mSensorManager);
+        mSensorManager.registerListener(task, mLight, SensorManager.SENSOR_DELAY_NORMAL);
 
-            Log.i("LOCATION", "--> " + event_details.location_coords +" ACC--> " + event_details.location_accuracy);
-            String[] data = {event_details.location_coords, event_details.location_accuracy, "22"};
-            new AsyncHttpPost().execute(data);
 
+    }
+
+    public class AsyncLightSensor extends AsyncTask<SensorManager, Void, Void> implements SensorEventListener {
+        private SensorManager sensorManager;
+
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            if (!flag[0]) {
+                event_details.ambient_light = event.values[0];
+                Log.i("LOCATION", "--> " + event_details.location_coords +" AMBIENT LIGHT--> " + event_details.ambient_light);
+                String[] data = {event_details.location_coords, Float.toString(event_details.ambient_light), "22"};
+                new AsyncHttpPost().execute(data);
+                flag[0] = true;
+            }
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) { }
+
+        @Override
+        protected Void doInBackground(SensorManager... params) {
+            sensorManager = params[0];
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            sensorManager.unregisterListener(this);
+        }
     }
 
     private class AsyncHttpPost extends AsyncTask<String, String, String> {
@@ -693,8 +719,6 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         @Override
         protected String doInBackground(String... arg) {
             try {
-                //GET Request
-                //return RequestHandler.sendGet("https://prodevsblog.com/android_get.php");
 
                 // POST Request
                 JSONObject postDataParams = new JSONObject();
@@ -710,7 +734,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
         @Override
         protected void onPostExecute(String result) {
-            Log.i("POST", "AsyncTask executed. (" + result + ")");
+            Log.i("POST", "Post AsyncTask executed. (" + result + ")");
         }
     }
 
