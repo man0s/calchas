@@ -47,6 +47,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.Build;
+import android.os.Handler;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
@@ -675,6 +676,16 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         task.doInBackground(mSensorManager);
         mSensorManager.registerListener(task, mLight, SensorManager.SENSOR_DELAY_NORMAL);
 
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                // Actions to do after 5 seconds
+                Log.i("LOCATION", "--> " + event_details.location_coords +" AMBIENT LIGHT--> " + event_details.ambient_light);
+                String[] data = {event_details.location_coords, Float.toString(event_details.ambient_light), "22"};
+                new AsyncHttpPost().execute(data);
+            }
+        }, 500);
+
 
     }
 
@@ -683,11 +694,8 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
         @Override
         public void onSensorChanged(SensorEvent event) {
-            if (!flag[0]) {
+            if (!flag[0]) { //run only one time
                 event_details.ambient_light = event.values[0];
-                Log.i("LOCATION", "--> " + event_details.location_coords +" AMBIENT LIGHT--> " + event_details.ambient_light);
-                String[] data = {event_details.location_coords, Float.toString(event_details.ambient_light), "22"};
-                new AsyncHttpPost().execute(data);
                 flag[0] = true;
             }
         }
