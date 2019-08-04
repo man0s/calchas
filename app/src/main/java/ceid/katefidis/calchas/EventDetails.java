@@ -11,13 +11,13 @@ public class EventDetails {
     String protaseis_last_channel;
     String location_coords;
     String location_accuracy;
-    Integer activity_type;
-    Integer activity_confidence;
-    Integer connectivity;
-    Integer battery_level;
-    float ambient_light;
     String screen_state;
     Integer ringer_mode;
+    Integer battery_level;
+    float ambient_light;
+    Integer connectivity;
+    Integer activity_type;
+    Integer activity_confidence;
 
 
     public EventDetails(String uid, String protaseis, String protaseis_last_channel)

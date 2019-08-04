@@ -23,10 +23,12 @@ import java.util.Locale;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -52,6 +54,7 @@ import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Display;
@@ -672,6 +675,27 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         Log.i("event_details_screen", String.valueOf(event_details.screen_state));
         Log.i("event_details_ringer", String.valueOf(event_details.ringer_mode));
 
+        BroadcastReceiver activityBroadcastReceiver;
+
+
+        //Activity Tracking
+        activityBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals("activity_intent")) { //BROADCAST_DETECTED_ACTIVITY
+                    int type = intent.getIntExtra("type", -1);
+                    int confidence = intent.getIntExtra("confidence", 0);
+                    event_details.activity_type = type;
+                    event_details.activity_confidence = confidence;
+                }
+            }
+        };
+        LocalBroadcastManager.getInstance(context).registerReceiver(activityBroadcastReceiver, new IntentFilter("activity_intent"));
+
+        //start activity tracking
+        final Intent intent = new Intent(context, BackgroundDetectedActivitiesService.class);
+        context.startService(intent);
+
         SensorManager mSensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
         Sensor mLight = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         AsyncLightSensor task = new AsyncLightSensor();
@@ -683,7 +707,12 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
             public void run() {
                 // Actions to do after 5 seconds
                 Log.i("LOCATION", "--> " + event_details.location_coords +" AMBIENT LIGHT--> " + event_details.ambient_light);
+                Log.i("ACTIVITY", "--> " + event_details.activity_type + ", " + event_details.activity_confidence);
                 String[] data = {event_details.location_coords, Float.toString(event_details.ambient_light), "22"};
+
+                //stop activity tracking
+                context.stopService(intent);
+
                 new AsyncHttpPost().execute(data);
             }
         }, 500);

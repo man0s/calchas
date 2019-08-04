@@ -31,6 +31,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.SearchView;
@@ -424,6 +425,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d("Error", "App has crashed onPause()");
         }
         super.onPause();
+
     }
 
 //    @Override
@@ -492,7 +494,6 @@ public class MainActivity extends AppCompatActivity {
             //StoreStatsSQLlite db = new StoreStatsSQLlite(this);
             new CalchasAsyncTask().execute();
         }
-
 
         long endTime = System.currentTimeMillis();
 

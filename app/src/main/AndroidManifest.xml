@@ -52,6 +52,8 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
+        <service android:name=".DetectedActivitiesIntentService" />
+        <service android:name=".BackgroundDetectedActivitiesService" />
 
     </application>
 
