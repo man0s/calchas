@@ -853,6 +853,8 @@ public class MainActivity extends AppCompatActivity {
             ProgressBar spinner = (ProgressBar)findViewById(R.id.progressBar);
 
             //ftiaxnw enan neo arrayAdapter
+
+
             arrayAdapter = new MobileArrayAdapter(MainActivity.this, finalprotaseis, event_details);
             lista1 = (ExpandableListView) findViewById(R.id.list);
 

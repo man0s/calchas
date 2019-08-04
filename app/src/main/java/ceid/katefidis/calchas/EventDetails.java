@@ -17,7 +17,7 @@ public class EventDetails {
     float ambient_light = 0;
     Integer connectivity;
     Integer activity_type = -1;
-    Integer activity_confidence = -1;
+    Integer activity_confidence = 0;
 
 
     public EventDetails(String uid, String protaseis, String protaseis_last_channel)

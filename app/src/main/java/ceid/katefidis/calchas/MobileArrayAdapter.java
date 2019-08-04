@@ -648,7 +648,31 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         return 1;
     }
 
-    private void insertToDB() throws IOException {
+    private void insertToDB() throws IOException{
+
+
+        BroadcastReceiver activityBroadcastReceiver;
+
+
+        //Activity Tracking
+        activityBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals("activity_intent")) { //BROADCAST_DETECTED_ACTIVITY
+                    int type = intent.getIntExtra("type", -1);
+                    int confidence = intent.getIntExtra("confidence", 0);
+                    //if (confidence > 70) { //CONFIDENCE
+                    event_details.activity_type = type;
+                    event_details.activity_confidence = confidence;
+                    //}
+                }
+            }
+        };
+        LocalBroadcastManager.getInstance(context).registerReceiver(activityBroadcastReceiver, new IntentFilter("activity_intent"));
+
+        //start activity tracking
+        final Intent intent = new Intent(context, BackgroundDetectedActivitiesService.class);
+        context.startService(intent);
 
         //get battery lvl
         BatteryManager bm = (BatteryManager) context.getSystemService(BATTERY_SERVICE);
@@ -674,29 +698,6 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 //        Log.i("event_details_light", String.valueOf(event_details.ambient_light));
         Log.i("event_details_screen", String.valueOf(event_details.screen_state));
         Log.i("event_details_ringer", String.valueOf(event_details.ringer_mode));
-
-        BroadcastReceiver activityBroadcastReceiver;
-
-
-        //Activity Tracking
-        activityBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals("activity_intent")) { //BROADCAST_DETECTED_ACTIVITY
-                    int type = intent.getIntExtra("type", -1);
-                    int confidence = intent.getIntExtra("confidence", 0);
-                    if (confidence > 70) { //CONFIDENCE
-                        event_details.activity_type = type;
-                        event_details.activity_confidence = confidence;
-                    }
-                }
-            }
-        };
-        LocalBroadcastManager.getInstance(context).registerReceiver(activityBroadcastReceiver, new IntentFilter("activity_intent"));
-
-        //start activity tracking
-        final Intent intent = new Intent(context, BackgroundDetectedActivitiesService.class);
-        context.startService(intent);
 
         SensorManager mSensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
         Sensor mLight = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
@@ -734,7 +735,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
                 new AsyncHttpPost().execute(data);
             }
-        }, 1000);
+        }, 2000);
 
 
     }
