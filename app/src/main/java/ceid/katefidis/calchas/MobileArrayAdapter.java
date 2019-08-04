@@ -708,7 +708,24 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                 // Actions to do after 5 seconds
                 Log.i("LOCATION", "--> " + event_details.location_coords +" AMBIENT LIGHT--> " + event_details.ambient_light);
                 Log.i("ACTIVITY", "--> " + event_details.activity_type + ", " + event_details.activity_confidence);
-                String[] data = {event_details.location_coords, Float.toString(event_details.ambient_light), "22"};
+                String[] data = { event_details.uid,  //TODO event_details.uid
+                        Integer.toString(0), //TODO event_details.did
+                        Integer.toString(0), //TODO event_details.eid
+                        event_details.protaseis,
+                        event_details.chosen,
+                        Double.toString(event_details.sf),
+                        Double.toString(event_details.sr),
+                        event_details.protaseis_last_channel,
+                        event_details.location_coords,
+                        event_details.location_accuracy,
+                        event_details.screen_state,
+                        Integer.toString(event_details.ringer_mode),
+                        Integer.toString(event_details.battery_level),
+                        Float.toString(event_details.ambient_light),
+                        Integer.toString(event_details.connectivity),
+                        Integer.toString(event_details.activity_type),
+                        Integer.toString(event_details.activity_confidence)
+                };
 
                 //stop activity tracking
                 context.stopService(intent);
@@ -761,9 +778,23 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
                 // POST Request
                 JSONObject postDataParams = new JSONObject();
-                postDataParams.put("fname", arg[0]);
-                postDataParams.put("lname", arg[1]);
-                postDataParams.put("age", arg[2]);
+                postDataParams.put("uid", arg[0]);
+                postDataParams.put("did", arg[1]);
+                postDataParams.put("eid", arg[2]);
+                postDataParams.put("protaseis", arg[3]);
+                postDataParams.put("chosen", arg[4]);
+                postDataParams.put("sf", arg[5]);
+                postDataParams.put("sr", arg[6]);
+                postDataParams.put("protaseis_last_channel", arg[7]);
+                postDataParams.put("String location_coords", arg[8]);
+                postDataParams.put("location_accuracy", arg[9]);
+                postDataParams.put("screen_state", arg[10]);
+                postDataParams.put("ringer_mode", arg[11]);
+                postDataParams.put("battery_level", arg[12]);
+                postDataParams.put("ambient_light", arg[13]);
+                postDataParams.put("connectivity", arg[14]);
+                postDataParams.put("activity_type", arg[15]);
+                postDataParams.put("activity_confidence", arg[16]);
 
                 return sendPost("https://okeanos.katefidis.ga/calchas/post.php", postDataParams);
             } catch (Exception e) {
