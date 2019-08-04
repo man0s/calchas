@@ -685,8 +685,10 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                 if (intent.getAction().equals("activity_intent")) { //BROADCAST_DETECTED_ACTIVITY
                     int type = intent.getIntExtra("type", -1);
                     int confidence = intent.getIntExtra("confidence", 0);
-                    event_details.activity_type = type;
-                    event_details.activity_confidence = confidence;
+                    if (confidence > 70) { //CONFIDENCE
+                        event_details.activity_type = type;
+                        event_details.activity_confidence = confidence;
+                    }
                 }
             }
         };
@@ -709,8 +711,8 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                 Log.i("LOCATION", "--> " + event_details.location_coords +" AMBIENT LIGHT--> " + event_details.ambient_light);
                 Log.i("ACTIVITY", "--> " + event_details.activity_type + ", " + event_details.activity_confidence);
                 String[] data = { event_details.uid,  //TODO event_details.uid
-                        Integer.toString(0), //TODO event_details.did
-                        Integer.toString(0), //TODO event_details.eid
+                        Integer.toString(event_details.did), //TODO event_details.did
+                        Integer.toString(event_details.eid), //TODO event_details.eid
                         event_details.protaseis,
                         event_details.chosen,
                         Double.toString(event_details.sf),
@@ -732,7 +734,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
                 new AsyncHttpPost().execute(data);
             }
-        }, 500);
+        }, 1000);
 
 
     }

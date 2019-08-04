@@ -2,8 +2,8 @@ package ceid.katefidis.calchas;
 
 public class EventDetails {
     String uid;
-    Integer did;
-    Integer eid;
+    Integer did = 0;
+    Integer eid = 0;
     String protaseis;
     String chosen;
     double sf;
@@ -14,10 +14,10 @@ public class EventDetails {
     String screen_state;
     Integer ringer_mode;
     Integer battery_level;
-    float ambient_light;
+    float ambient_light = 0;
     Integer connectivity;
-    Integer activity_type;
-    Integer activity_confidence;
+    Integer activity_type = -1;
+    Integer activity_confidence = -1;
 
 
     public EventDetails(String uid, String protaseis, String protaseis_last_channel)
