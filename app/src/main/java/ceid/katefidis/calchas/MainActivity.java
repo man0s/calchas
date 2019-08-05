@@ -1325,6 +1325,9 @@ public class MainActivity extends AppCompatActivity {
             SOCIALcursor.close();
         }
 
+        // notification_db leaking bug fix
+        db.close();
+
         if(smsSeek || socialSeek)
         {
             //sortarw tom subcallrecord ws pros to date

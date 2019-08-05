@@ -11,7 +11,7 @@ public class EventDetails {
     String protaseis_last_channel;
     String location_coords;
     String location_accuracy;
-    String screen_state;
+    Integer screen_state;
     Integer ringer_mode;
     Integer battery_level;
     float ambient_light = 0;

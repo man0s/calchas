@@ -663,9 +663,8 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         //get connectivity type
         event_details.connectivity = getConnectivityType(context);
 
-        boolean screenState = isScreenOn(context);  //screen_state, true for ON, false for OFF
-        if(screenState) event_details.screen_state = "on";
-        else event_details.screen_state = "off";
+        //screen state
+        event_details.screen_state = isScreenOn(context);  //screen_state, true for ON, false for OFF
 
         event_details.ringer_mode = getRingMode(); //0 for error?, 1 for silent mode, 2 for vibrate mode, 3 for normal mode
 
@@ -703,7 +702,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                         event_details.protaseis_last_channel,
                         event_details.location_coords,
                         event_details.location_accuracy,
-                        event_details.screen_state,
+                        Integer.toString(event_details.screen_state),
                         Integer.toString(event_details.ringer_mode),
                         Integer.toString(event_details.battery_level),
                         Float.toString(event_details.ambient_light),
@@ -713,7 +712,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                 };
                 new AsyncHttpPost().execute(data);
             }
-        }, 3000);
+        }, 1000);
 
 
 
@@ -868,22 +867,23 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
     /**
      * Is the screen of the device on.
      * @param context the context
-     * @return true when (at least one) screen is on
+     * @return 1 when (at least one) screen is on
      */
-    private boolean isScreenOn(Context context) {
+    private Integer isScreenOn(Context context) {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
             DisplayManager dm = (DisplayManager) context.getSystemService(Context.DISPLAY_SERVICE);
-            boolean screenOn = false;
+            Integer screenOn = 0;
             for (Display display : dm.getDisplays()) {
                 if (display.getState() != Display.STATE_OFF) {
-                    screenOn = true;
+                    screenOn = 1;
                 }
             }
             return screenOn;
         } else {
             PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
             //noinspection deprecation
-            return pm.isScreenOn();
+            if(pm.isScreenOn()) return 1;
+            else return 0;
         }
     }
 
