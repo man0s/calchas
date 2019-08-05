@@ -1152,7 +1152,7 @@ public class MainActivity extends AppCompatActivity {
         //cur.moveToFirst();
         while (cur.moveToNext())
         {
-            Log.d("Bug", cur.getString(cur.getColumnIndex(CallLog.Calls._ID)) + "|" + cur.getString(cur.getColumnIndex(CallLog.Calls.CACHED_NAME)) + "|" + cur.getString(cur.getColumnIndex(CallLog.Calls.NUMBER)));
+            //Log.d("Bug", cur.getString(cur.getColumnIndex(CallLog.Calls._ID)) + "|" + cur.getString(cur.getColumnIndex(CallLog.Calls.CACHED_NAME)) + "|" + cur.getString(cur.getColumnIndex(CallLog.Calls.NUMBER)));
             Integer FirstRowBug_ID = Integer.parseInt(cur.getString(cur.getColumnIndex(CallLog.Calls._ID)));
             String FirstRowBug_temp_cached_name = cur.getString(cur.getColumnIndex(CallLog.Calls.CACHED_NAME));
             if (FirstRowBug_temp_cached_name == null) {
