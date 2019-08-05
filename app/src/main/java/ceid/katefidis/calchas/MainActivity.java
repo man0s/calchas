@@ -1100,6 +1100,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private ArrayList<calllogrecord> getCallLog (long days, boolean smsSeek, boolean socialSeek) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean firstRun = settings.getBoolean("firstRun", true);
         long startTime = System.currentTimeMillis();
         //Ena ArrayList gia na valw ta tilefwna tou call log pou anikoun sto freq window
         ArrayList<calllogrecord> subcalllog = new ArrayList<calllogrecord>();
@@ -1121,8 +1123,11 @@ public class MainActivity extends AppCompatActivity {
 
 
         long startTimeBug = System.currentTimeMillis();
+
         //CACHED_NAME Android Bug/Duplication Protasi Bug Fix
         Integer fixLimit = 30;
+        if(firstRun) fixLimit = 5000;
+
         String[] FirstRowBug_selectCols = new String[]{CallLog.Calls._ID, CallLog.Calls.NUMBER, CallLog.Calls.CACHED_NAME};
 
         try {
