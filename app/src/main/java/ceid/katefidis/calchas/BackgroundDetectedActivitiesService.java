@@ -96,6 +96,6 @@ public class BackgroundDetectedActivitiesService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        removeActivityUpdatesButtonHandler();
+        //removeActivityUpdatesButtonHandler();
     }
 }
