@@ -1122,14 +1122,15 @@ public class MainActivity extends AppCompatActivity {
 
         long startTimeBug = System.currentTimeMillis();
         //CACHED_NAME Android Bug/Duplication Protasi Bug Fix
+        Integer fixLimit = 30;
         String[] FirstRowBug_selectCols = new String[]{CallLog.Calls._ID, CallLog.Calls.NUMBER, CallLog.Calls.CACHED_NAME};
 
         try {
-            cur = cr.query(CallLog.Calls.CONTENT_URI, FirstRowBug_selectCols, "logtype = 100 AND DATE >" + freq_window, null, "DATE DESC LIMIT 10");
+            cur = cr.query(CallLog.Calls.CONTENT_URI, FirstRowBug_selectCols, "logtype = 100 AND DATE >" + freq_window, null, "DATE DESC LIMIT " + fixLimit);
             if (cur == null)
-                cur = cr.query(CallLog.Calls.CONTENT_URI, FirstRowBug_selectCols, "DATE >" + freq_window, null, "DATE DESC LIMIT 10");
+                cur = cr.query(CallLog.Calls.CONTENT_URI, FirstRowBug_selectCols, "DATE >" + freq_window, null, "DATE DESC LIMIT " + fixLimit);
         } catch (SQLiteException e) {
-            cur = cr.query(CallLog.Calls.CONTENT_URI, FirstRowBug_selectCols, "DATE >" + freq_window, null, "DATE DESC LIMIT 10");
+            cur = cr.query(CallLog.Calls.CONTENT_URI, FirstRowBug_selectCols, "DATE >" + freq_window, null, "DATE DESC LIMIT " + fixLimit);
         }
 
 
@@ -1139,7 +1140,7 @@ public class MainActivity extends AppCompatActivity {
         //cur.moveToFirst();
         while (cur.moveToNext())
         {
-            Log.i("Bug", cur.getString(cur.getColumnIndex(CallLog.Calls._ID)) + "|" + cur.getString(cur.getColumnIndex(CallLog.Calls.CACHED_NAME)) + "|" + cur.getString(cur.getColumnIndex(CallLog.Calls.NUMBER)));
+            Log.d("Bug", cur.getString(cur.getColumnIndex(CallLog.Calls._ID)) + "|" + cur.getString(cur.getColumnIndex(CallLog.Calls.CACHED_NAME)) + "|" + cur.getString(cur.getColumnIndex(CallLog.Calls.NUMBER)));
             Integer FirstRowBug_ID = Integer.parseInt(cur.getString(cur.getColumnIndex(CallLog.Calls._ID)));
             String FirstRowBug_temp_cached_name = cur.getString(cur.getColumnIndex(CallLog.Calls.CACHED_NAME));
             if (FirstRowBug_temp_cached_name == null) {
@@ -1171,7 +1172,7 @@ public class MainActivity extends AppCompatActivity {
             String cachedname = cur.getString(cur.getColumnIndex(CallLog.Calls.CACHED_NAME));
             long callDate = cur.getLong(cur.getColumnIndex(CallLog.Calls.DATE));
 
-            //Log.d("Protaseis", "(" + phNumber + ", " + cachedname + ")");
+            Log.d("Protaseis", "(" + phNumber + ", " + cachedname + ")");
 
 //            //Google Bussiness Bug Fix
 //            String contactID = getContactID(phNumber);
