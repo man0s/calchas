@@ -1131,6 +1131,7 @@ public class MainActivity extends AppCompatActivity {
         //CACHED_NAME Android Bug/Duplication Protasi Bug Fix
         String fixLimit = "DATE DESC LIMIT 30";
         if(firstRunInit) {
+            freq_window = System.currentTimeMillis() - 99 * 24L * 3600L * 1000L; //max days(99)
             fixLimit = "DATE DESC";
         }
 
@@ -1167,6 +1168,11 @@ public class MainActivity extends AppCompatActivity {
         Log.i("Time", "1. Bug Correction took " + (endTimeBug - startTimeBug) + " milliseconds");
 
         long startTimeQuery = System.currentTimeMillis();
+
+        //CACHED_NAME Android Bug/Duplication Protasi Bug Fix
+        if(firstRunInit) {
+            freq_window = System.currentTimeMillis() - days * 24L * 3600L * 1000L; //max days(99)
+        }
 
         try {
             cur = cr.query(CallLog.Calls.CONTENT_URI, selectCols, "logtype = 100 AND DATE >" + freq_window, null, "DATE DESC");
