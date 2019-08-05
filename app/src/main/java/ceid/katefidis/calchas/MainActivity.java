@@ -564,6 +564,8 @@ public class MainActivity extends AppCompatActivity {
             boolean showphoto = preferences.getBoolean("showphoto", true);
             boolean smsSeek = preferences.getBoolean("smsseek", true);
             boolean socialSeek = preferences.getBoolean("socialseek", false);
+            boolean firstRunInit = preferences.getBoolean("firstRunInit", true);
+
 //          boolean showsearch = preferences.getBoolean("showsearch", true);
 
             //DEVELOPER
@@ -596,7 +598,11 @@ public class MainActivity extends AppCompatActivity {
 
 
             //Pairnw to call log gia oses meres thelw kai to vaze se ena array list me calllog records
-            subcalllog = getCallLog(freqWindow, smsSeek, socialSeek);
+            subcalllog = getCallLog(freqWindow, smsSeek, socialSeek, firstRunInit);
+
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean("firstRunInit", false);
+            editor.apply();
 
             //Pairnw kai tis monadikes eggrafes mesa sto calllog
             subcallunique = getUniqueCallRecords(subcalllog);
@@ -1099,9 +1105,7 @@ public class MainActivity extends AppCompatActivity {
         return score;
     }
 
-    private ArrayList<calllogrecord> getCallLog (long days, boolean smsSeek, boolean socialSeek) {
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean firstRun = settings.getBoolean("firstRun", true);
+    private ArrayList<calllogrecord> getCallLog (long days, boolean smsSeek, boolean socialSeek, boolean firstRunInit) {
         long startTime = System.currentTimeMillis();
         //Ena ArrayList gia na valw ta tilefwna tou call log pou anikoun sto freq window
         ArrayList<calllogrecord> subcalllog = new ArrayList<calllogrecord>();
@@ -1125,17 +1129,19 @@ public class MainActivity extends AppCompatActivity {
         long startTimeBug = System.currentTimeMillis();
 
         //CACHED_NAME Android Bug/Duplication Protasi Bug Fix
-        Integer fixLimit = 30;
-        if(firstRun) fixLimit = 5000;
+        String fixLimit = "DATE DESC LIMIT 30";
+        if(firstRunInit) {
+            fixLimit = "DATE DESC";
+        }
 
         String[] FirstRowBug_selectCols = new String[]{CallLog.Calls._ID, CallLog.Calls.NUMBER, CallLog.Calls.CACHED_NAME};
 
         try {
-            cur = cr.query(CallLog.Calls.CONTENT_URI, FirstRowBug_selectCols, "logtype = 100 AND DATE >" + freq_window, null, "DATE DESC LIMIT " + fixLimit);
+            cur = cr.query(CallLog.Calls.CONTENT_URI, FirstRowBug_selectCols, "logtype = 100 AND DATE >" + freq_window, null, fixLimit);
             if (cur == null)
-                cur = cr.query(CallLog.Calls.CONTENT_URI, FirstRowBug_selectCols, "DATE >" + freq_window, null, "DATE DESC LIMIT " + fixLimit);
+                cur = cr.query(CallLog.Calls.CONTENT_URI, FirstRowBug_selectCols, "DATE >" + freq_window, null, fixLimit);
         } catch (SQLiteException e) {
-            cur = cr.query(CallLog.Calls.CONTENT_URI, FirstRowBug_selectCols, "DATE >" + freq_window, null, "DATE DESC LIMIT " + fixLimit);
+            cur = cr.query(CallLog.Calls.CONTENT_URI, FirstRowBug_selectCols, "DATE >" + freq_window, null, fixLimit);
         }
 
 
@@ -1177,8 +1183,6 @@ public class MainActivity extends AppCompatActivity {
             String cachedname = cur.getString(cur.getColumnIndex(CallLog.Calls.CACHED_NAME));
             long callDate = cur.getLong(cur.getColumnIndex(CallLog.Calls.DATE));
 
-            Log.d("Protaseis", "(" + phNumber + ", " + cachedname + ")");
-
 //            //Google Bussiness Bug Fix
 //            String contactID = getContactID(phNumber);
 
@@ -1196,7 +1200,6 @@ public class MainActivity extends AppCompatActivity {
             //allos ena elegxos gia ta noumera me apokripsi
             if (!phNumber.isEmpty())
             {
-                Log.d("CallLog", "(" + phNumber + ", " + cachedname + ", " + epafiboolean + ")");
                 calllogrecord temprecord = new calllogrecord(phNumber,callDate,cachedname,epafiboolean, "phone");
 
                 //Se periptwsi pou i klisi einai me apokripsi to pedio phNumber einai arnitikos arithmos
