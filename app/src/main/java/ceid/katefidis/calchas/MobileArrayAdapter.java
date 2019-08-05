@@ -55,6 +55,7 @@ import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.telephony.PhoneNumberUtils;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Display;
@@ -183,9 +184,19 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                 //if(prot.type != null)   textView.setText(prot.name + "|" + prot.type);
                 textView1.setText(prot.number);
             } else {
-                textView.setText(prot.number);
-                //if(prot.type != null)   textView.setText(prot.name + "|" + prot.type);
-                textView1.setText("");
+                //Google Business Bug Fix
+                if(!prot.name.matches("^(?:[+]?[0-9]+|)$")) //name not null or number
+                {
+                    if (prot.name.length() > 20) {
+                        String name = prot.name.substring(0, Math.min(prot.name.length(), 20)) + ".";
+                        textView.setText(name);
+                    } else textView.setText(prot.name);
+                    textView1.setText(prot.number);
+                } else {
+                    textView.setText(prot.number);
+                    //if(prot.type != null)   textView.setText(prot.name + "|" + prot.type);
+                    textView1.setText("");
+                }
             }
 
             //Gia to badge

@@ -616,6 +616,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
 
+
             //Thelw tis top N protaseis apo to ArrayList protaseis me vasi to megalitero score
             //sortarw me to custom comperator
             Collections.sort(protaseis, new CompareProtaseis());
@@ -648,8 +649,11 @@ public class MainActivity extends AppCompatActivity {
                         //An yparxei contactID simainei oti einai epafi
                         if (protasitemp.contactID.length() != 0)
                             protasitemp.isContact = true;
-                        else
+                        else{
+                            //Google Business Bug Fix
+                            if(s1.CachedName != null)   protasitemp.name = s1.CachedName;
                             protasitemp.isContact = false;
+                        }
 
                         //an o xristis exei epilexei na fainontai oi photos
                         if (showphoto && protasitemp.isContact)
@@ -1167,8 +1171,17 @@ public class MainActivity extends AppCompatActivity {
             String cachedname = cur.getString(cur.getColumnIndex(CallLog.Calls.CACHED_NAME));
             long callDate = cur.getLong(cur.getColumnIndex(CallLog.Calls.DATE));
 
+            //Log.d("Protaseis", "(" + phNumber + ", " + cachedname + ")");
+
+//            //Google Bussiness Bug Fix
+//            String contactID = getContactID(phNumber);
+
             boolean epafiboolean = true;
 
+//            if(!(contactID.length() > 0) && cachedname != null)
+//            {
+//                epafiboolean = false;
+//            }
             if (cachedname == null) {
                 epafiboolean = false;
                 cachedname = phNumber;
@@ -1177,6 +1190,7 @@ public class MainActivity extends AppCompatActivity {
             //allos ena elegxos gia ta noumera me apokripsi
             if (!phNumber.isEmpty())
             {
+                Log.d("CallLog", "(" + phNumber + ", " + cachedname + ", " + epafiboolean + ")");
                 calllogrecord temprecord = new calllogrecord(phNumber,callDate,cachedname,epafiboolean, "phone");
 
                 //Se periptwsi pou i klisi einai me apokripsi to pedio phNumber einai arnitikos arithmos
@@ -1348,6 +1362,7 @@ public class MainActivity extends AppCompatActivity {
         HashSet<String> subcallunique = new HashSet<String>();
 
         for (calllogrecord callrecord: calllog) {
+            //Log.d("Protaseis", "(" + callrecord.CachedName + ", " + callrecord.number + ", " + callrecord.isContact + ")");
             subcallunique.add(callrecord.CachedName);
         }
 
@@ -1369,27 +1384,13 @@ public class MainActivity extends AppCompatActivity {
     public String getContactID (String number)
     {
         String contactID = "";
-        ContentResolver context = getContentResolver();
-
-        /// number is the phone number
-        Uri lookupUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI,Uri.encode(number));
-
-        String[] mPhoneNumberProjection = { ContactsContract.PhoneLookup._ID };
-
-        Cursor cur = context.query(lookupUri,mPhoneNumberProjection, null, null, null);
-        try
-        {
-            if (cur.moveToFirst())
-            {
-                contactID = cur.getString(0);
-                return contactID;
-            }
+        number = Uri.encode(number);
+        Cursor contactLookupCursor = getContentResolver().query(Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI,number),new String[] {ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID}, null, null, null);
+        while(contactLookupCursor.moveToNext()){
+            contactID = contactLookupCursor.getString(contactLookupCursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup._ID));
         }
-        finally
-        {
-            if (cur != null)
-                cur.close();
-        }
+        contactLookupCursor.close();
+
         return contactID;
     }
 
