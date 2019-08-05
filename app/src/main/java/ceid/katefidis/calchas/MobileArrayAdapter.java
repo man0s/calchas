@@ -650,29 +650,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
     private void insertToDB() throws IOException{
 
-
-        BroadcastReceiver activityBroadcastReceiver;
-
-
-        //Activity Tracking
-        activityBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals("activity_intent")) { //BROADCAST_DETECTED_ACTIVITY
-                    int type = intent.getIntExtra("type", -1);
-                    int confidence = intent.getIntExtra("confidence", 0);
-                    //if (confidence > 70) { //CONFIDENCE
-                    event_details.activity_type = type;
-                    event_details.activity_confidence = confidence;
-                    //}
-                }
-            }
-        };
-        LocalBroadcastManager.getInstance(context).registerReceiver(activityBroadcastReceiver, new IntentFilter("activity_intent"));
-
-        //start activity tracking
-        final Intent intent = new Intent(context, BackgroundDetectedActivitiesService.class);
-        context.startService(intent);
+        final SharedPreferences activity = PreferenceManager.getDefaultSharedPreferences(context);
 
         //get battery lvl
         BatteryManager bm = (BatteryManager) context.getSystemService(BATTERY_SERVICE);
@@ -709,8 +687,12 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         handler.postDelayed(new Runnable() {
             public void run() {
                 // Actions to do after 5 seconds
+                event_details.activity_type = activity.getInt("activityType", -1);
+                event_details.activity_confidence = activity.getInt("activityConfidence", 0);
+
                 Log.i("LOCATION", "--> " + event_details.location_coords +" AMBIENT LIGHT--> " + event_details.ambient_light);
                 Log.i("ACTIVITY", "--> " + event_details.activity_type + ", " + event_details.activity_confidence);
+                Toast.makeText(context, "(" + event_details.activity_type + ", " + event_details.activity_confidence + ")", Toast.LENGTH_SHORT).show();
                 String[] data = { event_details.uid,  //TODO event_details.uid
                         Integer.toString(event_details.did), //TODO event_details.did
                         Integer.toString(event_details.eid), //TODO event_details.eid
@@ -729,13 +711,10 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                         Integer.toString(event_details.activity_type),
                         Integer.toString(event_details.activity_confidence)
                 };
-
-                //stop activity tracking
-                context.stopService(intent);
-
                 new AsyncHttpPost().execute(data);
             }
-        }, 2000);
+        }, 3000);
+
 
 
     }

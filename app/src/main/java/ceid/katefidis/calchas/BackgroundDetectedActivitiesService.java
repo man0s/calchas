@@ -57,7 +57,7 @@ public class BackgroundDetectedActivitiesService extends Service {
 
     public void requestActivityUpdatesButtonHandler() {
         Task<Void> task = mActivityRecognitionClient.requestActivityUpdates(
-                100, // DETECTION_INTERVAL_IN_MILLISECONDS
+                500, // DETECTION_INTERVAL_IN_MILLISECONDS
                 mPendingIntent);
 
         task.addOnSuccessListener(new OnSuccessListener<Void>() {

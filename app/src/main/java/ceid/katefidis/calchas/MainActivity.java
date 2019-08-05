@@ -188,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
     private SQLiteDatabase sdb;
 
     EventDetails event_details;
+    BroadcastReceiver activityBroadcastReceiver;
 
 
     final Fragment homeFragment = new HomeFragment();
@@ -326,6 +327,29 @@ public class MainActivity extends AppCompatActivity {
 //
 //        }
 
+
+        //Activity Tracking
+        activityBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals("activity_intent")) { //BROADCAST_DETECTED_ACTIVITY
+                    SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+                    SharedPreferences.Editor editor = settings.edit();
+                    int type = intent.getIntExtra("type", -1);
+                    int confidence = intent.getIntExtra("confidence", 0);
+                    Log.d("Activity", "-->" + type + ", " + confidence);
+                    if (confidence > 70) { //CONFIDENCE
+                        editor.putInt("activityType", type);
+                        editor.putInt("activityConfidence", confidence);
+                        editor.apply();
+                    }
+                }
+            }
+        };
+//        LocalBroadcastManager.getInstance(this).registerReceiver(activityBroadcastReceiver, new IntentFilter("activity_intent"));
+
+        startTracking();
+
         long endTime = System.currentTimeMillis();
 
         Log.i("Time", "onCreate() took " + (endTime - startTime) + " milliseconds");
@@ -336,6 +360,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(suggestionsChangeBroadcastReceiver);
+        stopTracking();
     }
 
 
@@ -426,6 +451,8 @@ public class MainActivity extends AppCompatActivity {
         }
         super.onPause();
 
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(activityBroadcastReceiver);
+
     }
 
 //    @Override
@@ -496,6 +523,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         long endTime = System.currentTimeMillis();
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(activityBroadcastReceiver, new IntentFilter("activity_intent"));
 
         Log.i("Time", "onResume() took " + (endTime - startTime) + " milliseconds");
 
@@ -858,8 +887,10 @@ public class MainActivity extends AppCompatActivity {
             arrayAdapter = new MobileArrayAdapter(MainActivity.this, finalprotaseis, event_details);
             lista1 = (ExpandableListView) findViewById(R.id.list);
 
+
             try {
                 lista1.setAdapter(arrayAdapter);
+
                 //spinner hide
                 spinner.setVisibility(View.GONE);
                 //To vazw gia to onresume
@@ -1642,6 +1673,16 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
         return(alertDialogBuilder.create());
+    }
+
+    private void startTracking() {
+        Intent intent = new Intent(MainActivity.this, BackgroundDetectedActivitiesService.class);
+        startService(intent);
+    }
+
+    private void stopTracking() {
+        Intent intent = new Intent(MainActivity.this, BackgroundDetectedActivitiesService.class);
+        stopService(intent);
     }
 
 }
