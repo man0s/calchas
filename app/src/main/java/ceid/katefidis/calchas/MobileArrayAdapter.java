@@ -176,7 +176,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
             String dateString = formatter.format(new Date(prot.date));
             datecontacted.setText(dateString);
             //network.setText(prot.network);
-            if (prot.isContact) {
+            if (prot.isContact && !prot.name.equals("")) { //to != null se periptwsh pou uparxei fault isContact
                 if (prot.name.length() > 20) {
                     String name = prot.name.substring(0, Math.min(prot.name.length(), 20)) + ".";
                     textView.setText(name);
@@ -197,6 +197,8 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                     //if(prot.type != null)   textView.setText(prot.name + "|" + prot.type);
                     textView1.setText("");
                 }
+                //Plain number isContact Error Fix
+                if(prot.isContact) prot.isContact = false;
             }
 
             //Gia to badge
