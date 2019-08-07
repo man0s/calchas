@@ -743,6 +743,8 @@ public class MainActivity extends AppCompatActivity {
                     if (flag) {
                         for (calllogrecord singlecallrecord : subcalllog) {
                             if (singlecallrecord.CachedName.equals(uniquecallname)) {
+                                //Protaseis isContact Bug Fix
+                                if(singlecallrecord.CachedName.equals("")) singlecallrecord.isContact = false;
                                 Protasi mycalllogrecord = new Protasi(singlecallrecord.number, singlecallrecord.CachedName, 0.0, 0.0, 0.0, singlecallrecord.isContact, singlecallrecord.type, "");
                                 mycalllogrecord.date = singlecallrecord.date;
 
@@ -929,7 +931,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public boolean onGroupClick(ExpandableListView expandableListView, View view, int i, long l) {
                         Protasi prot = (Protasi) arrayAdapter.getGroup(i);
-                        Log.d("ProtaseisDB", "Clicked -->" + prot.contactID);
+                        Log.d("ProtaseisDB", "Clicked -->" + prot.name);
                         if(prot.score == -3.0){
                             return true;
                         } else if(prot.score == -2.0){
@@ -1496,7 +1498,6 @@ public class MainActivity extends AppCompatActivity {
                 String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
 
                 Protasi mycalllogrecord = new Protasi("", name, 0.0, 0.0, -2.0, true, null,  id);
-
                 if (withphotos)
                 {
                     //an thelw kai tis photos

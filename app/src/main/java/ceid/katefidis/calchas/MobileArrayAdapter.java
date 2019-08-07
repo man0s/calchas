@@ -197,8 +197,6 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                     //if(prot.type != null)   textView.setText(prot.name + "|" + prot.type);
                     textView1.setText("");
                 }
-                //Plain number isContact Error Fix
-                if(prot.isContact) prot.isContact = false;
             }
 
             //Gia to badge
