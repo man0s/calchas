@@ -702,7 +702,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
                 Log.i("LOCATION", "--> " + event_details.location_coords +" AMBIENT LIGHT--> " + event_details.ambient_light);
                 Log.i("ACTIVITY", "--> " + event_details.activity_type + ", " + event_details.activity_confidence);
-                Toast.makeText(context, "(" + event_details.activity_type + ", " + event_details.activity_confidence + ")", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context, "(" + event_details.activity_type + ", " + event_details.activity_confidence + ")", Toast.LENGTH_SHORT).show();
                 String[] data = { event_details.uid,  //TODO event_details.uid
                         Integer.toString(event_details.did), //TODO event_details.did
                         Integer.toString(event_details.eid), //TODO event_details.eid
