@@ -1,9 +1,7 @@
 package ceid.katefidis.calchas;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
