@@ -1420,10 +1420,11 @@ public class MainActivity extends AppCompatActivity {
         Uri lookupUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI,Uri.encode(number));
 
         String[] mPhoneNumberProjection = { ContactsContract.PhoneLookup.DISPLAY_NAME };
+        Cursor cur = null;
 
-        Cursor cur = context.query(lookupUri,mPhoneNumberProjection, null, null, null);
         try
         {
+            cur = context.query(lookupUri,mPhoneNumberProjection, null, null, null);
             if (cur.moveToFirst())
             {
                 contactName = cur.getString(0);
@@ -1449,11 +1450,12 @@ public class MainActivity extends AppCompatActivity {
         ContentResolver context = getContentResolver();
         String selection = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME+" like'%" + name +"%'";
         String[] projection = new String[] { ContactsContract.CommonDataKinds.Phone.NUMBER};
-        Cursor c = context.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                projection, selection, null, null);
+        Cursor c = null;
 
         try
         {
+            c = context.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                    projection, selection, null, null);
             if (c.moveToFirst())
             {
                 // regex gia na vgazei ta whitespaces apo to phone number
