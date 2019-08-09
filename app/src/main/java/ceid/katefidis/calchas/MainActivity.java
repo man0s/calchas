@@ -1431,6 +1431,9 @@ public class MainActivity extends AppCompatActivity {
                 return contactName;
             }
         }
+        catch(IllegalArgumentException ex) {
+            ex.printStackTrace();
+        }
         finally
         {
             if (cur != null)
@@ -1462,6 +1465,9 @@ public class MainActivity extends AppCompatActivity {
                 ret = c.getString(0).replaceAll("\\s+","");
                 return ret;
             }
+        }
+        catch(IllegalArgumentException ex) {
+            ex.printStackTrace();
         }
         finally
         {
