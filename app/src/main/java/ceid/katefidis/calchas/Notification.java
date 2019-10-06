@@ -1,9 +1,5 @@
 package ceid.katefidis.calchas;
 
-/**
- * Created by ravi on 20/02/18.
- */
-
 public class Notification {
     public static final String TABLE_NAME = "notifications";
 

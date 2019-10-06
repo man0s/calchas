@@ -75,6 +75,7 @@ import android.widget.Toast;
 import org.json.JSONObject;
 
 import javax.net.ssl.HttpsURLConnection;
+import javax.security.auth.login.LoginException;
 
 import static android.content.Context.BATTERY_SERVICE;
 import static android.content.Context.SENSOR_SERVICE;
@@ -720,7 +721,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                         Integer.toString(event_details.connectivity),
                         Integer.toString(event_details.activity_type),
                         Integer.toString(event_details.activity_confidence)
-                };
+                    };
                 new AsyncHttpPost().execute(data);
             }
         }, 1000);
@@ -796,6 +797,13 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
         @Override
         protected void onPostExecute(String result) {
+            if(result.equals("success")) {
+                Log.i("POST", "ETYXE, PETYXE");
+
+            } else {
+                Log.i("POST", "DEN ETYXE");
+                //TODO internal DB save
+            }
             Log.i("POST", "Post AsyncTask executed. (" + result + ")");
         }
     }
