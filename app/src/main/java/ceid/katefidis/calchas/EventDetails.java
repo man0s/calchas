@@ -46,7 +46,7 @@ public class EventDetails {
 
     public EventDetails() { }
 
-    public EventDetails(long timestamp, String uid, String protaseis, String protaseis_last_channel)
+    public EventDetails(String uid, long timestamp, String protaseis, String protaseis_last_channel)
     {
         this.timestamp = timestamp;
         this.uid = uid;
@@ -59,24 +59,24 @@ public class EventDetails {
     public static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME + "("
                     + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    + COLUMN_UID + " "
+                    + COLUMN_UID + " TEXT,"
                     + COLUMN_TIMESTAMP + " INTEGER,"
-                    + COLUMN_DID + " "
-                    + COLUMN_EID + " "
-                    + COLUMN_PROTASEIS + " "
-                    + COLUMN_CHOSEN + " "
-                    + COLUMN_SF + " "
-                    + COLUMN_SR + " "
-                    + COLUMN_PROTASEIS_LAST_CHANNEL + " "
-                    + COLUMN_LOCATION_COORDS + " "
-                    + COLUMN_LOCATION_ACCURACY + " "
-                    + COLUMN_SCREEN_STATE + " "
-                    + COLUMN_RINGER_MODE + " "
-                    + COLUMN_BATTERY_LEVEL + " "
-                    + COLUMN_AMBIENT_LIGHT + " "
-                    + COLUMN_CONNECTIVITY + " "
-                    + COLUMN_ACTIVITY_TYPE + " "
-                    + COLUMN_ACTIVITY_CONFIDENCE + " "
+                    + COLUMN_DID + " TEXT,"
+                    + COLUMN_EID + " TEXT,"
+                    + COLUMN_PROTASEIS + " TEXT,"
+                    + COLUMN_CHOSEN + " TEXT,"
+                    + COLUMN_SF + " DOUBLE,"
+                    + COLUMN_SR + " DOUBLE,"
+                    + COLUMN_PROTASEIS_LAST_CHANNEL + " TEXT,"
+                    + COLUMN_LOCATION_COORDS + " TEXT,"
+                    + COLUMN_LOCATION_ACCURACY + " TEXT,"
+                    + COLUMN_SCREEN_STATE + " INTEGER,"
+                    + COLUMN_RINGER_MODE + " INTEGER,"
+                    + COLUMN_BATTERY_LEVEL + " INTEGER,"
+                    + COLUMN_AMBIENT_LIGHT + " REAL,"
+                    + COLUMN_CONNECTIVITY + " INTEGER,"
+                    + COLUMN_ACTIVITY_TYPE + " INTEGER,"
+                    + COLUMN_ACTIVITY_CONFIDENCE + " INTEGER"
                     + ")";
 
     public int getId() {
