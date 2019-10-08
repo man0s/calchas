@@ -90,6 +90,14 @@
             android:title="Set wf (wr=1-wf)" 
        		android:defaultValue="0.5"
        	/>
+
+        <Preference
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Device's Serial Number"
+            android:key="serial"
+            android:summary="null"
+            android:enabled="true" />
        
         
     </PreferenceCategory>

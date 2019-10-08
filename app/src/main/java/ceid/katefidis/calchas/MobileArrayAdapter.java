@@ -89,6 +89,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
     private int colorIndex = 0;
 
     private EventDetails event_details;
+    private EventDetailsDBHelper eventDetailsdb;
     final boolean[] flag = new boolean[1];
 
 
@@ -802,6 +803,17 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
             } else {
                 Log.i("POST", "DEN ETYXE");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy-hh-mm-ss");
+                String format = simpleDateFormat.format(new Date());
+
+                eventDetailsdb = new EventDetailsDBHelper(context);
+
+                eventDetailsdb.addEventDetail(event_details.getUid(), format.toString(), event_details.getDid(), event_details.getEid(), event_details.getProtaseis(),
+                event_details.getChosen(), event_details.getSf(), event_details.getSr(), event_details.getProtaseis_last_channel(), event_details.getLocation_coords(),
+                event_details.getLocation_accuracy(), event_details.getScreen_state(), event_details.getRinger_mode(), event_details.getBattery_level(),
+                event_details.getAmbient_light(), event_details.getConnectivity(), event_details.getActivity_type(), event_details.getActivity_confidence() );
+
+                Log.i("event_details", "Events Count --> " + eventDetailsdb.getEventDetailsCount());
                 //TODO internal DB save
             }
             Log.i("POST", "Post AsyncTask executed. (" + result + ")");

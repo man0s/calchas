@@ -25,7 +25,7 @@ public class EventDetails {
 
     private Integer id;
     private String uid;
-    private long timestamp;
+    private String timestamp;
     private Integer did = 0;
     private Integer eid = 0;
     private String protaseis;
@@ -59,7 +59,7 @@ public class EventDetails {
             "CREATE TABLE " + TABLE_NAME + "("
                     + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + COLUMN_UID + " TEXT,"
-                    + COLUMN_TIMESTAMP + " INTEGER,"
+                    + COLUMN_TIMESTAMP + " TEXT,"
                     + COLUMN_DID + " TEXT,"
                     + COLUMN_EID + " TEXT,"
                     + COLUMN_PROTASEIS + " TEXT,"
@@ -93,11 +93,11 @@ public class EventDetails {
         this.uid = uid;
     }
 
-    public long getTimestamp() {
+    public String getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(long timestamp) {
+    public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
 

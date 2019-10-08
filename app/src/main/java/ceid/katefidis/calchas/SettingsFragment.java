@@ -1,10 +1,13 @@
 package ceid.katefidis.calchas;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -49,6 +52,10 @@ public class SettingsFragment extends PreferenceFragment {
                     }
                 });
             }
+
+            SharedPreferences sp = getPreferenceScreen().getSharedPreferences();
+            Preference serialPref = (Preference) findPreference("serial");
+            serialPref.setSummary(sp.getString("serialNum", ""));
         }
 
     @Override

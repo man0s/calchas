@@ -23,6 +23,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.preference.EditTextPreference;
 import android.preference.PreferenceManager;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
@@ -248,6 +249,12 @@ public class MainActivity extends AppCompatActivity {
         boolean DarkMode = settings.getBoolean("DarkMode", false);
         boolean socialSeek = settings.getBoolean("socialseek", false);
         boolean firstRun = settings.getBoolean("firstRun", true);
+
+
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("serialNum", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
+        editor.commit();
+
 
         if(DarkMode) {
             setTheme(R.style.DarkTheme);

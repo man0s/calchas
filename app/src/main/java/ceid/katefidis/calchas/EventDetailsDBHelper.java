@@ -45,9 +45,9 @@ public class EventDetailsDBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public long addEventDetail(String uid, long timestamp, Integer did, Integer eid, String protaseis, String chosen,  double sf, double sr, String protaseis_last_channel,
+    public long addEventDetail(String uid, String timestamp, Integer did, Integer eid, String protaseis, String chosen, double sf, double sr, String protaseis_last_channel,
                                String location_coords, String location_accuracy, Integer screen_state, Integer ringer_mode, Integer battery_level, float ambient_light,
-                               Integer connectivity,  Integer activity_type, Integer activity_confidence)
+                               Integer connectivity, Integer activity_type, Integer activity_confidence)
     {
         // get writable database as we want to write data
         SQLiteDatabase db = this.getWritableDatabase();
@@ -75,7 +75,7 @@ public class EventDetailsDBHelper extends SQLiteOpenHelper {
         values.put(EventDetails.COLUMN_ACTIVITY_CONFIDENCE, activity_confidence);
 
         // insert row
-        long id = db.insert(Notification.TABLE_NAME, null, values);
+        long id = db.insert(EventDetails.TABLE_NAME, null, values);
 
         // close db connection
         db.close();
@@ -100,7 +100,7 @@ public class EventDetailsDBHelper extends SQLiteOpenHelper {
                 EventDetails eventDetail = new EventDetails();
                 eventDetail.setId(cursor.getInt(cursor.getColumnIndex(Notification.COLUMN_ID)));
                 eventDetail.setUid(cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_UID)));
-                eventDetail.setTimestamp(cursor.getLong(cursor.getColumnIndex(EventDetails.COLUMN_TIMESTAMP)));
+                eventDetail.setTimestamp(cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_TIMESTAMP)));
                 eventDetail.setDid(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_DID)));
                 eventDetail.setEid(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_EID)));
                 eventDetail.setProtaseis(cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_PROTASEIS)));
