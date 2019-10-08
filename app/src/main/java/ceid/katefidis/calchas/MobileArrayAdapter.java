@@ -665,6 +665,10 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
         final SharedPreferences activity = PreferenceManager.getDefaultSharedPreferences(context);
 
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String format = simpleDateFormat.format(new Date());
+        event_details.setTimestamp(format);
+
         //get battery lvl
         BatteryManager bm = (BatteryManager) context.getSystemService(BATTERY_SERVICE);
         event_details.setBattery_level(bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY));
@@ -682,7 +686,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         event_details.setRinger_mode(getRingMode()); //0 for error?, 1 for silent mode, 2 for vibrate mode, 3 for normal mode
 
 
-        Log.i("event_details", event_details.getUid() + " | " + event_details.getChosen() + " | " + event_details.getSf() + " | " + event_details.getSr());
+        Log.i("event_details", event_details.getTimestamp() + " | " + event_details.getUid() + " | " + event_details.getChosen() + " | " + event_details.getSf() + " | " + event_details.getSr());
         Log.i("event_details_bat", event_details.getBattery_level() + "%");
         Log.i("event_details_conn", String.valueOf(event_details.getConnectivity()));
 //        Log.i("event_details_light", String.valueOf(event_details.ambient_light));
@@ -803,12 +807,10 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
             } else {
                 Log.i("POST", "DEN ETYXE");
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy-hh-mm-ss");
-                String format = simpleDateFormat.format(new Date());
 
                 eventDetailsdb = new EventDetailsDBHelper(context);
 
-                eventDetailsdb.addEventDetail(event_details.getUid(), format.toString(), event_details.getDid(), event_details.getEid(), event_details.getProtaseis(),
+                eventDetailsdb.addEventDetail(event_details.getUid(), event_details.getTimestamp(), event_details.getDid(), event_details.getEid(), event_details.getProtaseis(),
                 event_details.getChosen(), event_details.getSf(), event_details.getSr(), event_details.getProtaseis_last_channel(), event_details.getLocation_coords(),
                 event_details.getLocation_accuracy(), event_details.getScreen_state(), event_details.getRinger_mode(), event_details.getBattery_level(),
                 event_details.getAmbient_light(), event_details.getConnectivity(), event_details.getActivity_type(), event_details.getActivity_confidence() );
