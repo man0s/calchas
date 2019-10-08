@@ -709,9 +709,11 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                 Log.i("LOCATION", "--> " + event_details.getLocation_coords() +" AMBIENT LIGHT--> " + event_details.getAmbient_light());
                 Log.i("ACTIVITY", "--> " + event_details.getActivity_type() + ", " + event_details.getActivity_confidence());
                 //Toast.makeText(context, "(" + event_details.activity_type + ", " + event_details.activity_confidence + ")", Toast.LENGTH_SHORT).show();
-                String[] data = {event_details.getUid(),  //TODO event_details.uid
-                        Integer.toString(event_details.getDid()), //TODO event_details.did
-                        Integer.toString(event_details.getEid()), //TODO event_details.eid
+                String[] data = {
+                        event_details.getTimestamp(),
+                        event_details.getUid(),
+                        Integer.toString(event_details.getDid()),
+                        Integer.toString(event_details.getEid()),
                         event_details.getProtaseis(),
                         event_details.getChosen(),
                         Double.toString(event_details.getSf()),
@@ -776,25 +778,26 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
                 // POST Request
                 JSONObject postDataParams = new JSONObject();
-                postDataParams.put("uid", arg[0]);
-                postDataParams.put("did", arg[1]);
-                postDataParams.put("eid", arg[2]);
-                postDataParams.put("protaseis", arg[3]);
-                postDataParams.put("chosen", arg[4]);
-                postDataParams.put("sf", arg[5]);
-                postDataParams.put("sr", arg[6]);
-                postDataParams.put("protaseis_last_channel", arg[7]);
-                postDataParams.put("String location_coords", arg[8]);
-                postDataParams.put("location_accuracy", arg[9]);
-                postDataParams.put("screen_state", arg[10]);
-                postDataParams.put("ringer_mode", arg[11]);
-                postDataParams.put("battery_level", arg[12]);
-                postDataParams.put("ambient_light", arg[13]);
-                postDataParams.put("connectivity", arg[14]);
-                postDataParams.put("activity_type", arg[15]);
-                postDataParams.put("activity_confidence", arg[16]);
+                postDataParams.put("timestamp", arg[0]);
+                postDataParams.put("uid", arg[1]);
+                postDataParams.put("did", arg[2]);
+                postDataParams.put("eid", arg[3]);
+                postDataParams.put("protaseis", arg[4]);
+                postDataParams.put("chosen", arg[5]);
+                postDataParams.put("sf", arg[6]);
+                postDataParams.put("sr", arg[7]);
+                postDataParams.put("protaseis_last_channel", arg[8]);
+                postDataParams.put("String location_coords", arg[9]);
+                postDataParams.put("location_accuracy", arg[10]);
+                postDataParams.put("screen_state", arg[11]);
+                postDataParams.put("ringer_mode", arg[12]);
+                postDataParams.put("battery_level", arg[13]);
+                postDataParams.put("ambient_light", arg[14]);
+                postDataParams.put("connectivity", arg[15]);
+                postDataParams.put("activity_type", arg[16]);
+                postDataParams.put("activity_confidence", arg[17]);
 
-                return sendPost("https://okeanos.katefidis.ga/calchas/post.php", postDataParams);
+                return sendPost("https://okeanos.katefidis.ga/calchas/calchas_post.php", postDataParams);
             } catch (Exception e) {
                 return "Exception: " + e.getMessage();
             }
