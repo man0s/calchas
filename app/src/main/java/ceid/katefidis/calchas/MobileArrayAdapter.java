@@ -247,10 +247,10 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
                     //insert details to db
                     if (!protasiToCall.isContact) {
-                        event_details.chosen = md5encrypt(protasiToCall.number);
-                    } else event_details.chosen = protasiToCall.contactID;
-                    event_details.sf = protasiToCall.scoref;
-                    event_details.sr = protasiToCall.scorer;
+                        event_details.setChosen(md5encrypt(protasiToCall.number));
+                    } else event_details.setChosen(protasiToCall.contactID);
+                    event_details.setSf(protasiToCall.scoref);
+                    event_details.setSr(protasiToCall.scorer);
                     try {
                         insertToDB();
                     } catch (IOException e) {
@@ -321,10 +321,10 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
                         //insert details to db
                         if (!resultToCall.isContact) {
-                            event_details.chosen = md5encrypt(resultToCall.number);
-                        } else event_details.chosen = resultToCall.contactID;
-                        event_details.sf = resultToCall.scoref;
-                        event_details.sr = resultToCall.scorer;
+                            event_details.setChosen(md5encrypt(resultToCall.number));
+                        } else event_details.setChosen(resultToCall.contactID);
+                        event_details.setSf(resultToCall.scoref);
+                        event_details.setSr(resultToCall.scorer);
                         try {
                             insertToDB();
                         } catch (IOException e) {
@@ -356,10 +356,10 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
                             //insert details to db
                             if (!resultToCall.isContact) {
-                                event_details.chosen = md5encrypt(resultToCall.number);
-                            } else event_details.chosen = resultToCall.contactID;
-                            event_details.sf = resultToCall.scoref;
-                            event_details.sr = resultToCall.scorer;
+                                event_details.setChosen(md5encrypt(resultToCall.number));
+                            } else event_details.setChosen(resultToCall.contactID);
+                            event_details.setSf(resultToCall.scoref);
+                            event_details.setSr(resultToCall.scorer);
                             try {
                                 insertToDB();
                             } catch (IOException e) {
@@ -392,10 +392,10 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
                             //insert details to db
                             if (!resultToCall.isContact) {
-                                event_details.chosen = md5encrypt(resultToCall.number);
-                            } else event_details.chosen = resultToCall.contactID;
-                            event_details.sf = resultToCall.scoref;
-                            event_details.sr = resultToCall.scorer;
+                                event_details.setChosen(md5encrypt(resultToCall.number));
+                            } else event_details.setChosen(resultToCall.contactID);
+                            event_details.setSf(resultToCall.scoref);
+                            event_details.setSr(resultToCall.scorer);
                             try {
                                 insertToDB();
                             } catch (IOException e) {
@@ -666,27 +666,27 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
         //get battery lvl
         BatteryManager bm = (BatteryManager) context.getSystemService(BATTERY_SERVICE);
-        event_details.battery_level = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+        event_details.setBattery_level(bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY));
 
         double[] gps = getGPS(); //get location info from GPS
-        event_details.location_coords = gps[0] + ", " + gps[1]; //lat, lng
-        event_details.location_accuracy = Double.toString(gps[2]);//location accuracy
+        event_details.setLocation_coords(gps[0] + ", " + gps[1]); //lat, lng
+        event_details.setLocation_accuracy(Double.toString(gps[2]));//location accuracy
 
         //get connectivity type
-        event_details.connectivity = getConnectivityType(context);
+        event_details.setConnectivity(getConnectivityType(context));
 
         //screen state
-        event_details.screen_state = isScreenOn(context);  //screen_state, true for ON, false for OFF
+        event_details.setScreen_state(isScreenOn(context));  //screen_state, true for ON, false for OFF
 
-        event_details.ringer_mode = getRingMode(); //0 for error?, 1 for silent mode, 2 for vibrate mode, 3 for normal mode
+        event_details.setRinger_mode(getRingMode()); //0 for error?, 1 for silent mode, 2 for vibrate mode, 3 for normal mode
 
 
-        Log.i("event_details", event_details.uid + " | " + event_details.chosen + " | " + event_details.sf + " | " + event_details.sr);
-        Log.i("event_details_bat", event_details.battery_level + "%");
-        Log.i("event_details_conn", String.valueOf(event_details.connectivity));
+        Log.i("event_details", event_details.getUid() + " | " + event_details.getChosen() + " | " + event_details.getSf() + " | " + event_details.getSr());
+        Log.i("event_details_bat", event_details.getBattery_level() + "%");
+        Log.i("event_details_conn", String.valueOf(event_details.getConnectivity()));
 //        Log.i("event_details_light", String.valueOf(event_details.ambient_light));
-        Log.i("event_details_screen", String.valueOf(event_details.screen_state));
-        Log.i("event_details_ringer", String.valueOf(event_details.ringer_mode));
+        Log.i("event_details_screen", String.valueOf(event_details.getScreen_state()));
+        Log.i("event_details_ringer", String.valueOf(event_details.getRinger_mode()));
 
         SensorManager mSensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
         Sensor mLight = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
@@ -698,29 +698,29 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         handler.postDelayed(new Runnable() {
             public void run() {
                 // Actions to do after 5 seconds
-                event_details.activity_type = activity.getInt("activityType", -1);
-                event_details.activity_confidence = activity.getInt("activityConfidence", 0);
+                event_details.setActivity_type(activity.getInt("activityType", -1));
+                event_details.setActivity_confidence(activity.getInt("activityConfidence", 0));
 
-                Log.i("LOCATION", "--> " + event_details.location_coords +" AMBIENT LIGHT--> " + event_details.ambient_light);
-                Log.i("ACTIVITY", "--> " + event_details.activity_type + ", " + event_details.activity_confidence);
+                Log.i("LOCATION", "--> " + event_details.getLocation_coords() +" AMBIENT LIGHT--> " + event_details.getAmbient_light());
+                Log.i("ACTIVITY", "--> " + event_details.getActivity_type() + ", " + event_details.getActivity_confidence());
                 //Toast.makeText(context, "(" + event_details.activity_type + ", " + event_details.activity_confidence + ")", Toast.LENGTH_SHORT).show();
-                String[] data = { event_details.uid,  //TODO event_details.uid
-                        Integer.toString(event_details.did), //TODO event_details.did
-                        Integer.toString(event_details.eid), //TODO event_details.eid
-                        event_details.protaseis,
-                        event_details.chosen,
-                        Double.toString(event_details.sf),
-                        Double.toString(event_details.sr),
-                        event_details.protaseis_last_channel,
-                        event_details.location_coords,
-                        event_details.location_accuracy,
-                        Integer.toString(event_details.screen_state),
-                        Integer.toString(event_details.ringer_mode),
-                        Integer.toString(event_details.battery_level),
-                        Float.toString(event_details.ambient_light),
-                        Integer.toString(event_details.connectivity),
-                        Integer.toString(event_details.activity_type),
-                        Integer.toString(event_details.activity_confidence)
+                String[] data = {event_details.getUid(),  //TODO event_details.uid
+                        Integer.toString(event_details.getDid()), //TODO event_details.did
+                        Integer.toString(event_details.getEid()), //TODO event_details.eid
+                        event_details.getProtaseis(),
+                        event_details.getChosen(),
+                        Double.toString(event_details.getSf()),
+                        Double.toString(event_details.getSr()),
+                        event_details.getProtaseis_last_channel(),
+                        event_details.getLocation_coords(),
+                        event_details.getLocation_accuracy(),
+                        Integer.toString(event_details.getScreen_state()),
+                        Integer.toString(event_details.getRinger_mode()),
+                        Integer.toString(event_details.getBattery_level()),
+                        Float.toString(event_details.getAmbient_light()),
+                        Integer.toString(event_details.getConnectivity()),
+                        Integer.toString(event_details.getActivity_type()),
+                        Integer.toString(event_details.getActivity_confidence())
                     };
                 new AsyncHttpPost().execute(data);
             }
@@ -736,7 +736,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         @Override
         public void onSensorChanged(SensorEvent event) {
             if (!flag[0]) { //run only one time
-                event_details.ambient_light = event.values[0];
+                event_details.setAmbient_light(event.values[0]);
                 flag[0] = true;
             }
         }

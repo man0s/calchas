@@ -46,9 +46,8 @@ public class EventDetails {
 
     public EventDetails() { }
 
-    public EventDetails(String uid, long timestamp, String protaseis, String protaseis_last_channel)
+    public EventDetails(String uid, String protaseis, String protaseis_last_channel)
     {
-        this.timestamp = timestamp;
         this.uid = uid;
         this.protaseis = protaseis;
         this.protaseis_last_channel = protaseis_last_channel;
