@@ -813,12 +813,16 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
                 eventDetailsdb = new EventDetailsDBHelper(context);
 
-                eventDetailsdb.addEventDetail(event_details.getUid(), event_details.getTimestamp(), event_details.getDid(), event_details.getEid(), event_details.getProtaseis(),
+                long eventID = eventDetailsdb.addEventDetail(event_details.getUid(), event_details.getTimestamp(), event_details.getDid(), event_details.getEid(), event_details.getProtaseis(),
                 event_details.getChosen(), event_details.getSf(), event_details.getSr(), event_details.getProtaseis_last_channel(), event_details.getLocation_coords(),
                 event_details.getLocation_accuracy(), event_details.getScreen_state(), event_details.getRinger_mode(), event_details.getBattery_level(),
                 event_details.getAmbient_light(), event_details.getConnectivity(), event_details.getActivity_type(), event_details.getActivity_confidence() );
 
                 Log.i("event_details", "Events Count --> " + eventDetailsdb.getEventDetailsCount());
+                Log.i("event_details", "New ID --> " + eventID);
+
+                int deleted = eventDetailsdb.deleteEvent("2");
+                Log.i("DELETE", "--> " + deleted);
                 //TODO internal DB save
             }
             Log.i("POST", "Post AsyncTask executed. (" + result + ")");

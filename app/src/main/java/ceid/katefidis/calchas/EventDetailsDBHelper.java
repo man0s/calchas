@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.EventLog;
 
 import java.util.ArrayList;
 
@@ -140,6 +141,15 @@ public class EventDetailsDBHelper extends SQLiteOpenHelper {
 
         // return count
         return count;
+    }
+
+    // method to delete a Record of UserName
+    public Integer deleteEvent(String id)
+    {
+        SQLiteDatabase db=this.getWritableDatabase();
+        Integer deleted = db.delete(EventDetails.TABLE_NAME,"ID = ?",new String[] {id});
+        db.delete("SQLITE_SEQUENCE","NAME = ?",new String[]{EventDetails.TABLE_NAME});
+        return deleted;
     }
 
 }
