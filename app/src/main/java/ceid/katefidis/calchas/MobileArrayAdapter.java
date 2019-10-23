@@ -821,9 +821,9 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                 Log.i("event_details", "Events Count --> " + eventDetailsdb.getEventDetailsCount());
                 Log.i("event_details", "New ID --> " + eventID);
 
-                int deleted = eventDetailsdb.deleteEvent("2");
-                Log.i("DELETE", "--> " + deleted);
-                //TODO internal DB save
+                eventDetailsdb.postRemaining();
+
+
             }
             Log.i("POST", "Post AsyncTask executed. (" + result + ")");
         }
@@ -943,5 +943,4 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         }
         return mode;
     }
-
 }

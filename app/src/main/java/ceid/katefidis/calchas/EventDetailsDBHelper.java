@@ -7,8 +7,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.EventLog;
+import android.util.Log;
 
 import java.util.ArrayList;
+
+import static android.content.ContentValues.TAG;
 
 public class EventDetailsDBHelper extends SQLiteOpenHelper {
 
@@ -148,8 +151,27 @@ public class EventDetailsDBHelper extends SQLiteOpenHelper {
     {
         SQLiteDatabase db=this.getWritableDatabase();
         Integer deleted = db.delete(EventDetails.TABLE_NAME,"ID = ?",new String[] {id});
+        //reset the insert id
         db.delete("SQLITE_SEQUENCE","NAME = ?",new String[]{EventDetails.TABLE_NAME});
         return deleted;
     }
+
+
+    public void postRemaining() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        try {
+            String query = "SELECT  * FROM " + EventDetails.TABLE_NAME;
+            Cursor cursor = db.rawQuery(query, null);
+            while (cursor.moveToNext()) {
+                //post it, then delete
+                deleteEvent(cursor.getString(cursor.getColumnIndex("id")));
+                Log.i("event_details", "Event_details deleted --> " + cursor.getString(cursor.getColumnIndex("id")));
+
+            }
+        }catch(Exception ex){
+            Log.e(TAG,"Error in deleting event_details "+ex.toString());
+        }
+    }
+
 
 }

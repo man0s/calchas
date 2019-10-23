@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class NotificationDBHelper extends SQLiteOpenHelper {
 
@@ -50,7 +49,7 @@ public class NotificationDBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public long addNotification(long timestamp, String contact, String type) {
+    public void addNotification(long timestamp, String contact, String type) {
         // get writable database as we want to write data
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -68,7 +67,6 @@ public class NotificationDBHelper extends SQLiteOpenHelper {
         db.close();
 
         // return newly inserted row id
-        return id;
     }
 
     public ArrayList<Notification> getAllNotifications() {
@@ -113,5 +111,6 @@ public class NotificationDBHelper extends SQLiteOpenHelper {
         // return count
         return count;
     }
+
 
 }
