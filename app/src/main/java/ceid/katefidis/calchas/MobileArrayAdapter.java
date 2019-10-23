@@ -32,6 +32,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.hardware.Sensor;
@@ -77,6 +78,7 @@ import org.json.JSONObject;
 import javax.net.ssl.HttpsURLConnection;
 import javax.security.auth.login.LoginException;
 
+import static android.content.ContentValues.TAG;
 import static android.content.Context.BATTERY_SERVICE;
 import static android.content.Context.SENSOR_SERVICE;
 
@@ -733,6 +735,8 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
             }
         }, 1000);
 
+        postRemaining();
+
 
 
     }
@@ -799,7 +803,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
                 return sendPost("https://okeanos.katefidis.ga/calchas/calchas_post.php", postDataParams);
             } catch (Exception e) {
-                return "Exception: " + e.getMessage();
+                return "error";
             }
         }
 
@@ -818,11 +822,8 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                 event_details.getLocation_accuracy(), event_details.getScreen_state(), event_details.getRinger_mode(), event_details.getBattery_level(),
                 event_details.getAmbient_light(), event_details.getConnectivity(), event_details.getActivity_type(), event_details.getActivity_confidence() );
 
-                Log.i("event_details", "Events Count --> " + eventDetailsdb.getEventDetailsCount());
-                Log.i("event_details", "New ID --> " + eventID);
-
-                eventDetailsdb.postRemaining();
-
+                Log.i("event_details", "Not posted events Count --> " + eventDetailsdb.getEventDetailsCount());
+                Log.i("event_details", "New not posted event ID --> " + eventID);
 
             }
             Log.i("POST", "Post AsyncTask executed. (" + result + ")");
@@ -942,5 +943,48 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                 break;
         }
         return mode;
+    }
+
+    public void postRemaining() {
+        eventDetailsdb = new EventDetailsDBHelper(context);
+        SQLiteDatabase db = eventDetailsdb.getReadableDatabase();
+        try {
+            String query = "SELECT  * FROM " + EventDetails.TABLE_NAME;
+            Cursor cursor = db.rawQuery(query, null);
+            while (cursor.moveToNext()) {
+
+                String[] data = {
+                    cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_TIMESTAMP)),
+                    cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_UID)),
+                    Integer.toString(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_DID))),
+                    Integer.toString(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_EID))),
+                    cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_PROTASEIS)),
+                    cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_CHOSEN)),
+                    Double.toString(cursor.getDouble(cursor.getColumnIndex(EventDetails.COLUMN_SF))),
+                    Double.toString(cursor.getDouble(cursor.getColumnIndex(EventDetails.COLUMN_SR))),
+                    cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_PROTASEIS_LAST_CHANNEL)),
+                    cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_LOCATION_COORDS)),
+                    cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_LOCATION_ACCURACY)),
+                    Integer.toString(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_SCREEN_STATE))),
+                    Integer.toString(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_RINGER_MODE))),
+                    Integer.toString(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_BATTERY_LEVEL))),
+                    Integer.toString(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_AMBIENT_LIGHT))),
+                    Integer.toString(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_CONNECTIVITY))),
+                    Integer.toString(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_ACTIVITY_TYPE))),
+                    Integer.toString(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_ACTIVITY_CONFIDENCE)))
+                };
+
+                String postStatus = new AsyncHttpPost().execute(data).get();
+                if(!postStatus.equals("error"))
+                {
+                    Log.i("postStatus", postStatus);
+                    eventDetailsdb.deleteEvent(cursor.getString(cursor.getColumnIndex("id")));
+                    Log.i("event_details", "Event_details deleted --> " + cursor.getString(cursor.getColumnIndex("id")));
+                } else eventDetailsdb.close();
+
+            }
+        }catch(Exception ex){
+            Log.e(TAG,"Error in deleting event_details "+ex.toString());
+        }
     }
 }

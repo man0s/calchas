@@ -156,22 +156,4 @@ public class EventDetailsDBHelper extends SQLiteOpenHelper {
         return deleted;
     }
 
-
-    public void postRemaining() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        try {
-            String query = "SELECT  * FROM " + EventDetails.TABLE_NAME;
-            Cursor cursor = db.rawQuery(query, null);
-            while (cursor.moveToNext()) {
-                //post it, then delete
-                deleteEvent(cursor.getString(cursor.getColumnIndex("id")));
-                Log.i("event_details", "Event_details deleted --> " + cursor.getString(cursor.getColumnIndex("id")));
-
-            }
-        }catch(Exception ex){
-            Log.e(TAG,"Error in deleting event_details "+ex.toString());
-        }
-    }
-
-
 }
