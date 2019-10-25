@@ -991,6 +991,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                 };
 
             }
+            eventDetailsdb.close();
         }catch(Exception ex){
             Log.e(TAG,"Error in deleting event_details "+ex.toString());
         }
