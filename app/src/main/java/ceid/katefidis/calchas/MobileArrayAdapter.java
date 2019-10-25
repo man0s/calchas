@@ -814,7 +814,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         protected void onPostExecute(String result) {
             if(result.equals("success")) {
                 Log.i("POST", "ETYXE, PETYXE");
-
+                postRemaining();
             } else {
                 Log.i("POST", "DEN ETYXE");
 
