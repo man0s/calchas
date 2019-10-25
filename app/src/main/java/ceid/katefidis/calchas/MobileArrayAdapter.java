@@ -813,10 +813,10 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         @Override
         protected void onPostExecute(String result) {
             if(result.equals("success")) {
-                Log.i("POST", "ETYXE, PETYXE");
+                Log.i("POST", "posted");
                 postRemaining();
             } else {
-                Log.i("POST", "DEN ETYXE");
+                Log.i("POST", "not posted");
 
                 eventDetailsdb = new EventDetailsDBHelper(context);
 
