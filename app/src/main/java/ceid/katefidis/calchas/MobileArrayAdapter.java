@@ -103,6 +103,10 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         this.event_details = event_details;
     }
 
+    public MobileArrayAdapter(Context context) {
+        this.context = context;
+    }
+
     @Override
     public View getGroupView(int position, boolean isExpanded,
                              View rowView, ViewGroup parent) {
@@ -735,7 +739,6 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
             }
         }, 1000);
 
-        postRemaining();
 
 
 
@@ -824,6 +827,8 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
                 Log.i("event_details", "Not posted events Count --> " + eventDetailsdb.getEventDetailsCount());
                 Log.i("event_details", "New not posted event ID --> " + eventID);
+
+                eventDetailsdb.close();
 
             }
             Log.i("POST", "Post AsyncTask executed. (" + result + ")");
@@ -980,7 +985,10 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                     Log.i("postStatus", postStatus);
                     eventDetailsdb.deleteEvent(cursor.getString(cursor.getColumnIndex("id")));
                     Log.i("event_details", "Event_details deleted --> " + cursor.getString(cursor.getColumnIndex("id")));
-                } else eventDetailsdb.close();
+                } else {
+                    eventDetailsdb.close();
+                    cursor.close();
+                };
 
             }
         }catch(Exception ex){

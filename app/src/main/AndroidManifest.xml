@@ -55,6 +55,14 @@
         <service android:name=".DetectedActivitiesIntentService" />
         <service android:name=".BackgroundDetectedActivitiesService" />
 
+        ​<service android:name=".PostRemainingService" android:label="Word service" android:permission="android.permission.BIND_JOB_SERVICE"/>
+
+        <receiver android:name=".PostRemainingReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>
