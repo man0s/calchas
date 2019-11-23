@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("content://contacts/people")));
                     return false;
                 case R.id.navigation_callLog:
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("content://call_log/calls")));
+                    startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:")));
                     return false;
                 case R.id.navigation_settings:
                     fm.beginTransaction()

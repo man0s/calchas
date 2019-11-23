@@ -6,7 +6,7 @@
     <string name="title_notifications" translatable="false">Notifications</string>
     <string name="title_contacts" translatable="false">Contacts</string>
     <string name="title_settings" translatable="false">Settings</string>
-    <string name="title_callLog" translatable="false">Call Log</string>
+    <string name="title_callLog" translatable="false">Dialer</string>
     <string name="title_search" translatable="false">Search</string>
     <string name="title_search_contacts" translatable="false">Search contacts..</string>
 
