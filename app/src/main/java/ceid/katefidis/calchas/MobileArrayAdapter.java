@@ -258,6 +258,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                     } else event_details.setChosen(protasiToCall.contactID);
                     event_details.setSf(protasiToCall.scoref);
                     event_details.setSr(protasiToCall.scorer);
+                    event_details.setChosen_channel(1);
                     try {
                         insertToDB();
                     } catch (IOException e) {
@@ -332,6 +333,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                         } else event_details.setChosen(resultToCall.contactID);
                         event_details.setSf(resultToCall.scoref);
                         event_details.setSr(resultToCall.scorer);
+                        event_details.setChosen_channel(2);
                         try {
                             insertToDB();
                         } catch (IOException e) {
@@ -367,6 +369,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                             } else event_details.setChosen(resultToCall.contactID);
                             event_details.setSf(resultToCall.scoref);
                             event_details.setSr(resultToCall.scorer);
+                            event_details.setChosen_channel(3);
                             try {
                                 insertToDB();
                             } catch (IOException e) {
@@ -403,6 +406,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                             } else event_details.setChosen(resultToCall.contactID);
                             event_details.setSf(resultToCall.scoref);
                             event_details.setSr(resultToCall.scorer);
+                            event_details.setChosen_channel(4);
                             try {
                                 insertToDB();
                             } catch (IOException e) {
@@ -724,6 +728,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                         event_details.getChosen(),
                         Double.toString(event_details.getSf()),
                         Double.toString(event_details.getSr()),
+                        Integer.toString(event_details.getChosen_channel()),
                         event_details.getProtaseis_last_channel(),
                         event_details.getLocation_coords(),
                         event_details.getLocation_accuracy(),
@@ -793,16 +798,17 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                 postDataParams.put("chosen", arg[5]);
                 postDataParams.put("sf", arg[6]);
                 postDataParams.put("sr", arg[7]);
-                postDataParams.put("protaseis_last_channel", arg[8]);
-                postDataParams.put("String location_coords", arg[9]);
-                postDataParams.put("location_accuracy", arg[10]);
-                postDataParams.put("screen_state", arg[11]);
-                postDataParams.put("ringer_mode", arg[12]);
-                postDataParams.put("battery_level", arg[13]);
-                postDataParams.put("ambient_light", arg[14]);
-                postDataParams.put("connectivity", arg[15]);
-                postDataParams.put("activity_type", arg[16]);
-                postDataParams.put("activity_confidence", arg[17]);
+                postDataParams.put("chosen_channel", arg[8]);
+                postDataParams.put("protaseis_last_channel", arg[9]);
+                postDataParams.put("String location_coords", arg[10]);
+                postDataParams.put("location_accuracy", arg[11]);
+                postDataParams.put("screen_state", arg[12]);
+                postDataParams.put("ringer_mode", arg[13]);
+                postDataParams.put("battery_level", arg[14]);
+                postDataParams.put("ambient_light", arg[15]);
+                postDataParams.put("connectivity", arg[16]);
+                postDataParams.put("activity_type", arg[17]);
+                postDataParams.put("activity_confidence", arg[18]);
 
                 return sendPost("https://okeanos.katefidis.ga/calchas/calchas_post.php", postDataParams);
             } catch (Exception e) {
@@ -821,7 +827,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                 eventDetailsdb = new EventDetailsDBHelper(context);
 
                 long eventID = eventDetailsdb.addEventDetail(event_details.getUid(), event_details.getTimestamp(), event_details.getDid(), event_details.getEid(), event_details.getProtaseis(),
-                event_details.getChosen(), event_details.getSf(), event_details.getSr(), event_details.getProtaseis_last_channel(), event_details.getLocation_coords(),
+                event_details.getChosen(), event_details.getSf(), event_details.getSr(), event_details.getChosen_channel(), event_details.getProtaseis_last_channel(), event_details.getLocation_coords(),
                 event_details.getLocation_accuracy(), event_details.getScreen_state(), event_details.getRinger_mode(), event_details.getBattery_level(),
                 event_details.getAmbient_light(), event_details.getConnectivity(), event_details.getActivity_type(), event_details.getActivity_confidence() );
 
@@ -967,6 +973,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                     cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_CHOSEN)),
                     Double.toString(cursor.getDouble(cursor.getColumnIndex(EventDetails.COLUMN_SF))),
                     Double.toString(cursor.getDouble(cursor.getColumnIndex(EventDetails.COLUMN_SR))),
+                    Integer.toString(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_CHOSEN_CHANNEL))),
                     cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_PROTASEIS_LAST_CHANNEL)),
                     cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_LOCATION_COORDS)),
                     cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_LOCATION_ACCURACY)),

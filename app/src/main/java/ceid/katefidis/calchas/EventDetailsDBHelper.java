@@ -49,7 +49,7 @@ public class EventDetailsDBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public long addEventDetail(String uid, String timestamp, Integer did, Integer eid, String protaseis, String chosen, double sf, double sr, String protaseis_last_channel,
+    public long addEventDetail(String uid, String timestamp, Integer did, Integer eid, String protaseis, String chosen, double sf, double sr, Integer chosen_channel, String protaseis_last_channel,
                                String location_coords, String location_accuracy, Integer screen_state, Integer ringer_mode, Integer battery_level, float ambient_light,
                                Integer connectivity, Integer activity_type, Integer activity_confidence)
     {
@@ -67,6 +67,7 @@ public class EventDetailsDBHelper extends SQLiteOpenHelper {
         values.put(EventDetails.COLUMN_CHOSEN, chosen);
         values.put(EventDetails.COLUMN_SF, sf);
         values.put(EventDetails.COLUMN_SR, sr);
+        values.put(EventDetails.COLUMN_CHOSEN_CHANNEL, chosen_channel);
         values.put(EventDetails.COLUMN_PROTASEIS_LAST_CHANNEL, protaseis_last_channel);
         values.put(EventDetails.COLUMN_LOCATION_COORDS, location_coords);
         values.put(EventDetails.COLUMN_LOCATION_ACCURACY, location_accuracy);
@@ -111,6 +112,7 @@ public class EventDetailsDBHelper extends SQLiteOpenHelper {
                 eventDetail.setChosen(cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_CHOSEN)));
                 eventDetail.setSf(cursor.getDouble(cursor.getColumnIndex(EventDetails.COLUMN_SF)));
                 eventDetail.setSr(cursor.getDouble(cursor.getColumnIndex(EventDetails.COLUMN_SR)));
+                eventDetail.setChosen_channel(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_CHOSEN_CHANNEL)));
                 eventDetail.setProtaseis_last_channel(cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_PROTASEIS_LAST_CHANNEL)));
                 eventDetail.setLocation_coords(cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_LOCATION_COORDS)));
                 eventDetail.setLocation_accuracy(cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_LOCATION_ACCURACY)));

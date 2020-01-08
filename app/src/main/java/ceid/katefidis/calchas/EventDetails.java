@@ -12,6 +12,7 @@ public class EventDetails {
     public static final String COLUMN_CHOSEN = "chosen";
     public static final String COLUMN_SF = "sf";
     public static final String COLUMN_SR = "sr";
+    public static final String COLUMN_CHOSEN_CHANNEL = "chosen_channel";
     public static final String COLUMN_PROTASEIS_LAST_CHANNEL = "protaseis_last_channel";
     public static final String COLUMN_LOCATION_COORDS = "location_coords";
     public static final String COLUMN_LOCATION_ACCURACY = "location_accuracy";
@@ -32,6 +33,7 @@ public class EventDetails {
     private String chosen;
     private double sf;
     private double sr;
+    private Integer chosen_channel;
     private String protaseis_last_channel;
     private String location_coords;
     private String location_accuracy;
@@ -66,6 +68,7 @@ public class EventDetails {
                     + COLUMN_CHOSEN + " TEXT,"
                     + COLUMN_SF + " DOUBLE,"
                     + COLUMN_SR + " DOUBLE,"
+                    + COLUMN_CHOSEN_CHANNEL + " INTEGER,"
                     + COLUMN_PROTASEIS_LAST_CHANNEL + " TEXT,"
                     + COLUMN_LOCATION_COORDS + " TEXT,"
                     + COLUMN_LOCATION_ACCURACY + " TEXT,"
@@ -149,6 +152,10 @@ public class EventDetails {
         this.sr = sr;
     }
 
+    public Integer getChosen_channel() { return chosen_channel; }
+
+    public void setChosen_channel(Integer chosen_channel) { this.chosen_channel = chosen_channel; }
+
     public String getProtaseis_last_channel() {
         return protaseis_last_channel;
     }
@@ -225,7 +232,6 @@ public class EventDetails {
         return activity_confidence;
     }
 
-    public void setActivity_confidence(Integer activity_confidence) {
-        this.activity_confidence = activity_confidence;
-    }
+    public void setActivity_confidence(Integer activity_confidence) { this.activity_confidence = activity_confidence; }
+
 }
