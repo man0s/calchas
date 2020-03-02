@@ -189,8 +189,23 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                     String name = prot.name.substring(0, Math.min(prot.name.length(), 20)) + ".";
                     textView.setText(name);
                 } else textView.setText(prot.name);
+
+                //todo remove presentation
+                if (prot.name.length() > 10) {
+                    textView.setText(prot.name.substring(0, Math.min(prot.name.length(), 10)) + "..");
+                }
+
                 //if(prot.type != null)   textView.setText(prot.name + "|" + prot.type);
                 textView1.setText(prot.number);
+
+                //todo remove presentation
+                if(prot.number.charAt(0) == '+') {
+                    textView1.setText(prot.number.substring(0, 6) + "######" + prot.number.charAt(prot.number.length()-1));
+
+                } else {
+                    textView1.setText(prot.number.substring(0, 3) + "######" + prot.number.charAt(prot.number.length()-1));
+                }
+
             } else {
                 //Google Business Bug Fix
                 if (!prot.name.matches("^(?:[+]?[0-9]+|)$")) //name not null or number
@@ -200,10 +215,32 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                         textView.setText(name);
                     } else textView.setText(prot.name);
                     textView1.setText(prot.number);
+
+                    //todo remove presentation
+                    if (prot.name.length() > 10) {
+                        textView.setText(prot.name.substring(0, Math.min(prot.name.length(), 10)) + "..");
+                    }
+                    //todo remove presentation
+                    if(prot.number.charAt(0) == '+') {
+                        textView1.setText(prot.number.substring(0, 6) + "######" + prot.number.charAt(prot.number.length()-1));
+
+                    } else {
+                        textView1.setText(prot.number.substring(0, 3) + "######" + prot.number.charAt(prot.number.length()-1));
+                    }
+                    
                 } else {
                     textView.setText(prot.number);
                     //if(prot.type != null)   textView.setText(prot.name + "|" + prot.type);
                     textView1.setText("");
+
+                    //todo remove presentation
+                    if(prot.number.charAt(0) == '+') {
+                        textView.setText(prot.number.substring(0, 6) + "######" + prot.number.charAt(prot.number.length()-1));
+
+                    } else {
+                        textView.setText(prot.number.substring(0, 3) + "######" + prot.number.charAt(prot.number.length()-1));
+                    }
+
                 }
             }
 
