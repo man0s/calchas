@@ -46,10 +46,10 @@ public class EventDetails {
     private Integer activity_confidence;
 
 
-    public EventDetails() { }
+    public EventDetails() {
+    }
 
-    public EventDetails(String uid, String protaseis, String protaseis_last_channel)
-    {
+    public EventDetails(String uid, String protaseis, String protaseis_last_channel) {
         this.uid = uid;
         this.protaseis = protaseis;
         this.protaseis_last_channel = protaseis_last_channel;
@@ -84,6 +84,7 @@ public class EventDetails {
     public int getId() {
         return id;
     }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -152,9 +153,13 @@ public class EventDetails {
         this.sr = sr;
     }
 
-    public Integer getChosen_channel() { return chosen_channel; }
+    public Integer getChosen_channel() {
+        return chosen_channel;
+    }
 
-    public void setChosen_channel(Integer chosen_channel) { this.chosen_channel = chosen_channel; }
+    public void setChosen_channel(Integer chosen_channel) {
+        this.chosen_channel = chosen_channel;
+    }
 
     public String getProtaseis_last_channel() {
         return protaseis_last_channel;
@@ -232,6 +237,8 @@ public class EventDetails {
         return activity_confidence;
     }
 
-    public void setActivity_confidence(Integer activity_confidence) { this.activity_confidence = activity_confidence; }
+    public void setActivity_confidence(Integer activity_confidence) {
+        this.activity_confidence = activity_confidence;
+    }
 
 }

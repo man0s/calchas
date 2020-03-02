@@ -4,12 +4,13 @@ package ceid.katefidis.calchas;
 import android.app.IntentService;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
+
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
 
 import java.util.ArrayList;
 
-public class DetectedActivitiesIntentService  extends IntentService {
+public class DetectedActivitiesIntentService extends IntentService {
 
     protected static final String TAG = DetectedActivitiesIntentService.class.getSimpleName();
 

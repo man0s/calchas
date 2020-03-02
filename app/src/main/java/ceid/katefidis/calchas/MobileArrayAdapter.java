@@ -193,7 +193,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                 textView1.setText(prot.number);
             } else {
                 //Google Business Bug Fix
-                if(!prot.name.matches("^(?:[+]?[0-9]+|)$")) //name not null or number
+                if (!prot.name.matches("^(?:[+]?[0-9]+|)$")) //name not null or number
                 {
                     if (prot.name.length() > 20) {
                         String name = prot.name.substring(0, Math.min(prot.name.length(), 20)) + ".";
@@ -671,7 +671,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         return 1;
     }
 
-    private void insertToDB() throws IOException{
+    private void insertToDB() throws IOException {
 
         final SharedPreferences activity = PreferenceManager.getDefaultSharedPreferences(context);
 
@@ -716,7 +716,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                 event_details.setActivity_type(activity.getInt("activityType", -1));
                 event_details.setActivity_confidence(activity.getInt("activityConfidence", 0));
 
-                Log.i("LOCATION", "--> " + event_details.getLocation_coords() +" AMBIENT LIGHT--> " + event_details.getAmbient_light());
+                Log.i("LOCATION", "--> " + event_details.getLocation_coords() + " AMBIENT LIGHT--> " + event_details.getAmbient_light());
                 Log.i("ACTIVITY", "--> " + event_details.getActivity_type() + ", " + event_details.getActivity_confidence());
                 //Toast.makeText(context, "(" + event_details.activity_type + ", " + event_details.activity_confidence + ")", Toast.LENGTH_SHORT).show();
                 String[] data = {
@@ -739,12 +739,10 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                         Integer.toString(event_details.getConnectivity()),
                         Integer.toString(event_details.getActivity_type()),
                         Integer.toString(event_details.getActivity_confidence())
-                    };
+                };
                 new AsyncHttpPost().execute(data);
             }
         }, 1000);
-
-
 
 
     }
@@ -761,7 +759,8 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         }
 
         @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) { }
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        }
 
         @Override
         protected Void doInBackground(SensorManager... params) {
@@ -818,7 +817,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
         @Override
         protected void onPostExecute(String result) {
-            if(result.equals("success")) {
+            if (result.equals("success")) {
                 Log.i("POST", "posted");
                 postRemaining();
             } else {
@@ -827,9 +826,9 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                 eventDetailsdb = new EventDetailsDBHelper(context);
 
                 long eventID = eventDetailsdb.addEventDetail(event_details.getUid(), event_details.getTimestamp(), event_details.getDid(), event_details.getEid(), event_details.getProtaseis(),
-                event_details.getChosen(), event_details.getSf(), event_details.getSr(), event_details.getChosen_channel(), event_details.getProtaseis_last_channel(), event_details.getLocation_coords(),
-                event_details.getLocation_accuracy(), event_details.getScreen_state(), event_details.getRinger_mode(), event_details.getBattery_level(),
-                event_details.getAmbient_light(), event_details.getConnectivity(), event_details.getActivity_type(), event_details.getActivity_confidence() );
+                        event_details.getChosen(), event_details.getSf(), event_details.getSr(), event_details.getChosen_channel(), event_details.getProtaseis_last_channel(), event_details.getLocation_coords(),
+                        event_details.getLocation_accuracy(), event_details.getScreen_state(), event_details.getRinger_mode(), event_details.getBattery_level(),
+                        event_details.getAmbient_light(), event_details.getConnectivity(), event_details.getActivity_type(), event_details.getActivity_confidence());
 
                 Log.i("event_details", "Not posted events Count --> " + eventDetailsdb.getEventDetailsCount());
                 Log.i("event_details", "New not posted event ID --> " + eventID);
@@ -902,22 +901,23 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
         for (int i = providers.size() - 1; i >= 0; i--) {
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    l = lm.getLastKnownLocation(providers.get(i));
-                }
-        if (l != null) break;
-    }
+                l = lm.getLastKnownLocation(providers.get(i));
+            }
+            if (l != null) break;
+        }
 
-    double[] gps = new double[3];
-    if (l != null) {
-        gps[0] = l.getLatitude();
-        gps[1] = l.getLongitude();
-        gps[2] = l.getAccuracy();
+        double[] gps = new double[3];
+        if (l != null) {
+            gps[0] = l.getLatitude();
+            gps[1] = l.getLongitude();
+            gps[2] = l.getAccuracy();
+        }
+        return gps;
     }
-    return gps;
-}
 
     /**
      * Is the screen of the device on.
+     *
      * @param context the context
      * @return 1 when (at least one) screen is on
      */
@@ -934,13 +934,13 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         } else {
             PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
             //noinspection deprecation
-            if(pm.isScreenOn()) return 1;
+            if (pm.isScreenOn()) return 1;
             else return 0;
         }
     }
 
-    private Integer getRingMode(){
-        AudioManager am = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
+    private Integer getRingMode() {
+        AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         int mode = 0;
         switch (am.getRingerMode()) {
             case AudioManager.RINGER_MODE_SILENT:
@@ -965,42 +965,42 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
             while (cursor.moveToNext()) {
 
                 String[] data = {
-                    cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_TIMESTAMP)),
-                    cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_UID)),
-                    Integer.toString(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_DID))),
-                    Integer.toString(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_EID))),
-                    cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_PROTASEIS)),
-                    cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_CHOSEN)),
-                    Double.toString(cursor.getDouble(cursor.getColumnIndex(EventDetails.COLUMN_SF))),
-                    Double.toString(cursor.getDouble(cursor.getColumnIndex(EventDetails.COLUMN_SR))),
-                    Integer.toString(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_CHOSEN_CHANNEL))),
-                    cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_PROTASEIS_LAST_CHANNEL)),
-                    cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_LOCATION_COORDS)),
-                    cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_LOCATION_ACCURACY)),
-                    Integer.toString(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_SCREEN_STATE))),
-                    Integer.toString(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_RINGER_MODE))),
-                    Integer.toString(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_BATTERY_LEVEL))),
-                    Integer.toString(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_AMBIENT_LIGHT))),
-                    Integer.toString(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_CONNECTIVITY))),
-                    Integer.toString(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_ACTIVITY_TYPE))),
-                    Integer.toString(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_ACTIVITY_CONFIDENCE)))
+                        cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_TIMESTAMP)),
+                        cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_UID)),
+                        Integer.toString(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_DID))),
+                        Integer.toString(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_EID))),
+                        cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_PROTASEIS)),
+                        cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_CHOSEN)),
+                        Double.toString(cursor.getDouble(cursor.getColumnIndex(EventDetails.COLUMN_SF))),
+                        Double.toString(cursor.getDouble(cursor.getColumnIndex(EventDetails.COLUMN_SR))),
+                        Integer.toString(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_CHOSEN_CHANNEL))),
+                        cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_PROTASEIS_LAST_CHANNEL)),
+                        cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_LOCATION_COORDS)),
+                        cursor.getString(cursor.getColumnIndex(EventDetails.COLUMN_LOCATION_ACCURACY)),
+                        Integer.toString(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_SCREEN_STATE))),
+                        Integer.toString(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_RINGER_MODE))),
+                        Integer.toString(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_BATTERY_LEVEL))),
+                        Integer.toString(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_AMBIENT_LIGHT))),
+                        Integer.toString(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_CONNECTIVITY))),
+                        Integer.toString(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_ACTIVITY_TYPE))),
+                        Integer.toString(cursor.getInt(cursor.getColumnIndex(EventDetails.COLUMN_ACTIVITY_CONFIDENCE)))
                 };
 
                 String postStatus = new AsyncHttpPost().execute(data).get();
-                if(!postStatus.equals("error"))
-                {
+                if (!postStatus.equals("error")) {
                     Log.i("postStatus", postStatus);
                     eventDetailsdb.deleteEvent(cursor.getString(cursor.getColumnIndex("id")));
                     Log.i("event_details", "Event_details deleted --> " + cursor.getString(cursor.getColumnIndex("id")));
                 } else {
                     eventDetailsdb.close();
                     cursor.close();
-                };
+                }
+                ;
 
             }
             eventDetailsdb.close();
-        }catch(Exception ex){
-            Log.e(TAG,"Error in deleting event_details "+ex.toString());
+        } catch (Exception ex) {
+            Log.e(TAG, "Error in deleting event_details " + ex.toString());
         }
     }
 }

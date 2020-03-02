@@ -34,7 +34,7 @@ public class NotificationDBHelper extends SQLiteOpenHelper {
         // nots trigger for keeping the last (500) db entries
         db.execSQL("CREATE TRIGGER notificationLimit" +
                 " AFTER INSERT on " + Notification.TABLE_NAME +
-                " BEGIN "+
+                " BEGIN " +
                 "DELETE FROM " + Notification.TABLE_NAME + " WHERE " + Notification.COLUMN_TIMESTAMP + " <= (SELECT " + Notification.COLUMN_TIMESTAMP + " FROM " + Notification.TABLE_NAME + " ORDER BY " + Notification.COLUMN_TIMESTAMP + " DESC LIMIT " + DATABASE_LIMIT + ", 1);" +
                 " END;");
     }

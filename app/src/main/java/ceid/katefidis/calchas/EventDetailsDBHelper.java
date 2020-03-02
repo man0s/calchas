@@ -51,8 +51,7 @@ public class EventDetailsDBHelper extends SQLiteOpenHelper {
 
     public long addEventDetail(String uid, String timestamp, Integer did, Integer eid, String protaseis, String chosen, double sf, double sr, Integer chosen_channel, String protaseis_last_channel,
                                String location_coords, String location_accuracy, Integer screen_state, Integer ringer_mode, Integer battery_level, float ambient_light,
-                               Integer connectivity, Integer activity_type, Integer activity_confidence)
-    {
+                               Integer connectivity, Integer activity_type, Integer activity_confidence) {
         // get writable database as we want to write data
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -149,12 +148,11 @@ public class EventDetailsDBHelper extends SQLiteOpenHelper {
     }
 
     // method to delete a Record of UserName
-    public Integer deleteEvent(String id)
-    {
-        SQLiteDatabase db=this.getWritableDatabase();
-        Integer deleted = db.delete(EventDetails.TABLE_NAME,"ID = ?",new String[] {id});
+    public Integer deleteEvent(String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Integer deleted = db.delete(EventDetails.TABLE_NAME, "ID = ?", new String[]{id});
         //reset the insert id
-        db.delete("SQLITE_SEQUENCE","NAME = ?",new String[]{EventDetails.TABLE_NAME});
+        db.delete("SQLITE_SEQUENCE", "NAME = ?", new String[]{EventDetails.TABLE_NAME});
         return deleted;
     }
 

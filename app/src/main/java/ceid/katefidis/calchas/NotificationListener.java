@@ -14,7 +14,7 @@ public class NotificationListener extends NotificationListenerService {
         listen the notifications
      */
     private static final class ApplicationPackageNames {
-//        public static final String FACEBOOK_PACK_NAME = "com.facebook.katana";
+        //        public static final String FACEBOOK_PACK_NAME = "com.facebook.katana";
 //        public static final String FACEBOOK_MESSENGER_PACK_NAME = "com.facebook.orca";
 //        public static final String INSTAGRAM_PACK_NAME = "com.instagram.android";
         public static final String WHATSAPP_PACK_NAME = "com.whatsapp";
@@ -26,7 +26,7 @@ public class NotificationListener extends NotificationListenerService {
         the notifications, to decide whether we should do something or not
      */
     public static final class InterceptedNotificationCode {
-//        public static final int FACEBOOK_CODE = 1;
+        //        public static final int FACEBOOK_CODE = 1;
 //        public static final int INSTAGRAM_CODE = 2;
 //        public static final int MESSENGER_CODE = 3;
         public static final int WHATSAPP_CODE = 1;
@@ -42,11 +42,11 @@ public class NotificationListener extends NotificationListenerService {
     private String PreviousNotificationKey;
 
     @Override
-    public void onNotificationPosted(StatusBarNotification sbn){
+    public void onNotificationPosted(StatusBarNotification sbn) {
         int notificationCode = matchNotificationCode(sbn);
 
         if (notificationCode != InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE) {
-            if(!sbn.getKey().equals(PreviousNotificationKey)) {
+            if (!sbn.getKey().equals(PreviousNotificationKey)) {
                 Intent intent = new Intent("ceid.katefidis.calchas");
                 Bundle extras = new Bundle();
                 Log.i("Social", sbn.getKey());
@@ -61,7 +61,7 @@ public class NotificationListener extends NotificationListenerService {
         //Viber Duplicate Notification Bug Fix
         //metavliti gia na krataei to key tou prohgoumenou notification
         //ongoing notification key gia call/videocall einai |201|null|
-        if(sbn.getKey().contains("|201|null|"))  PreviousNotificationKey = sbn.getKey();
+        if (sbn.getKey().contains("|201|null|")) PreviousNotificationKey = sbn.getKey();
         else PreviousNotificationKey = null;
     }
 
@@ -100,23 +100,21 @@ public class NotificationListener extends NotificationListenerService {
 //        else if(packageName.equals(ApplicationPackageNames.INSTAGRAM_PACK_NAME)){
 //            return(InterceptedNotificationCode.INSTAGRAM_CODE);
 //        }
-        if(packageName.equals(ApplicationPackageNames.WHATSAPP_PACK_NAME)){
-            if(sbn.getKey().contains("|1|null|") || sbn.getKey().contains("|4|null|")) //text msg || call bug fix (case "|2131297581|null|" probably is unstable)
-                return(InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE);
-             else {
-                 if(sbn.getKey().contains("|1|") || sbn.getKey().contains("|7|null|") ) //|1|etc| for msg - |7|null for call/video call
-                    return(InterceptedNotificationCode.WHATSAPP_CODE);
-                 else return(InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE);
+        if (packageName.equals(ApplicationPackageNames.WHATSAPP_PACK_NAME)) {
+            if (sbn.getKey().contains("|1|null|") || sbn.getKey().contains("|4|null|")) //text msg || call bug fix (case "|2131297581|null|" probably is unstable)
+                return (InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE);
+            else {
+                if (sbn.getKey().contains("|1|") || sbn.getKey().contains("|7|null|")) //|1|etc| for msg - |7|null for call/video call
+                    return (InterceptedNotificationCode.WHATSAPP_CODE);
+                else return (InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE);
             }
-        }
-        else if(packageName.equals(ApplicationPackageNames.VIBER_PACK_NAME)){
-            if(sbn.getKey().contains("|-100|message|") || sbn.getKey().contains("|201|null|")) //text msg || call/vid call
-                return(InterceptedNotificationCode.VIBER_CODE);
+        } else if (packageName.equals(ApplicationPackageNames.VIBER_PACK_NAME)) {
+            if (sbn.getKey().contains("|-100|message|") || sbn.getKey().contains("|201|null|")) //text msg || call/vid call
+                return (InterceptedNotificationCode.VIBER_CODE);
             else
-                return(InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE);
-        }
-        else{
-            return(InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE);
+                return (InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE);
+        } else {
+            return (InterceptedNotificationCode.OTHER_NOTIFICATIONS_CODE);
         }
     }
 }

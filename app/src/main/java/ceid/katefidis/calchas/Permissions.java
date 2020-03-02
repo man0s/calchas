@@ -9,10 +9,9 @@ import android.support.v4.content.ContextCompat;
 public class Permissions {
 
     //Request Permissions
-    public static void Request_PERMISSIONS(Activity act, int code)
-    {
+    public static void Request_PERMISSIONS(Activity act, int code) {
         ActivityCompat.requestPermissions(act, new
-                String[]{Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE, Manifest.permission.INTERNET, Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.PROCESS_OUTGOING_CALLS, Manifest.permission.READ_SMS, Manifest.permission.WRITE_CALL_LOG, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION },code);
+                String[]{Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE, Manifest.permission.INTERNET, Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.PROCESS_OUTGOING_CALLS, Manifest.permission.READ_SMS, Manifest.permission.WRITE_CALL_LOG, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, code);
     }
 
     //Check Permissions

@@ -8,6 +8,7 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+
 import com.google.android.gms.location.ActivityRecognitionClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -68,7 +69,7 @@ public class BackgroundDetectedActivitiesService extends Service {
         task.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.d("Activity_Recognition","Requesting activity updates failed to start");
+                Log.d("Activity_Recognition", "Requesting activity updates failed to start");
             }
         });
     }
@@ -79,7 +80,7 @@ public class BackgroundDetectedActivitiesService extends Service {
         task.addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void result) {
-                Log.d("Activity_Recognition","Removed activity updates successfully!");
+                Log.d("Activity_Recognition", "Removed activity updates successfully!");
             }
         });
 

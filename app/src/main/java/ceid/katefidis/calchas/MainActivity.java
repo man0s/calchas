@@ -56,6 +56,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -67,16 +68,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 
-class calllogrecord
-{
+class calllogrecord {
     String number;
     long date;
     String CachedName;
     boolean isContact;
     String type;
 
-    public calllogrecord(String num, long mydate, String CachedName, boolean isContact, String type)
-    {
+    public calllogrecord(String num, long mydate, String CachedName, boolean isContact, String type) {
         this.number = num;
         this.date = mydate;
         this.CachedName = CachedName;
@@ -86,8 +85,7 @@ class calllogrecord
 
 }
 
-class Protasi
-{
+class Protasi {
     String number;
     String name;
     String contactID;
@@ -101,8 +99,7 @@ class Protasi
     boolean suggested;
     String network;
 
-    public Protasi(String num, String name,double scoref, double scorer, double score, boolean isContact, String type, String contactID)
-    {
+    public Protasi(String num, String name, double scoref, double scorer, double score, boolean isContact, String type, String contactID) {
         this.number = num;
         this.score = score;
         this.name = name;
@@ -115,12 +112,10 @@ class Protasi
     }
 }
 
-class CompareProtaseis implements Comparator<Protasi>
-{
+class CompareProtaseis implements Comparator<Protasi> {
 
     @Override
-    public int compare(Protasi protasi1, Protasi protasi2)
-    {
+    public int compare(Protasi protasi1, Protasi protasi2) {
         if (protasi1.score >= protasi2.score)
             return -1;
         else
@@ -130,23 +125,19 @@ class CompareProtaseis implements Comparator<Protasi>
 
 
 //Deuteros custom comparator gia to alfavitiko
-class SortAlphaProtaseis implements Comparator<Protasi>
-{
+class SortAlphaProtaseis implements Comparator<Protasi> {
 
     @Override
-    public int compare(Protasi protasi1, Protasi protasi2)
-    {
+    public int compare(Protasi protasi1, Protasi protasi2) {
         return protasi1.name.compareToIgnoreCase(protasi2.name);
     }
 }
 
 //Tritos custom comparator gia to sort me vasi to date
-class SortDateProtaseis implements Comparator<Protasi>
-{
+class SortDateProtaseis implements Comparator<Protasi> {
 
     @Override
-    public int compare(Protasi protasi1, Protasi protasi2)
-    {
+    public int compare(Protasi protasi1, Protasi protasi2) {
         if (protasi1.date >= protasi2.date)
             return -1;
         else
@@ -155,12 +146,10 @@ class SortDateProtaseis implements Comparator<Protasi>
 }
 
 //Tritos custom comparator gia to sort me vasi to date
-class SortDateCallLogRecord implements Comparator<calllogrecord>
-{
+class SortDateCallLogRecord implements Comparator<calllogrecord> {
 
     @Override
-    public int compare(calllogrecord calllog1, calllogrecord calllog2)
-    {
+    public int compare(calllogrecord calllog1, calllogrecord calllog2) {
         if (calllog1.date >= calllog2.date)
             return -1;
         else
@@ -181,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
     MobileArrayAdapter arrayAdapter;
     ExpandableListView lista1;
     private int lastExpandedPosition = -1;
-//    //	Tracker tracker;
+    //    //	Tracker tracker;
 //    Long start_time;
 //    Long end_time;
     //HashMap<String, Integer> countryCodes;
@@ -256,20 +245,18 @@ public class MainActivity extends AppCompatActivity {
         editor.commit();
 
 
-        if(DarkMode) {
+        if (DarkMode) {
             setTheme(R.style.DarkTheme);
             getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        }
-        else setTheme(R.style.AppTheme);
+        } else setTheme(R.style.AppTheme);
 
         super.onCreate(savedInstanceState);
 
 
-        if(firstRun){
-            if(!Permissions.Check_PERMISSIONS(MainActivity.this))
-            {
+        if (firstRun) {
+            if (!Permissions.Check_PERMISSIONS(MainActivity.this)) {
                 //if not permisson granted so request permisson with request code
-                Permissions.Request_PERMISSIONS(MainActivity.this,1);
+                Permissions.Request_PERMISSIONS(MainActivity.this, 1);
             }
         }
 
@@ -278,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
         setupWindowAnimations();
 
 
-        if(socialSeek) {
+        if (socialSeek) {
             // If the user did not turn the notification listener service on we prompt him to do so
             if (!isNotificationServiceEnabled()) {
                 enableNotificationListenerAlertDialog = buildNotificationServiceAlertDialog();
@@ -377,12 +364,9 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = settings.edit();
-        if(resultCode == RESULT_OK)
-        {
+        if (resultCode == RESULT_OK) {
             editor.putBoolean("resolve_numbers", true);
-        }
-        else
-        {
+        } else {
             editor.putBoolean("resolve_numbers", false);
         }
         editor.putBoolean("firstRun", false);
@@ -405,6 +389,7 @@ public class MainActivity extends AppCompatActivity {
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             Integer oldquery = 0;
+
             @Override
             public boolean onQueryTextSubmit(String query) {
                 // collapse the view ?
@@ -415,15 +400,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String query) {
                 //if lastexpandedgroup is expanded..collapse it!
-                if(lista1.isGroupExpanded(lastExpandedPosition)) lista1.collapseGroup(lastExpandedPosition);
-                if (query.length() < oldquery)
-                {
+                if (lista1.isGroupExpanded(lastExpandedPosition))
+                    lista1.collapseGroup(lastExpandedPosition);
+                if (query.length() < oldquery) {
                     // We're deleting char so we need to reset the adapter data
                     arrayAdapter.resetData();
                 }
                 arrayAdapter.getFilter().filter(query);
                 oldquery = query.length();
-                    return false;
+                return false;
             }
         });
 
@@ -440,7 +425,6 @@ public class MainActivity extends AppCompatActivity {
             item.expandActionView();
 
 
-
             return true;
         }
 
@@ -448,6 +432,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Parcelable state;
+
     @Override
     public void onPause() {
         try {
@@ -551,10 +536,11 @@ public class MainActivity extends AppCompatActivity {
             super.onPreExecute();
 
             //loading spinner
-            ProgressBar spinner = (ProgressBar)findViewById(R.id.progressBar);
+            ProgressBar spinner = (ProgressBar) findViewById(R.id.progressBar);
 
             //set spinner visible / pre calculations
-            if(spinner != null && spinner.getVisibility() != View.GONE) spinner.setVisibility(View.VISIBLE);
+            if (spinner != null && spinner.getVisibility() != View.GONE)
+                spinner.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -641,8 +627,8 @@ public class MainActivity extends AppCompatActivity {
             //DEVEOPER OPTION
             //final ArrayList<protasi> finalprotaseis = new ArrayList<protasi>();
 
-            String protaseisDB="";
-            String protaseis_last_channelDB="";
+            String protaseisDB = "";
+            String protaseis_last_channelDB = "";
 
             int i = 0;
             for (Protasi protasitemp : protaseis) {
@@ -662,9 +648,9 @@ public class MainActivity extends AppCompatActivity {
                         //An yparxei contactID simainei oti einai epafi
                         if (protasitemp.contactID.length() != 0)
                             protasitemp.isContact = true;
-                        else{
+                        else {
                             //Google Business Bug Fix
-                            if(s1.CachedName != null)   protasitemp.name = s1.CachedName;
+                            if (s1.CachedName != null) protasitemp.name = s1.CachedName;
                             protasitemp.isContact = false;
                         }
 
@@ -676,9 +662,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
-                if(protasitemp.isContact)
-                protaseisDB += protasitemp.contactID + ", ";
-                else  {
+                if (protasitemp.isContact)
+                    protaseisDB += protasitemp.contactID + ", ";
+                else {
                     //encrypt plain number text to md5
                     protaseisDB += md5encrypt(protasitemp.number) + ", ";
                 }
@@ -700,7 +686,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
 
-            if(protaseisDB.length() > 1) { //uparxoun protaseis
+            if (protaseisDB.length() > 1) { //uparxoun protaseis
                 protaseisDB = protaseisDB.substring(0, protaseisDB.length() - 2);
                 protaseis_last_channelDB = protaseis_last_channelDB.substring(0, protaseis_last_channelDB.length() - 2);
 
@@ -751,7 +737,8 @@ public class MainActivity extends AppCompatActivity {
                         for (calllogrecord singlecallrecord : subcalllog) {
                             if (singlecallrecord.CachedName.equals(uniquecallname)) {
                                 //Protaseis isContact Bug Fix
-                                if(singlecallrecord.CachedName.equals("")) singlecallrecord.isContact = false;
+                                if (singlecallrecord.CachedName.equals(""))
+                                    singlecallrecord.isContact = false;
                                 Protasi mycalllogrecord = new Protasi(singlecallrecord.number, singlecallrecord.CachedName, 0.0, 0.0, 0.0, singlecallrecord.isContact, singlecallrecord.type, "");
                                 mycalllogrecord.date = singlecallrecord.date;
 
@@ -761,8 +748,7 @@ public class MainActivity extends AppCompatActivity {
                                         mycalllogrecord.contactID = getContactID(mycalllogrecord.number);
                                         try {
                                             mycalllogrecord.photo = loadPhoto(Long.parseLong(mycalllogrecord.contactID));
-                                        } catch (NumberFormatException nfe)
-                                        {
+                                        } catch (NumberFormatException nfe) {
                                             Log.d("Photo", "contact id is not a number");
                                         }
                                     } catch (Exception e) {
@@ -780,7 +766,7 @@ public class MainActivity extends AppCompatActivity {
                 Collections.sort(mycalllog, new SortDateProtaseis());
 
                 //an einai empty to callog, mhn to valeis
-                if (protaseis.size() > numProtaseis){
+                if (protaseis.size() > numProtaseis) {
                     //meta to sort vazw ton seperator prwto sti lista
                     Protasi mycalllogrecordnull = new Protasi("-1", "Recent Calls", 0.0, 0.0, -3.0, false, null, "");
                     mycalllog.add(0, mycalllogrecordnull);
@@ -898,7 +884,7 @@ public class MainActivity extends AppCompatActivity {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
             final String selectedinterface = preferences.getString("inteface", "3");
             //loading spinner
-            ProgressBar spinner = (ProgressBar)findViewById(R.id.progressBar);
+            ProgressBar spinner = (ProgressBar) findViewById(R.id.progressBar);
 
             //ftiaxnw enan neo arrayAdapter
 
@@ -917,17 +903,16 @@ public class MainActivity extends AppCompatActivity {
                 lista1.requestFocus();
 
                 //an to saved state sto pause den einai miden, epanefere thn katastash ths listas.
-                if (state != null){
+                if (state != null) {
                     lista1.onRestoreInstanceState(state);
                     arrayAdapter.notifyDataSetChanged();
                 }
 
 
-
                 lista1.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
                     @Override
                     public void onGroupExpand(int groupPosition) {
-                        if(lastExpandedPosition != -1 && groupPosition != lastExpandedPosition){
+                        if (lastExpandedPosition != -1 && groupPosition != lastExpandedPosition) {
                             lista1.collapseGroup(lastExpandedPosition);
                         }
                         lastExpandedPosition = groupPosition;
@@ -939,9 +924,9 @@ public class MainActivity extends AppCompatActivity {
                     public boolean onGroupClick(ExpandableListView expandableListView, View view, int i, long l) {
                         Protasi prot = (Protasi) arrayAdapter.getGroup(i);
                         Log.d("ProtaseisDB", "Clicked -->" + prot.name);
-                        if(prot.score == -3.0){
+                        if (prot.score == -3.0) {
                             return true;
-                        } else if(prot.score == -2.0){
+                        } else if (prot.score == -2.0) {
                             Intent intent = new Intent(Intent.ACTION_VIEW);
                             Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, String.valueOf(prot.contactID));
                             intent.setData(uri);
@@ -1061,24 +1046,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-        private double calcFreq(ArrayList<calllogrecord> calllog, String uniqueCachedName)
-    {
+    private double calcFreq(ArrayList<calllogrecord> calllog, String uniqueCachedName) {
         int occurrences = 0;
         int calllogsize = calllog.size();
         double freqscore = 0.0;
-        for (calllogrecord callrecord : calllog)
-        {
+        for (calllogrecord callrecord : calllog) {
             if (callrecord.CachedName.equals(uniqueCachedName))
                 occurrences++;
         }
 
-        freqscore = (double) occurrences/calllogsize;
+        freqscore = (double) occurrences / calllogsize;
 
         return freqscore;
     }
 
-    private double calcRecenc (ArrayList<calllogrecord> calllog, String uniqueCachedName, long recenWin)
-    {
+    private double calcRecenc(ArrayList<calllogrecord> calllog, String uniqueCachedName, long recenWin) {
         //metatropy tou recency window se milisecs
         //kai sti synexeia aferw to twra apo megethos tou recency window
         long recenWinDiair = recenWin * 3600L * 1000L;
@@ -1087,34 +1069,29 @@ public class MainActivity extends AppCompatActivity {
         double recency = 0.0;
 
 
-        for (calllogrecord callrecord : calllog)
-        {
+        for (calllogrecord callrecord : calllog) {
             //epi tis ousias vriskw tin prwti emfanisei tou arithmou sto subcallog
-            if (callrecord.CachedName.equals(uniqueCachedName))
-            {
+            if (callrecord.CachedName.equals(uniqueCachedName)) {
                 //kai elegxw an i stigm pou egine i klisi einai mesa sto recency window pou thelw (now - window)
-                if (callrecord.date > recenWin)
-                {
-                    recency = (double) (nowtime - callrecord.date)/recenWinDiair;
+                if (callrecord.date > recenWin) {
+                    recency = (double) (nowtime - callrecord.date) / recenWinDiair;
                     //gia na dwsw megalitero varos stin pio kontines kleiseis afairw apo ti monada
                     recency = 1.0 - recency;
                     return recency;
-                }
-                else
+                } else
                     return 0.0;
             }
         }
         return 0.0;
     }
 
-    private double calcScore (double freq, double recency)
-    {
+    private double calcScore(double freq, double recency) {
         //Ypologizw to score me vasi ta vari pou exoun dothei
         double score = wf * freq + wr * recency;
         return score;
     }
 
-    private ArrayList<calllogrecord> getCallLog (long days, boolean smsSeek, boolean socialSeek, boolean firstRunInit) {
+    private ArrayList<calllogrecord> getCallLog(long days, boolean smsSeek, boolean socialSeek, boolean firstRunInit) {
         long startTime = System.currentTimeMillis();
         //Ena ArrayList gia na valw ta tilefwna tou call log pou anikoun sto freq window
         ArrayList<calllogrecord> subcalllog = new ArrayList<calllogrecord>();
@@ -1139,7 +1116,7 @@ public class MainActivity extends AppCompatActivity {
 
         //CACHED_NAME Android Bug/Duplication Protasi Bug Fix
         String fixLimit = "DATE DESC LIMIT 30";
-        if(firstRunInit) {
+        if (firstRunInit) {
             freq_window = System.currentTimeMillis() - 99 * 24L * 3600L * 1000L; //max days(99)
             fixLimit = "DATE DESC";
         }
@@ -1159,8 +1136,7 @@ public class MainActivity extends AppCompatActivity {
         double tempnumber = 1.0;
 
         //cur.moveToFirst();
-        while (cur.moveToNext())
-        {
+        while (cur.moveToNext()) {
             //Log.d("Bug", cur.getString(cur.getColumnIndex(CallLog.Calls._ID)) + "|" + cur.getString(cur.getColumnIndex(CallLog.Calls.CACHED_NAME)) + "|" + cur.getString(cur.getColumnIndex(CallLog.Calls.NUMBER)));
             Integer FirstRowBug_ID = Integer.parseInt(cur.getString(cur.getColumnIndex(CallLog.Calls._ID)));
             String FirstRowBug_temp_cached_name = cur.getString(cur.getColumnIndex(CallLog.Calls.CACHED_NAME));
@@ -1179,7 +1155,7 @@ public class MainActivity extends AppCompatActivity {
         long startTimeQuery = System.currentTimeMillis();
 
         //CACHED_NAME Android Bug/Duplication Protasi Bug Fix
-        if(firstRunInit) {
+        if (firstRunInit) {
             freq_window = System.currentTimeMillis() - days * 24L * 3600L * 1000L; //max days(99)
         }
 
@@ -1192,8 +1168,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        while ( cur.moveToNext() )
-        {
+        while (cur.moveToNext()) {
             String phNumber = cur.getString(cur.getColumnIndex(CallLog.Calls.NUMBER));
             String cachedname = cur.getString(cur.getColumnIndex(CallLog.Calls.CACHED_NAME));
             long callDate = cur.getLong(cur.getColumnIndex(CallLog.Calls.DATE));
@@ -1213,19 +1188,15 @@ public class MainActivity extends AppCompatActivity {
             }
 
             //allos ena elegxos gia ta noumera me apokripsi
-            if (!phNumber.isEmpty())
-            {
-                calllogrecord temprecord = new calllogrecord(phNumber,callDate,cachedname,epafiboolean, "phone");
+            if (!phNumber.isEmpty()) {
+                calllogrecord temprecord = new calllogrecord(phNumber, callDate, cachedname, epafiboolean, "phone");
 
                 //Se periptwsi pou i klisi einai me apokripsi to pedio phNumber einai arnitikos arithmos
                 //Se periptwsi pou exw asterakia stis kliseis p.x. endoetairika WIND *2145
                 //boolean isnumeric = true;
-                try
-                {
+                try {
                     tempnumber = Double.parseDouble(phNumber);
-                }
-                catch (NumberFormatException nfe)
-                {
+                } catch (NumberFormatException nfe) {
                     //isnumeric = false;
                 }
 
@@ -1241,7 +1212,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i("Time", "3. Call Log Query took " + (endTimeQuery - startTimeQuery) + " milliseconds");
 
         //SMS Log Seeker
-        if(smsSeek) {
+        if (smsSeek) {
 
             //SMS Inbox Query
             Uri uriSmsInbox = Uri.parse("content://sms/inbox");
@@ -1261,16 +1232,14 @@ public class MainActivity extends AppCompatActivity {
                     SMScachedname = SMSphNumber;
 
                     String tempCachedName = getContactName(SMSphNumber);
-                    if (!tempCachedName.equals(""))
-                    {
+                    if (!tempCachedName.equals("")) {
                         SMScachedname = tempCachedName;
                         SMSepafiboolean = true;
-                    } else if (SMSphNumber.charAt(0) != '+')
-                    {
+                    } else if (SMSphNumber.charAt(0) != '+') {
                         //Country Code Bug Temp Fix
                         String tempPhNumber = "+" + GetCountryZipCode() + SMSphNumber;
                         String tempCachedNameCode = getContactName(tempPhNumber);
-                        if(!tempCachedNameCode.equals("")){
+                        if (!tempCachedNameCode.equals("")) {
                             SMScachedname = tempCachedNameCode;
                             SMSepafiboolean = true;
                         }
@@ -1299,16 +1268,14 @@ public class MainActivity extends AppCompatActivity {
                     SMScachedname = SMSphNumber;
 
                     String tempCachedName = getContactName(SMSphNumber);
-                    if (!tempCachedName.equals(""))
-                    {
+                    if (!tempCachedName.equals("")) {
                         SMScachedname = tempCachedName;
                         SMSepafiboolean = true;
-                    } else if (SMSphNumber.charAt(0) != '+')
-                    {
+                    } else if (SMSphNumber.charAt(0) != '+') {
                         //Country Code Bug Temp Fix
                         String tempPhNumber = "+" + GetCountryZipCode() + SMSphNumber;
                         String tempCachedNameCode = getContactName(tempPhNumber);
-                        if(!tempCachedNameCode.equals("")){
+                        if (!tempCachedNameCode.equals("")) {
                             SMScachedname = tempCachedNameCode;
                             SMSepafiboolean = true;
                         }
@@ -1327,7 +1294,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i("Social", "Notifications Count --> " + db.getNotificationsCount());
 
         //Social Log Seeker
-        if(socialSeek && db.getNotificationsCount() > 0) {
+        if (socialSeek && db.getNotificationsCount() > 0) {
             sdb = db.getWritableDatabase();
             String table = "notifications";
             String[] columns = {"id", "timestamp", "contact", "type"};
@@ -1344,11 +1311,11 @@ public class MainActivity extends AppCompatActivity {
                 String SOCIALtype = SOCIALcursor.getString(3);
                 boolean SOCIALepafiboolean = true;
 
-                if(!SOCIALphNumber.equals("")) {
+                if (!SOCIALphNumber.equals("")) {
                     //Log.i("Social", "MPHKE1--> " + SOCIALphNumber + " | " + SOCIALDate);
                     subcalllog.add(new calllogrecord(SOCIALphNumber, SOCIALDate, SOCIALcachedname, SOCIALepafiboolean, SOCIALtype));
-                } else{
-                    if(SOCIALtype.equals("whatsapp")) //Viber Contact/No Contact Bug Fix
+                } else {
+                    if (SOCIALtype.equals("whatsapp")) //Viber Contact/No Contact Bug Fix
                     {
                         SOCIALphNumber = SOCIALcachedname;
                         SOCIALepafiboolean = false;
@@ -1366,8 +1333,7 @@ public class MainActivity extends AppCompatActivity {
         // notification_db leaking bug fix
         db.close();
 
-        if(smsSeek || socialSeek)
-        {
+        if (smsSeek || socialSeek) {
             //sortarw tom subcallrecord ws pros to date
             Collections.sort(subcalllog, new SortDateCallLogRecord());
         }
@@ -1380,12 +1346,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private HashSet<String> getUniqueCallRecords (ArrayList<calllogrecord> calllog)
-    {
+    private HashSet<String> getUniqueCallRecords(ArrayList<calllogrecord> calllog) {
         //dimourgo ena HashSet wste na vrw tis monadikes eggrafes sto to call log pou dinw ws orisma
         HashSet<String> subcallunique = new HashSet<String>();
 
-        for (calllogrecord callrecord: calllog) {
+        for (calllogrecord callrecord : calllog) {
             //Log.d("Protaseis", "(" + callrecord.CachedName + ", " + callrecord.number + ", " + callrecord.isContact + ")");
             subcallunique.add(callrecord.CachedName);
         }
@@ -1394,23 +1359,20 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private Bitmap loadPhoto (long id)
-    {
+    private Bitmap loadPhoto(long id) {
         Uri photoUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, id);
         InputStream photoInput = ContactsContract.Contacts.openContactPhotoInputStream(this.getContentResolver(), photoUri);
-        if (photoInput != null)
-        {
+        if (photoInput != null) {
             return BitmapFactory.decodeStream(photoInput);
         }
         return null;
     }
 
-    public String getContactID (String number)
-    {
+    public String getContactID(String number) {
         String contactID = "";
         number = Uri.encode(number);
-        Cursor contactLookupCursor = getContentResolver().query(Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI,number),new String[] {ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID}, null, null, null);
-        while(contactLookupCursor.moveToNext()){
+        Cursor contactLookupCursor = getContentResolver().query(Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, number), new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID}, null, null, null);
+        while (contactLookupCursor.moveToNext()) {
             contactID = contactLookupCursor.getString(contactLookupCursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup._ID));
         }
         contactLookupCursor.close();
@@ -1418,31 +1380,25 @@ public class MainActivity extends AppCompatActivity {
         return contactID;
     }
 
-    private String getContactName (String number)
-    {
+    private String getContactName(String number) {
         String contactName = "";
         ContentResolver context = getContentResolver();
 
         /// number is the phone number
-        Uri lookupUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI,Uri.encode(number));
+        Uri lookupUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
 
-        String[] mPhoneNumberProjection = { ContactsContract.PhoneLookup.DISPLAY_NAME };
+        String[] mPhoneNumberProjection = {ContactsContract.PhoneLookup.DISPLAY_NAME};
         Cursor cur = null;
 
-        try
-        {
-            cur = context.query(lookupUri,mPhoneNumberProjection, null, null, null);
-            if (cur.moveToFirst())
-            {
+        try {
+            cur = context.query(lookupUri, mPhoneNumberProjection, null, null, null);
+            if (cur.moveToFirst()) {
                 contactName = cur.getString(0);
                 return contactName;
             }
-        }
-        catch(IllegalArgumentException ex) {
+        } catch (IllegalArgumentException ex) {
             ex.printStackTrace();
-        }
-        finally
-        {
+        } finally {
             if (cur != null)
                 cur.close();
         }
@@ -1458,34 +1414,28 @@ public class MainActivity extends AppCompatActivity {
     public String getPhoneNumber(String name) {
         String ret = "";
         ContentResolver context = getContentResolver();
-        String selection = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME+" like'%" + name +"%'";
-        String[] projection = new String[] { ContactsContract.CommonDataKinds.Phone.NUMBER};
+        String selection = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like'%" + name + "%'";
+        String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
         Cursor c = null;
 
-        try
-        {
+        try {
             c = context.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                     projection, selection, null, null);
-            if (c.moveToFirst())
-            {
+            if (c.moveToFirst()) {
                 // regex gia na vgazei ta whitespaces apo to phone number
-                ret = c.getString(0).replaceAll("\\s+","");
+                ret = c.getString(0).replaceAll("\\s+", "");
                 return ret;
             }
-        }
-        catch(IllegalArgumentException ex) {
+        } catch (IllegalArgumentException ex) {
             ex.printStackTrace();
-        }
-        finally
-        {
+        } finally {
             if (c != null)
                 c.close();
         }
         return ret;
     }
 
-    private ArrayList<Protasi> getAllContactsWithoutProtaseis (boolean withphotos, ArrayList<String> protaseisContactsIds)
-    {
+    private ArrayList<Protasi> getAllContactsWithoutProtaseis(boolean withphotos, ArrayList<String> protaseisContactsIds) {
 
         ArrayList<Protasi> mycontactlist = new ArrayList<Protasi>();
 
@@ -1496,12 +1446,10 @@ public class MainActivity extends AppCompatActivity {
         mycontactlist.add(mycalllogrecordnull);
 
         ContentResolver cr = getContentResolver();
-        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, new String[] { ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.Contacts.HAS_PHONE_NUMBER }, ContactsContract.Contacts.HAS_PHONE_NUMBER + "='1'", null, ContactsContract.Contacts.DISPLAY_NAME);
+        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, new String[]{ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.Contacts.HAS_PHONE_NUMBER}, ContactsContract.Contacts.HAS_PHONE_NUMBER + "='1'", null, ContactsContract.Contacts.DISPLAY_NAME);
 
-        if (cur.getCount() > 0)
-        {
-            while (cur.moveToNext())
-            {
+        if (cur.getCount() > 0) {
+            while (cur.moveToNext()) {
 
                 String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
 
@@ -1512,21 +1460,17 @@ public class MainActivity extends AppCompatActivity {
 
                 String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
 
-                Protasi mycalllogrecord = new Protasi("", name, 0.0, 0.0, -2.0, true, null,  id);
-                if (withphotos)
-                {
+                Protasi mycalllogrecord = new Protasi("", name, 0.0, 0.0, -2.0, true, null, id);
+                if (withphotos) {
                     //an thelw kai tis photos
                     long lid = Long.parseLong(id);
                     Uri photoUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, lid);
                     InputStream photoInput = ContactsContract.Contacts.openContactPhotoInputStream(this.getContentResolver(), photoUri);
-                    if (photoInput != null)
-                    {
+                    if (photoInput != null) {
                         mycalllogrecord.photo = BitmapFactory.decodeStream(photoInput);
-                    }
-                    else
+                    } else
                         mycalllogrecord.photo = null;
                 }
-
 
 
                 mycontactlist.add(mycalllogrecord);
@@ -1566,18 +1510,18 @@ public class MainActivity extends AppCompatActivity {
 //
 //    }
 
-    public String GetCountryZipCode(){
-        String CountryID="";
-        String CountryZipCode="";
+    public String GetCountryZipCode() {
+        String CountryID = "";
+        String CountryZipCode = "";
 
         TelephonyManager manager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
         //getNetworkCountryIso
-        CountryID= manager.getSimCountryIso().toUpperCase();
-        String[] rl=this.getResources().getStringArray(R.array.CountryCodes);
-        for(int i=0;i<rl.length;i++){
-            String[] g=rl[i].split(",");
-            if(g[1].trim().equals(CountryID.trim())){
-                CountryZipCode=g[0];
+        CountryID = manager.getSimCountryIso().toUpperCase();
+        String[] rl = this.getResources().getStringArray(R.array.CountryCodes);
+        for (int i = 0; i < rl.length; i++) {
+            String[] g = rl[i].split(",");
+            if (g[1].trim().equals(CountryID.trim())) {
+                CountryZipCode = g[0];
                 break;
             }
         }
@@ -1594,8 +1538,7 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setReturnTransition(slide);
     }
 
-    private String md5encrypt(String numberToEncrypt)
-    {
+    private String md5encrypt(String numberToEncrypt) {
         //md5 number encryption
         MessageDigest md = null;
         try {
@@ -1610,24 +1553,26 @@ public class MainActivity extends AppCompatActivity {
         return null;
     }
 
-    private void changeInterceptedNotification(int notificationCode, long postTime, String Contact){
-        switch(notificationCode){
+    private void changeInterceptedNotification(int notificationCode, long postTime, String Contact) {
+        switch (notificationCode) {
             case NotificationListener.InterceptedNotificationCode.VIBER_CODE:
                 //do something, its Viber
                 Log.i("Viber", postTime + "| " + Contact);
                 //if(Contact.charAt(0) == '+') Contact.replaceAll("\\s+","");
-                if(!Contact.equals("Viber"))
-                {
-                    if(Contact.charAt(0) == '+') { Contact = Contact.replaceAll("\\s+",""); }
+                if (!Contact.equals("Viber")) {
+                    if (Contact.charAt(0) == '+') {
+                        Contact = Contact.replaceAll("\\s+", "");
+                    }
                     db.addNotification(postTime, Contact, "viber");
                     onResume(); //refresh
                 }
                 break;
             case NotificationListener.InterceptedNotificationCode.WHATSAPP_CODE:
                 //do something, its WhatsApp
-                if(!Contact.equals("WhatsApp"))
-                {
-                    if(Contact.charAt(0) == '+') { Contact = Contact.replaceAll("\\s+",""); }
+                if (!Contact.equals("WhatsApp")) {
+                    if (Contact.charAt(0) == '+') {
+                        Contact = Contact.replaceAll("\\s+", "");
+                    }
                     Log.i("WhatsApp", postTime + "| " + Contact);
                     db.addNotification(postTime, Contact, "whatsapp");
                     onResume(); //refresh
@@ -1649,7 +1594,7 @@ public class MainActivity extends AppCompatActivity {
      * Is Notification Service Enabled.
      * Verifies if the notification listener service is enabled.
      */
-    private boolean isNotificationServiceEnabled(){
+    private boolean isNotificationServiceEnabled() {
         String pkgName = getPackageName();
         final String flat = Settings.Secure.getString(getContentResolver(),
                 "enabled_notification_listeners");
@@ -1670,12 +1615,12 @@ public class MainActivity extends AppCompatActivity {
     /**
      * We use this Broadcast Receiver to notify the Main Activity when
      * a new notification has arrived
-     * */
+     */
     public class SuggestionsChangeBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            int receivedNotificationCode = intent.getIntExtra("Notification Code",-1);
-            long receivedPostTime = intent.getLongExtra("Post Time",-1);
+            int receivedNotificationCode = intent.getIntExtra("Notification Code", -1);
+            long receivedPostTime = intent.getLongExtra("Post Time", -1);
             String receivedContact = intent.getStringExtra("Contact");
             changeInterceptedNotification(receivedNotificationCode, receivedPostTime, receivedContact);
         }
@@ -1686,9 +1631,10 @@ public class MainActivity extends AppCompatActivity {
      * Build Notification Listener Alert Dialog.
      * Builds the alert dialog that pops up if the user has not turned
      * the Notification Listener Service on yet.
+     *
      * @return An alert dialog which leads to the notification enabling screen
      */
-    private AlertDialog buildNotificationServiceAlertDialog(){
+    private AlertDialog buildNotificationServiceAlertDialog() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setTitle("Calchas Notification Listener");
         alertDialogBuilder.setMessage("For Calchas to work you need to enable the Notification Listener Service. Enable it now?");
@@ -1707,7 +1653,7 @@ public class MainActivity extends AppCompatActivity {
                         sharedPreferences.edit().putBoolean("socialseek", false).commit();
                     }
                 });
-        return(alertDialogBuilder.create());
+        return (alertDialogBuilder.create());
     }
 
     private void startTracking() {

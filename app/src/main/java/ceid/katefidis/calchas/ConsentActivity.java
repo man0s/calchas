@@ -38,14 +38,11 @@ public class ConsentActivity extends Activity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // TODO Auto-generated method stub
-                if(isChecked)
-                {
+                if (isChecked) {
                     agree.setEnabled(true);
                     ok_button.setEnabled(true);
                     //agree.setTextColor(getResources().getColor(R.attr.colorText));
-                }
-                else
-                {
+                } else {
                     agree.setEnabled(false);
                     ok_button.setEnabled(false);
                     //agree.setTextColor(getResources().getColor(R.attr.colorTextLight));
@@ -62,15 +59,13 @@ public class ConsentActivity extends Activity {
                 boolean und = understand.isChecked();
                 boolean agr = agree.isChecked();
 
-                if (und)
-                {
-                    if(agr)
-                        return_code=RESULT_OK;
+                if (und) {
+                    if (agr)
+                        return_code = RESULT_OK;
                     else
-                        return_code=RESULT_CANCELED;
-                }
-                else
-                    return_code=RESULT_CANCELED;
+                        return_code = RESULT_CANCELED;
+                } else
+                    return_code = RESULT_CANCELED;
 
                 //go back to Calchas
                 Intent calchas = new Intent();
