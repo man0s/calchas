@@ -799,7 +799,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                 postDataParams.put("sr", arg[7]);
                 postDataParams.put("chosen_channel", arg[8]);
                 postDataParams.put("protaseis_last_channel", arg[9]);
-                postDataParams.put("String location_coords", arg[10]);
+                postDataParams.put("location_coords", arg[10]);
                 postDataParams.put("location_accuracy", arg[11]);
                 postDataParams.put("screen_state", arg[12]);
                 postDataParams.put("ringer_mode", arg[13]);
