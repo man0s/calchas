@@ -114,11 +114,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         boolean DarkMode = settings.getBoolean("DarkMode", false);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         rowView = inflater.inflate(R.layout.list_protaseis, parent, false);
-//
-//        if (rowView == null) {
-//            rowView = inflater.inflate(R.layout.list_protaseis, null);
-//        }
-
+        
         colorIndex = position;
         if (colorIndex > 11) colorIndex = colorIndex % 11;
 
@@ -127,7 +123,6 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
 
 
         //Pairnw to antikeimeno pou fainetai sto position
-//        Protasi prot = protaseis.get(position);
         final Protasi prot = (Protasi) getGroup(position);
 
         //se periptwsi pou antikeimeno tou list view einai kapoios seperator
@@ -138,9 +133,6 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
             rowView.setClickable(false);
             TextView SeperatorText = (TextView) rowView.findViewById(R.id.seperator);
             SeperatorText.setText(prot.name);
-//            Typeface face = Typeface.createFromAsset(context.getAssets(),
-//                    "fonts/Lobster.ttf");
-//            SeperatorText.setTypeface(face);
 
         }
         //se periptwsi pou einai epafi fernw mono badge kai onoma
@@ -152,10 +144,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                 ContactName.setText(name);
             } else ContactName.setText(prot.name);
 
-            //if(prot.type != null)  ContactName.setText(prot.name + "|" + prot.type);
-
             //Gia to badge
-            //QuickContactBadge eikonacode = (QuickContactBadge) rowView.findViewById(R.id.contact_photo);
             RoundedQuickContactBadge eikonacode = (RoundedQuickContactBadge) rowView.findViewById(R.id.contact_photo);
             Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, String.valueOf(prot.contactID));
             eikonacode.assignContactUri(uri);
@@ -177,19 +166,18 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
             TextView textView = rowView.findViewById(R.id.contact_name);
             TextView textView1 = rowView.findViewById(R.id.contact_number);
             TextView datecontacted = rowView.findViewById(R.id.datecontacted);
-            //TextView network = rowView.findViewById(R.id.network);
 
             //Gia na efmanizetai i wra kai imerominia tis teleutaias epikoinwnias me tin protasi
             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM HH:mm", Locale.getDefault());
             String dateString = formatter.format(new Date(prot.date));
             datecontacted.setText(dateString);
-            //network.setText(prot.network);
+            
             if (prot.isContact && !prot.name.equals("")) { //to != null se periptwsh pou uparxei fault isContact
                 if (prot.name.length() > 20) {
                     String name = prot.name.substring(0, Math.min(prot.name.length(), 20)) + ".";
                     textView.setText(name);
                 } else textView.setText(prot.name);
-                //if(prot.type != null)   textView.setText(prot.name + "|" + prot.type);
+                
                 textView1.setText(prot.number);
             } else {
                 //Google Business Bug Fix
@@ -202,13 +190,13 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                     textView1.setText(prot.number);
                 } else {
                     textView.setText(prot.number);
-                    //if(prot.type != null)   textView.setText(prot.name + "|" + prot.type);
+
                     textView1.setText("");
                 }
             }
 
             //Gia to badge
-            //QuickContactBadge eikonacode = (QuickContactBadge) rowView.findViewById(R.id.contact_photo);
+
             RoundedQuickContactBadge eikonacode = (RoundedQuickContactBadge) rowView.findViewById(R.id.contact_photo);
             eikonacode.assignContactFromPhone(prot.number, true);
 
@@ -294,13 +282,6 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
             if (resultToCall.suggested) {
                 value = 1;
             }
-//                    tracker.send(
-//                            new HitBuilders.EventBuilder()
-//                                    .setCategory("List")
-//                                    .setAction("Click")
-//                                    .setLabel("WasSuggestion")
-//                                    .setValue(value)
-//                                    .build());
 
             if (resultToCall.score == -2.0) //se periptwsei pou kanei click panw se epafi tou contact list
             {
@@ -311,11 +292,6 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                 context.startActivity(intent);
 
             } else {
-//                            case 0: //phone
-//                                Intent phoneIntent = new Intent(Intent.ACTION_CALL);
-//                                phoneIntent.setData(Uri.parse("tel:" + numberToCall));
-//                                startActivity(phoneIntent);
-//                                break;
 
                 LinearLayout layoutMsg = convertView.findViewById(R.id.msg_expanded);
 
@@ -519,9 +495,7 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
                     String tocheck2 = Normalizer.normalize(constraint.toString(), Normalizer.Form.NFD);
                     tocheck1 = tocheck1.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
                     tocheck2 = tocheck2.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
-                    //tocheck2 = tocheck2.replaceAll("[^\\p{ASCII}]", "");
-
-                    //if (p.name.toUpperCase(Locale.getDefault()).startsWith(constraint.toString().toUpperCase(Locale.getDefault())))
+                    
                     //h protash den einai to seperator Recent Calls me arithmo -1
                     if (!p.number.equals("-1")) {
                         if (tocheck1.toUpperCase(Locale.getDefault()).contains(tocheck2.toUpperCase(Locale.getDefault())))
@@ -573,14 +547,6 @@ public class MobileArrayAdapter extends BaseExpandableListAdapter implements Fil
         @SuppressWarnings("unchecked")
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-
-            //Now we have to inform the adapter about the new list filtered
-            //an to gramma pou tha patithei antistoixei se miden apotelesmata
-            //na vgainei kano
-            //if (results.count == 0)
-            //	notifyDataSetInvalidated();
-            //else
-            //{
 
             protaseis = (ArrayList<Protasi>) results.values;
             notifyDataSetChanged();
