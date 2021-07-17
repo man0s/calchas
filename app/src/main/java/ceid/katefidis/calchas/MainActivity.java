@@ -1123,13 +1123,15 @@ public class MainActivity extends AppCompatActivity {
 
         String[] FirstRowBug_selectCols = new String[]{CallLog.Calls._ID, CallLog.Calls.NUMBER, CallLog.Calls.CACHED_NAME};
 
-        try {
-            cur = cr.query(CallLog.Calls.CONTENT_URI, FirstRowBug_selectCols, "logtype = 100 AND DATE >" + freq_window, null, fixLimit);
-            if (cur == null)
-                cur = cr.query(CallLog.Calls.CONTENT_URI, FirstRowBug_selectCols, "DATE >" + freq_window, null, fixLimit);
-        } catch (SQLiteException e) {
-            cur = cr.query(CallLog.Calls.CONTENT_URI, FirstRowBug_selectCols, "DATE >" + freq_window, null, fixLimit);
-        }
+//         try {
+//             cur = cr.query(CallLog.Calls.CONTENT_URI, FirstRowBug_selectCols, "logtype = 100 AND DATE >" + freq_window, null, fixLimit);
+//             if (cur == null)
+//                 cur = cr.query(CallLog.Calls.CONTENT_URI, FirstRowBug_selectCols, "DATE >" + freq_window, null, fixLimit);
+//         } catch (SQLiteException e) {
+//             cur = cr.query(CallLog.Calls.CONTENT_URI, FirstRowBug_selectCols, "DATE >" + freq_window, null, fixLimit);
+//         }
+	    
+	cur = cr.query(CallLog.Calls.CONTENT_URI, FirstRowBug_selectCols, "DATE >" + freq_window, null, fixLimit);
 
 
         //pernw to noumero ws double
@@ -1159,13 +1161,15 @@ public class MainActivity extends AppCompatActivity {
             freq_window = System.currentTimeMillis() - days * 24L * 3600L * 1000L; //max days(99)
         }
 
-        try {
-            cur = cr.query(CallLog.Calls.CONTENT_URI, selectCols, "logtype = 100 AND DATE >" + freq_window, null, "DATE DESC");
-            if (cur == null)
-                cur = cr.query(CallLog.Calls.CONTENT_URI, selectCols, "DATE >" + freq_window, null, "DATE DESC");
-        } catch (SQLiteException e) {
-            cur = cr.query(CallLog.Calls.CONTENT_URI, selectCols, "DATE >" + freq_window, null, "DATE DESC");
-        }
+//         try {
+//             cur = cr.query(CallLog.Calls.CONTENT_URI, selectCols, "logtype = 100 AND DATE >" + freq_window, null, "DATE DESC");
+//             if (cur == null)
+//                 cur = cr.query(CallLog.Calls.CONTENT_URI, selectCols, "DATE >" + freq_window, null, "DATE DESC");
+//         } catch (SQLiteException e) {
+//             cur = cr.query(CallLog.Calls.CONTENT_URI, selectCols, "DATE >" + freq_window, null, "DATE DESC");
+//         }
+	
+	cur = cr.query(CallLog.Calls.CONTENT_URI, selectCols, "DATE >" + freq_window, null, "DATE DESC");
 
 
         while (cur.moveToNext()) {
